@@ -153,43 +153,103 @@ def hash_block_tokens(
 
 ### 3.2 Block粒度的链式哈希
 
+**为什么要使用链式哈希？**
+
+链式哈希的核心作用是确保前缀的连续性和顺序性。通过将父block的hash纳入当前block的hash计算，我们可以保证：
+
+1. **前缀连续性验证**: 如果两个序列的前N个token相同，那么它们对应的前N个block的hash一定相同
+2. **顺序保证**: hash值不仅取决于当前block的tokens，还依赖于前面所有blocks的hash
+3. **前缀匹配自动实现**: 逐个比较hash值即可判断前缀是否相同
+
+**链式哈希的具体工作过程：**
+
 ```python
 # 位置：vllm/v1/core/kv_cache_utils.py:593-614
 def request_block_hasher(request: Request) -> list[BlockHash]:
     block_size = 16  # 假设块大小为16
     start_token_idx = len(request.block_hashes) * block_size
-    
+
     while True:
         end_token_idx = start_token_idx + block_size
         if end_token_idx > num_tokens:
             break  # 只处理完整的blocks
-        
+
         # 提取当前block的tokens
         block_tokens = request.all_token_ids[start_token_idx:end_token_idx]
-        
+
         # 计算当前block的hash（依赖于父block的hash）
         block_hash = hash_block_tokens(
-            caching_hash_fn, 
+            caching_hash_fn,
             prev_block_hash_value,  # 链式依赖
             block_tokens,           # 当前block的Token IDs
             extra_keys
         )
-        
+
         new_block_hashes.append(block_hash)
         start_token_idx += block_size
         prev_block_hash_value = block_hash
 ```
 
-**示例：**
+**详细示例：**
 
 ```python
-# Token IDs: [1,2,3,...,48]
-# Block 0: [1,2,3,...,16] → hash(None, (1,2,3,...,16), None)
-# Block 1: [17,18,...,32] → hash(hash_0, (17,18,...,32), None)  
-# Block 2: [33,34,...,48] → hash(hash_1, (33,34,...,48), None)
+# 假设有两个请求：
+# 请求A的Token IDs: [1,2,3,...,48]
+# 请求B的Token IDs: [1,2,3,...,32, 100,101,...,116]
+
+# 请求A的链式哈希计算：
+# Block 0: tokens=[1,2,3,...,16]
+#   hash_0 = hash(None, (1,2,3,...,16), None) = "abc123"
+#
+# Block 1: tokens=[17,18,...,32]
+#   hash_1 = hash("abc123", (17,18,...,32), None) = "def456"
+#
+# Block 2: tokens=[33,34,...,48]
+#   hash_2 = hash("def456", (33,34,...,48), None) = "ghi789"
+
+# 请求B的链式哈希计算：
+# Block 0: tokens=[1,2,3,...,16] (相同)
+#   hash_0 = hash(None, (1,2,3,...,16), None) = "abc123" (相同！)
+#
+# Block 1: tokens=[17,18,...,32] (相同)
+#   hash_1 = hash("abc123", (17,18,...,32), None) = "def456" (相同！)
+#
+# Block 2: tokens=[100,101,...,116] (不同)
+#   hash_2 = hash("def456", (100,101,...,116), None) = "jkl012" (不同)
+
+# 前缀匹配结果：
+# Block 0和Block 1的hash完全相同 → 可以复用前32个token的KV cache
+# Block 2的hash不同 → 需要重新计算剩余的KV cache
 ```
 
-### 3.3 前缀匹配查找
+### 3.3 前缀匹配查找的具体实现
+
+**缓存存储结构：**
+
+```python
+# 位置：vllm/v1/core/block_pool.py:34-61
+class BlockHashToBlockMap:
+    """
+    哈希映射表：block_hash → KVCacheBlock
+    支持一个hash对应多个block（使用dict存储）
+    """
+    def __init__(self):
+        self._cache: dict[
+            BlockHashWithGroupId, KVCacheBlock | dict[int, KVCacheBlock]
+        ] = {}
+
+    def get_one_block(self, key: BlockHashWithGroupId) -> KVCacheBlock | None:
+        """根据hash获取任意一个匹配的block"""
+        blocks = self._cache.get(key)
+        if blocks is not None:
+            if isinstance(blocks, KVCacheBlock):
+                return blocks
+            if isinstance(blocks, dict):
+                return next(iter(blocks.values()))
+        return None
+```
+
+**查找过程详解：**
 
 ```python
 # 位置：vllm/v1/core/single_type_kv_cache_manager.py:446-456
@@ -203,6 +263,37 @@ for block_hash in itertools.islice(block_hashes, max_num_blocks):
         break  # 立即停止匹配
 ```
 
+**实际匹配示例：**
+
+```python
+# 缓存状态：
+# cached_block_hash_to_block = {
+#     "abc123": KVCacheBlock(block_id=5),   # Block 0的缓存
+#     "def456": KVCacheBlock(block_id=12),  # Block 1的缓存
+#     "ghi789": KVCacheBlock(block_id=20)   # Block 2的缓存
+# }
+
+# 新请求的block_hashes = ["abc123", "def456", "jkl012"]
+
+# 匹配过程：
+# 第1次迭代：block_hash = "abc123"
+#   cached_block = block_pool.get_cached_block("abc123", [0])
+#   → 返回 KVCacheBlock(block_id=5)  ✅ 匹配！
+#   computed_blocks = [KVCacheBlock(block_id=5)]
+
+# 第2次迭代：block_hash = "def456"
+#   cached_block = block_pool.get_cached_block("def456", [0])
+#   → 返回 KVCacheBlock(block_id=12)  ✅ 匹配！
+#   computed_blocks = [KVCacheBlock(block_id=5), KVCacheBlock(block_id=12)]
+
+# 第3次迭代：block_hash = "jkl012"
+#   cached_block = block_pool.get_cached_block("jkl012", [0])
+#   → 返回 None  ❌ 不匹配！
+#   break  # 立即停止匹配
+
+# 最终结果：复用了前32个token的KV cache (Block 0和Block 1)
+```
+
 ### 3.4 只有完整Block才能匹配
 
 ```python
@@ -213,10 +304,119 @@ if end_token_idx > num_tokens:
     break
 ```
 
+**为什么要这样设计？**
+
+1. **缓存粒度统一**: 只缓存完整的block可以简化缓存管理逻辑
+2. **性能考虑**: 频繁的小块缓存会增加哈希计算和查找开销
+3. **内存效率**: 完整块缓存提高内存利用率，减少碎片
+4. **实现简化**: 避免处理部分block的复杂逻辑
+
 **影响：**
 
 - 少于16个token的请求无法利用前缀缓存
 - 部分匹配（如15个token相同）也无法命中缓存
+- 如果请求长度不是16的倍数，最后不足16个token的部分无法缓存
+
+### 3.5 前缀匹配的图示说明
+
+**链式哈希的依赖关系：**
+
+```
+请求1: Token IDs [1,2,3,...,48]
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ Block 0         │    │ Block 1         │    │ Block 2         │
+│ Tokens: [1..16] │    │ Tokens: [17..32]│    │ Tokens: [33..48]│
+│                 │    │                 │    │                 │
+│ hash_0 =        │    │ hash_1 =        │    │ hash_2 =        │
+│ hash(None,      │──→ │ hash(hash_0,    │──→ │ hash(hash_1,    │
+│   (1..16))      │    │   (17..32))     │    │   (33..48))     │
+│ = "abc123"      │    │ = "def456"      │    │ = "ghi789"      │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+
+请求2: Token IDs [1,2,3,...,32, 100,101,...,116]
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│ Block 0         │    │ Block 1         │    │ Block 2         │
+│ Tokens: [1..16] │    │ Tokens: [17..32]│    │ Tokens: [100..116]│
+│                 │    │                 │    │                 │
+│ hash_0 =        │    │ hash_1 =        │    │ hash_2 =        │
+│ hash(None,      │──→ │ hash(hash_0,    │──→ │ hash(hash_1,    │
+│   (1..16))      │    │   (17..32))     │    │   (100..116))   │
+│ = "abc123" ✅   │    │ = "def456" ✅   │    │ = "xyz999" ❌   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+
+匹配结果：
+✅ Block 0匹配: "abc123" == "abc123"
+✅ Block 1匹配: "def456" == "def456"
+❌ Block 2不匹配: "ghi789" != "xyz999"
+
+可以复用前32个token的KV cache！
+```
+
+**哈希查找表的结构：**
+
+```text
+cached_block_hash_to_block = {
+    "abc123" + group_id(0): KVCacheBlock(block_id=5, ref_cnt=2),
+    "def456" + group_id(0): KVCacheBlock(block_id=12, ref_cnt=2),
+    "ghi789" + group_id(0): KVCacheBlock(block_id=20, ref_cnt=1),
+}
+
+前缀匹配查找过程：
+1. 查找 "abc123" + group_id(0) → 找到 block_id=5 ✅
+2. 查找 "def456" + group_id(0) → 找到 block_id=12 ✅
+3. 查找 "xyz999" + group_id(0) → 未找到 ❌ 停止匹配
+
+结果：复用 [block_id=5, block_id=12]
+```
+
+### 3.6 为什么链式哈希能确保前缀匹配的正确性？
+
+**数学原理：**
+
+如果两个序列的前N个token完全相同，那么：
+
+1. **第0个block**: hash(None,相同tokens) → 必然产生相同的hash_0
+2. **第1个block**: hash(相同hash_0, 相同tokens) → 必然产生相同的hash_1
+3. **第i个block**: hash(相同hash_{i-1}, 相同tokens) → 必然产生相同的hash_i
+
+**反证法：**
+
+假设两个序列的前N个token相同，但某个block的hash不同：
+
+- 如果hash_i不同，那么要么hash_{i-1}不同，要么tokens不同
+- 根据归纳假设，hash_{i-1}必须相同
+- 如果tokens相同，hash_i必须相同
+- 矛盾！因此如果前缀相同，所有对应block的hash都必须相同
+
+**为什么不能使用独立哈希？**
+
+```python
+# 独立哈希（错误的做法）：
+# hash_0 = hash((1,2,3,...,16))
+# hash_1 = hash((17,18,...,32))     # 独立计算
+# hash_2 = hash((33,34,...,48))     # 独立计算
+
+# 问题：
+# 请求A: [1,2,3,...,16, 17,18,...,32, 33,34,...,48]
+# 请求B: [17,18,...,32, 1,2,3,...,16, 33,34,...,48]
+#
+# 使用独立哈希：
+# hash_1_A = hash((17,18,...,32))  # 相同
+# hash_1_B = hash((17,18,...,32))  # 相同
+# hash_2_A = hash((1,2,3,...,16))  # 相同
+# hash_2_B = hash((1,2,3,...,16))  # 相同
+#
+# 错误匹配！虽然tokens内容相同，但顺序不同
+# 这会导致错误的前缀匹配结论
+
+# 链式哈希（正确的做法）：
+# hash_0_A = hash(None, (1,2,3,...,16))
+# hash_1_A = hash(hash_0_A, (17,18,...,32))
+# hash_0_B = hash(None, (17,18,...,32))  # 不同！
+# hash_1_B = hash(hash_0_B, (1,2,3,...,16))  # 不同！
+#
+# 正确：链式哈希确保了顺序的重要性
+```
 
 ---
 
