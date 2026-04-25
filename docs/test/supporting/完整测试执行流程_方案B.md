@@ -23,7 +23,7 @@
 最终应形成两类结果：
 
 - `vllm bench serve` 输出的固定长度性能参考线
-- `/root/autodl-tmp/1.py` 输出的结构化场景测试结果
+- `tests/vllm_baseline_runner.py` 输出的结构化场景测试结果
 
 ## 3. 当前测试框架
 
@@ -42,7 +42,7 @@
 
 ### 3.3 场景测试与监控采集层
 
-- 云端实际执行脚本：`/root/autodl-tmp/1.py`
+- 执行脚本：`tests/vllm_baseline_runner.py`
 - 用于跑五组测试场景
 - 自动采集 `/metrics`、GPU、CPU 资源指标
 
@@ -54,7 +54,7 @@
 
 ### 3.4 结果汇总层
 
-- 云端实际执行脚本：`/root/autodl-tmp/summarize_baseline_runs.py`
+- 执行脚本：`tests/summarize_baseline_runs.py`
 - 用于把多组 `summary.json` 汇总成 CSV
 
 ## 4. 本轮测试前提
@@ -137,7 +137,7 @@ curl -s http://127.0.0.1:8000/metrics | rg "kv_cache_usage_perc|prefix_cache|num
 
 ## 7. 第一步：五组比赛场景 baseline
 
-这一部分统一使用云端脚本 `/root/autodl-tmp/1.py`。
+这一部分统一使用仓库内脚本 `tests/vllm_baseline_runner.py`。
 
 这一阶段的结果会自动保存：
 
@@ -158,7 +158,7 @@ curl -s http://127.0.0.1:8000/metrics | rg "kv_cache_usage_perc|prefix_cache|num
 执行命令：
 
 ```bash
-python3 /root/autodl-tmp/1.py \
+python3 tests/vllm_baseline_runner.py \
   --base-url http://127.0.0.1:8000 \
   --model qwen3-8b \
   --scenario short_synth \
@@ -188,7 +188,7 @@ unzip -o data.zip -d /root/autodl-tmp/longbench_local
 然后使用本地 JSONL 路径运行：
 
 ```bash
-python3 /root/autodl-tmp/1.py \
+python3 tests/vllm_baseline_runner.py \
   --base-url http://127.0.0.1:8000 \
   --model qwen3-8b \
   --scenario longbench \
@@ -211,43 +211,12 @@ python3 /root/autodl-tmp/1.py \
 
 - 验证超长输入下的资源压力
 - 观察更长上下文下的延迟退化
-- 优先拿到真正能形成超长上下文压力的结果
+- 当前阶段主结果采用合成超长文本
 
-优先执行命令：
-
-```bash
-python3 /root/autodl-tmp/1.py \
-  --base-url http://127.0.0.1:8000 \
-  --model qwen3-8b \
-  --scenario needlebench \
-  --needle-subset multi_needle_reasoning_needle \
-  --num-samples 5 \
-  --max-tokens 128
-```
-
-说明：
-
-- 当前命令先给出一个可直接运行的 NeedleBench 子集入口
-- 如果你后面确认了更合适的 retrieval 风格子集，可以直接替换 `--needle-subset`
-
-补充说明：
-
-- NeedleBench 的价值在于“真实开源超长数据接入”
-- 但如果抽到的样本 prompt 很短，就不足以作为超长上下文极限组主证据
-- 因此当前阶段建议：
-  - NeedleBench 用于验证真实开源数据链路
-  - `ultra_long_synth` 用于稳定构造超长上下文压力
-
-当前阶段的实际决策逻辑是：
-
-- 先优先尝试 `NeedleBench`
-- 如果当前选择的子集未形成真正长 prompt，则不强行把它当主结果
-- 改由 `ultra_long_synth` 生成稳定超长输入，作为当前阶段超长上下文极限组主结果
-
-如果 `NeedleBench` 下载或运行不稳定，再使用合成超长文本兜底：
+主结果执行命令：
 
 ```bash
-python3 /root/autodl-tmp/1.py \
+python3 tests/vllm_baseline_runner.py \
   --base-url http://127.0.0.1:8000 \
   --model qwen3-8b \
   --scenario ultra_long_synth \
@@ -256,6 +225,24 @@ python3 /root/autodl-tmp/1.py \
   --max-tokens 128
 ```
 
+开源超长补充结果可使用：
+
+```bash
+python3 tests/vllm_baseline_runner.py \
+  --base-url http://127.0.0.1:8000 \
+  --model qwen3-8b \
+  --scenario needlebench \
+  --needle-subset en_haystack_texts \
+  --num-samples 5 \
+  --max-tokens 128
+```
+
+说明：
+
+- `ultra_long_synth` 作为当前阶段超长上下文极限组主结果
+- `NeedleBench / en_haystack_texts` 作为开源超长长文本补充结果
+- 早期尝试的 `multi_needle_reasoning_needle` 不再作为最终推荐命令保留
+
 如果服务压力过大，可先把：
 
 - `--num-samples` 降到 `3`
@@ -263,8 +250,8 @@ python3 /root/autodl-tmp/1.py \
 
 当前阶段实际建议：
 
-- 如果 NeedleBench 样本过短，只将其记为“接入验证成功”
 - 以 `ultra_long_synth` 结果作为超长上下文极限组主结果
+- 以 `NeedleBench / en_haystack_texts` 结果作为开源超长补充结果
 
 ## 7.4 共享前缀命中组
 
@@ -276,7 +263,7 @@ python3 /root/autodl-tmp/1.py \
 执行命令：
 
 ```bash
-python3 /root/autodl-tmp/1.py \
+python3 tests/vllm_baseline_runner.py \
   --base-url http://127.0.0.1:8000 \
   --model qwen3-8b \
   --scenario shared_prefix \
@@ -295,7 +282,7 @@ python3 /root/autodl-tmp/1.py \
 执行命令：
 
 ```bash
-python3 /root/autodl-tmp/1.py \
+python3 tests/vllm_baseline_runner.py \
   --base-url http://127.0.0.1:8000 \
   --model qwen3-8b \
   --scenario mixed_pressure \
@@ -394,14 +381,14 @@ vllm bench serve \
 跑完上面的场景后，执行：
 
 ```bash
-python3 /root/autodl-tmp/summarize_baseline_runs.py \
-  --runs-dir /root/autodl-tmp/baseline_runs \
-  --output-csv /root/autodl-tmp/baseline_runs_summary.csv
+python3 tests/summarize_baseline_runs.py \
+  --runs-dir baseline_runs \
+  --output-csv baseline_runs_summary.csv
 ```
 
 输出文件：
 
-- `/root/autodl-tmp/baseline_runs_summary.csv`
+- `baseline_runs_summary.csv`
 
 这个 CSV 会汇总：
 
