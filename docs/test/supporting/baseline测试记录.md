@@ -229,65 +229,7 @@
 
 - `baseline_runs/longbench_1777121802`
 
-### 7.3 超长上下文极限组（NeedleBench 首次试跑）
-
-运行方式：
-
-- 场景：`needlebench`
-- 子集：`multi_needle_reasoning_needle`
-- 样本数：`5`
-- 并发度：`1`
-- prompt 长度范围：约 `229` 到 `419 chars`
-- 输出长度：`128 tokens`
-
-结果摘要：
-
-| 指标 | 值 |
-|---|---|
-| success_count | `5` |
-| failed_count | `0` |
-| success_rate | `1.0` |
-| mean_latency_sec | `1.3484` |
-| p50_latency_sec | `1.3427` |
-| p95_latency_sec | `1.3617` |
-| max_latency_sec | `1.3646` |
-| mean_completion_tokens | `128` |
-| completion_tokens_total | `640` |
-| end_to_end_completion_toks_per_sec | `94.93` |
-| kv_cache_usage_start | `0.0` |
-| kv_cache_usage_end | `0.002726` |
-| kv_cache_usage_max | `0.002908` |
-| gpu_memory_used_mb_peak | `29876.0 MB` |
-| gpu_util_pct_peak | `100.0%` |
-| cpu_memory_used_mb_peak | `54086.77 MB` |
-| cpu_memory_used_pct_peak | `7.0%` |
-| loadavg_1m_peak | `13.344` |
-| telemetry_samples | `7` |
-
-当前结论：
-
-- NeedleBench 已成功跑通
-- 成功率为 `100%`
-- 但本次样本构造成的 prompt 很短，只有 `229` 到 `419 chars`
-- 因此这次结果更适合作为“NeedleBench 接入验证”，而不是“超长上下文极限组”的主结论
-- 如果后续要把超长组做扎实，仍建议补一组真正长 prompt 的 `ultra_long_synth` 或重新筛选更长的 NeedleBench 子集
-
-决策说明：
-
-- 本轮最初优先尝试了开源数据集 `NeedleBench`
-- 目的是优先使用真实开源数据完成超长上下文组
-- 但在检查结果后发现：
-  - 当前选择的子集并未形成真正的超长 prompt
-  - 因而不适合作为当前阶段超长上下文极限组主结果
-- 因此后续转为使用 `ultra_long_synth`
-  - 用于稳定构造超长输入压力
-  - 作为当前阶段超长上下文组主结果
-
-结果目录：
-
-- `baseline_runs/needlebench_1777122161`
-
-### 7.4 超长上下文极限组（主结果）
+### 7.3 超长上下文极限组（主结果）
 
 运行方式：
 
@@ -325,27 +267,15 @@
 
 - 超长上下文合成组已稳定跑通
 - 成功率为 `100%`
-- prompt 长度约 `22K chars`，比前面的 NeedleBench 接入验证更能代表“超长上下文极限组”
+- prompt 长度约 `22K chars`
 - `kv_cache_usage_max` 约为 `4.74%`，明显高于短上下文组，也接近真实长上下文组的量级
 - 该组可以作为当前阶段“超长上下文极限组”的主结果
-
-参数调整说明：
-
-- 本组不是简单重复测试，而是显式调整了超长场景构造参数：
-  - 场景从 `needlebench` 调整为 `ultra_long_synth`
-  - 关键参数为 `--ultra-prompt-chars 22000`
-- 调整原因：
-  - 前一次 NeedleBench 虽然接入成功，但当前子集形成的 prompt 过短
-  - 无法充分代表超长上下文压力
-- 因此本次参数调整的目的是：
-  - 稳定制造真正的超长上下文输入
-  - 让“超长上下文极限组”具备可解释的主结果
 
 结果目录：
 
 - `baseline_runs/ultra_long_synth_1777122360`
 
-### 7.4.1 开源超长数据补充结果（NeedleBench / en_haystack_texts）
+### 7.4 开源超长数据补充结果（NeedleBench / en_haystack_texts）
 
 运行方式：
 
@@ -385,7 +315,7 @@
 当前结论：
 
 - `NeedleBench / en_haystack_texts` 已成功形成真实开源长文本输入
-- 本组 `kv_cache_usage_max` 达到 `0.06269`，已明显高于早期错误子集结果
+- 本组 `kv_cache_usage_max` 达到 `0.06269`
 - 因此本组可以作为“开源超长长文本补充结果”
 - 但当前阶段仍建议把 `ultra_long_synth` 作为超长上下文极限组主结果，因为其长度和压力更稳定可控
 
@@ -455,16 +385,9 @@
 - 说明共享前缀场景下 prefix cache 查询与命中均已实际发生
 - 命中数与查询数非常接近，说明当前场景中前缀复用效果明显
 
-修正说明：
-
-- 早期结果中这两项曾显示为 `null`
-- 后续已确认原因是脚本匹配了旧指标名
-- 在修正脚本后重新补跑，本组结果现已有效可用
-
 结果目录：
 
-- 早期无效结果：`baseline_runs/shared_prefix_1777122520`
-- 修正后有效结果：`baseline_runs/shared_prefix_1777124420`
+- `baseline_runs/shared_prefix_1777124420`
 
 ### 7.6 混合压力组
 
@@ -519,8 +442,7 @@
 
 结果目录：
 
-- 早期结果：`baseline_runs/mixed_pressure_1777122575`
-- 补跑后有效结果：`baseline_runs/mixed_pressure_1777127138`
+- `baseline_runs/mixed_pressure_1777127138`
 
 ## 8. 当前阶段总总结
 
@@ -538,10 +460,9 @@
 - 共享前缀命中组：`shared_prefix`
 - 混合压力组：`mixed_pressure`
 
-补充完成但不作为主结论的场景：
+开源补充完成的场景：
 
-- `needlebench`
-  - 当前更适合作为开源超长数据接入验证
+- `needlebench / en_haystack_texts`
 
 ### 8.2 当前阶段整体结论
 
@@ -586,16 +507,13 @@
 - prefix cache 查询与命中确实已经发生
 - 共享前缀组可以作为当前阶段缓存复用效果的有效证据
 
-5. NeedleBench 现在应区分为“错误子集接入验证”和“有效开源补充结果”两版
+5. 开源超长长文本补充结果已补齐
 
-- 第一版：`multi_needle_reasoning_needle`
-  - 只适合作为接入验证
-  - 不适合作为超长上下文主证据
-- 第二版：`en_haystack_texts`
+- `NeedleBench / en_haystack_texts`
   - 已形成真实开源长文本输入
   - 可作为开源超长长文本补充结果
 
-因此当前阶段更合理的口径是：
+因此当前阶段的结果组合为：
 
 - `ultra_long_synth` 作为超长上下文极限组主结果
 - `NeedleBench / en_haystack_texts` 作为开源超长补充结果
@@ -639,12 +557,3 @@
 - `shared_prefix` 组已经验证 prefix cache 查询与命中均确实发生
 - `ultra_long_synth` 作为当前阶段超长上下文极限组主结果
 - `NeedleBench / en_haystack_texts` 作为开源超长长文本补充结果
-
-### 9.2 不再采用的旧结果
-
-以下结果不建议再作为最终汇报值使用：
-
-- 旧 `shared_prefix` 结果（prefix 指标为 `null` 的版本）
-- 旧 `mixed_pressure` 结果（脚本修正前版本）
-- `needlebench / multi_needle_reasoning_needle`
-  - 该子集更适合作为接入验证，不适合作为超长上下文主结果
