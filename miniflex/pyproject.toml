@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0","wheel","torch","pybind11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniflex"
+version = "0.1.0"
+description = "Miniflex project"
+dependencies = ["torch","pybind11","numpy"] 
+
+[tool.setuptools.packages.find]
+where = ["pysrc"]
+include = ["miniflex*"]
