@@ -1,0 +1,27 @@
+[build-system]
+# 含 torch C++ 扩展（csrc/，链接 liburing）：建议用
+#   pip install --no-build-isolation .
+# 否则隔离构建会重新拉一个可能与运行时 CUDA 不匹配的 torch。
+# pybind11 头文件由 torch 自带，这里保留仅为显式声明。
+requires = ["setuptools>=61.0", "wheel", "torch", "pybind11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "miniflex"
+version = "0.1.0"
+description = "MiniFlex: 单机单卡 KV cache offloading 插件（CPU + SSD 两层）"
+requires-python = ">=3.10"          # 代码使用了 match-case
+dependencies = [
+    "torch>=2.1",
+    "numpy>=1.21",
+    "pyzmq>=25",                    # 代码 import zmq
+]
+
+[project.optional-dependencies]
+# vLLM 可选：不装也能 import 本包（integration/vllm 的 adapter 已做降级）。
+# 只有使用 vLLM connector 时才需要它。
+vllm = ["vllm>=0.21.0"]
+
+[tool.setuptools.packages.find]
+where = ["pysrc"]
+include = ["miniflex*"]
