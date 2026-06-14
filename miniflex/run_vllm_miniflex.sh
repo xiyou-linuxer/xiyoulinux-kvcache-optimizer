@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # 启动 vLLM + MiniFlex KV connector(单机单卡)
 # 用法:  bash run_vllm_miniflex.sh
-# 调试:  MINIFLEX_DEBUG=1 bash run_vllm_miniflex.sh
+# 环境变量:
+#   MINIFLEX_DEBUG=1           — 开启调试日志
+#   MINIFLEX_ENFORCE_EAGER=0   — 关闭 --enforce-eager（允许 CUDA graph）
+#   MINIFLEX_MAX_MODEL_LEN     — 覆盖 max-model-len（默认 2048）
 set -euo pipefail
 
 MODEL="${MODEL:-Qwen/Qwen1.5-0.5B-Chat}"
@@ -28,11 +31,21 @@ export PYTHONPATH=pysrc
 export HF_HUB_OFFLINE=1          # 你的 socks:// 代理 vLLM 不支持,强制走本地缓存
 export TRANSFORMERS_OFFLINE=1
 
+# max-model-len 可通过环境变量覆盖（编排器会自动传入）
+MAX_MODEL_LEN="${MINIFLEX_MAX_MODEL_LEN:-2048}"
+
+# --enforce-eager: 默认开启（兼容 connector hook），可通过 MINIFLEX_ENFORCE_EAGER=0 关闭
+EAGER_FLAG="--enforce-eager"
+if [ "${MINIFLEX_ENFORCE_EAGER:-1}" != "1" ]; then
+    EAGER_FLAG=""
+    echo ">>> --enforce-eager 已关闭（CUDA graph 将启用）"
+fi
+
 exec .venv/bin/vllm serve "$MODEL" \
   --kv-transfer-config '{"kv_connector":"MiniFlexConnectorV1","kv_connector_module_path":"miniflex.integration.vllm.connector","kv_role":"kv_both"}' \
   --disable-hybrid-kv-cache-manager \
   --no-enable-prefix-caching \
   --gpu-memory-utilization 0.55 \
-  --max-model-len 2048 \
-  --enforce-eager \
+  --max-model-len "$MAX_MODEL_LEN" \
+  $EAGER_FLAG \
   --port "$PORT"

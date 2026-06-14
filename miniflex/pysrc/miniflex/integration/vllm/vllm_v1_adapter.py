@@ -8,6 +8,8 @@ from dataclasses import dataclass
 from typing import Dict, Literal, TYPE_CHECKING, Optional, List, Tuple
 
 from miniflex.common.request import KVRequest, KVRequestType, KVResponseStatus
+from miniflex.common.metrics import dump_json_if_missing as _metrics_dump
+from miniflex.common.metrics import incr as _metrics_incr
 from miniflex.common.storage import KVCacheLayout, KVCacheLayoutType
 import numpy as np
 import torch
@@ -202,6 +204,7 @@ class MiniFlexSchedulerConnector:
     _dbg(f"GET_MATCH req={request.request_id} num_token_to_get={num_token_to_get} matched={num_new_matched_tokens} task_id={task_id}")
 
     if num_new_matched_tokens > 0:
+      _metrics_incr("miniflex_get_matched_tokens", num_new_matched_tokens)
       self.req_id_to_task_dict[request.request_id] = task_id
       self.tasks_to_cancel[task_id] = MiniFlexGetTask(
         task_id=task_id,
@@ -210,6 +213,7 @@ class MiniFlexSchedulerConnector:
         num_new_matched_tokens=num_new_matched_tokens,
       )
     else:
+      _metrics_incr("miniflex_get_miss_tokens", num_token_to_get - num_computed_tokens)
       self._kvengine.cancel_tasks([task_id])
     return task_id, num_new_matched_tokens
   
@@ -269,6 +273,9 @@ class MiniFlexSchedulerConnector:
     num_unmatched_tokens = return_mask.sum().item()
     num_matched_tokens = num_token_to_put - num_unmatched_tokens
     _dbg(f"PUT_MATCH req={request.request_id} num_token_to_put={num_token_to_put} unmatched={num_unmatched_tokens} matched={num_matched_tokens} task_id={task_id}")
+
+    _metrics_incr("miniflex_put_matched_tokens", num_matched_tokens)
+    _metrics_incr("miniflex_put_unmatched_tokens", num_unmatched_tokens)
 
     if num_unmatched_tokens > 0:
       self.req_id_to_task_dict[request.request_id] = task_id
@@ -410,6 +417,7 @@ class MiniFlexSchedulerConnector:
       finished_recving |= self._pending_finished_recving
       self._pending_finished_recving = set()
 
+    _metrics_dump("/tmp/miniflex_metrics.json")
     return finished_sending, finished_recving
 
   def get_and_clear_failed_block_ids(self) -> set[int]:
@@ -458,6 +466,7 @@ class MiniFlexSchedulerConnector:
     # 由 query_finished_tasks 照常上报 finished_recving，避免直接 pop 导致通知丢失。
     for response in self.wait_for_all_get_tasks():
       self._pending_finished_recving.add(response.request.request_id)
+    _metrics_dump("/tmp/miniflex_metrics.json")
 
   def wait_for_all_get_tasks(self) -> List[MiniFlexResponse]:
     return self._blocking_wait_for_tasks(self.get_tasks)
