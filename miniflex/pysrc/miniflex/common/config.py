@@ -5,9 +5,9 @@ from miniflex.common.storage import KVCacheLayoutType
 
 @dataclass
 class ModelConfig:
-  num_layers: int = 1
-  num_kv_heads: int = 1
-  head_size: int = 1
+  num_layers: int = 36
+  num_kv_heads: int = 8
+  head_size: int = 128
   use_mla: bool = False
   dtype: torch.dtype = torch.bfloat16
   tp_size: int = 1
@@ -36,8 +36,8 @@ class CacheConfig:
   tokens_per_block: int
   enable_cpu: bool = True
   enable_ssd: bool = False
-  num_cpu_blocks: int = 1024
-  num_ssd_blocks: int = 1024
+  num_cpu_blocks: int = 4096
+  num_ssd_blocks: int = 16384
   ssd_cache_dir: Optional[Union[str, list[str]]] = None
   ssd_file_prefix: str = "miniflex_ssd_cache"
   ssd_max_file_size_gb: float = -1
@@ -45,8 +45,8 @@ class CacheConfig:
   ssd_layout_type: KVCacheLayoutType = KVCacheLayoutType.BLOCKFIRST
   eviction_policy: str = "lru"
   evict_ratio: float = 0.1
-  evict_start_threshold: float = 1.0
-  hit_add_counts: float = 0.0
+  evict_start_threshold: float = 0.9
+  hit_add_counts: float = 1.0
   protected_threshold: int = 2
   use_direct_io: bool = True
   

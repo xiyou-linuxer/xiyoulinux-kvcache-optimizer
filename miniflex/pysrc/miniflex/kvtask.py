@@ -7,6 +7,8 @@ import threading
 import time
 from miniflex.cache.global_cache_engine import GlobalCacheEngine
 from miniflex.common.config import CacheConfig, ModelConfig
+from miniflex.common.metrics import incr as _metrics_incr
+from miniflex.common.metrics import observe as _metrics_observe
 from miniflex.common.request import KVRequest, KVRequestType, KVResponse, KVResponseStatus
 from miniflex.common.transfer import CompletedOp, TransferOpGraph, merge_to_batch_graph
 from miniflex.common.storage import KVCacheLayoutType
@@ -52,11 +54,14 @@ class KVTask:
   return_mask: Union[np.ndarray, List[np.ndarray]]
   callback: Optional[Union[Callable, List[Callable]]]
   op_callback_dict: Dict[int, Callable]
-  
+
   request_returned: bool = False
-  
+
   is_batch_task: bool = False
   sub_task: Optional[List[int]] = None
+
+  # metrics: timestamp set when the task is submitted to transfer engine
+  submit_time: float = 0.0
   
   def is_completed(self) -> bool:
     return self.task_status in [TaskStatus.COMPLETED, TaskStatus.CANCELED, TaskStatus.FAILED]
@@ -270,6 +275,14 @@ class KVTaskManager:
     task = self.tasks[task_id]
     if task.is_completed():
       return
+
+    # Record transfer latency *before* callback so metrics survive
+    # callback exceptions.
+    if task.submit_time > 0:
+      elapsed = time.perf_counter() - task.submit_time
+      _metrics_incr("miniflex_transfer_completed_count")
+      _metrics_observe("miniflex_transfer_latency_sec", elapsed)
+
     if task.callback:
       if isinstance(task.callback, list):
         for callback in task.callback:
@@ -347,6 +360,7 @@ class KVTaskManager:
     if transfer_graph is None:
       return
     if transfer_graph.num_ops > 0:
+      self.tasks[task_id].submit_time = time.perf_counter()
       self._transfer_manager.submit(transfer_graph)
       
 
@@ -671,6 +685,7 @@ class KVTaskEngine:
       batch_graph = self.merge_to_batch_kvtask(batch_id, task_ids, batch_task_type)
       if batch_graph.num_ops > 0:
         self._manager.tasks[batch_id].task_status = TaskStatus.RUNNING
+        self._manager.tasks[batch_id].submit_time = time.perf_counter()
         self._manager._transfer_manager.submit_batch([batch_graph])
       return [batch_id]
 
@@ -678,6 +693,7 @@ class KVTaskEngine:
     for task_id in task_ids:
       transfer_graph = self._manager.check_task_ready(task_id)
       if transfer_graph is not None and transfer_graph.num_ops > 0:
+        self._manager.tasks[task_id].submit_time = time.perf_counter()
         transfer_graphs.append(transfer_graph)
 
     if transfer_graphs:
