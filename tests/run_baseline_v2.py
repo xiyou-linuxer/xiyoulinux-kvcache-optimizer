@@ -65,8 +65,8 @@ def parse_cli() -> argparse.Namespace:
     p.add_argument("--vllm-extra-args", default="")
     p.add_argument("--no-summarize", action="store_true")
     # Miniflex 专属
-    p.add_argument("--miniflex-max-model-len", type=int, default=49152,
-                   help="Miniflex 模式的 max-model-len（默认 49152，同时用于 baseline）")
+    p.add_argument("--miniflex-max-model-len", type=int, default=40960,
+                   help="max-model-len（默认 40960，Qwen3-8B 上限，同时用于 baseline 和 miniflex）")
     return p.parse_args()
 
 
@@ -261,11 +261,6 @@ def build_pipeline(cli: argparse.Namespace, mode: str) -> list[dict]:
         "--max-input-tokens", "32000", "--max-tokens", "128",
         "--warmup-samples", "1", "--concurrency", "1",
     ], "ultra_long 32K")
-    add_runner(A, "ultra_long_synth", "ultra_long_48k_c1", [
-        "--num-samples", "5", "--ultra-prompt-chars", "480000",
-        "--max-input-tokens", "48000", "--max-tokens", "128",
-        "--warmup-samples", "1", "--concurrency", "1",
-    ], "ultra_long 48K")
     add_runner(A, "ultra_long_synth", "ultra_long_16k_c2", [
         "--num-samples", "5", "--ultra-prompt-chars", "160000",
         "--max-input-tokens", "16000", "--max-tokens", "128",
