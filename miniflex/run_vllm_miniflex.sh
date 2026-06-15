@@ -31,6 +31,9 @@ export PYTHONPATH=pysrc
 export HF_HUB_OFFLINE=1          # 你的 socks:// 代理 vLLM 不支持,强制走本地缓存
 export TRANSFORMERS_OFFLINE=1
 
+# PyTorch C++ 库路径（miniflex._C 需要）
+export LD_LIBRARY_PATH="$(python3 -c 'import torch; print(torch.__path__[0])')/lib:$LD_LIBRARY_PATH"
+
 # max-model-len 可通过环境变量覆盖（编排器会自动传入）
 MAX_MODEL_LEN="${MINIFLEX_MAX_MODEL_LEN:-2048}"
 
@@ -41,11 +44,12 @@ if [ "${MINIFLEX_ENFORCE_EAGER:-1}" != "1" ]; then
     echo ">>> --enforce-eager 已关闭（CUDA graph 将启用）"
 fi
 
-exec .venv/bin/vllm serve "$MODEL" \
+exec vllm serve "$MODEL" \
+  --served-model-name qwen3-8b \
   --kv-transfer-config '{"kv_connector":"MiniFlexConnectorV1","kv_connector_module_path":"miniflex.integration.vllm.connector","kv_role":"kv_both"}' \
   --disable-hybrid-kv-cache-manager \
   --no-enable-prefix-caching \
-  --gpu-memory-utilization 0.55 \
+  --gpu-memory-utilization 0.80 \
   --max-model-len "$MAX_MODEL_LEN" \
   $EAGER_FLAG \
   --port "$PORT"

@@ -53,7 +53,7 @@ class MiniFlexConnectorV1(KVConnectorBase_V1):
     # supports_kw(cls, "kv_cache_config") 校验，所以 kv_cache_config 必须带
     # 默认值并透传。super().__init__ 负责设置 _role/_vllm_config/
     # _kv_transfer_config/_kv_cache_config/_connector_metadata。
-    super().__init__(vllm_config, role, kv_cache_config)
+    super().__init__(vllm_config, role)
     self._impl = MiniFlexConnectorV1Impl(vllm_config, role)
 
   # ============================================================

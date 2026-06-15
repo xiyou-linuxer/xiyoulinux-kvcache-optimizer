@@ -136,7 +136,7 @@ class MiniFlexConfig:
   enable_miniflex: bool = True
   gpu_register_port: str = ""
   enable_batch: bool = False
-  sync_get: bool = False
+  sync_get: bool = True
   cache_config: CacheConfig = field(default_factory=lambda: CacheConfig(tokens_per_block=1))
   model_config: ModelConfig = field(default_factory=ModelConfig)
 

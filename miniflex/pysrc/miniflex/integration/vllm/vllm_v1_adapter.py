@@ -336,6 +336,9 @@ class MiniFlexSchedulerConnector:
   def launch_tasks(self) -> None:
     if len(self.tasks_to_launch) == 0:
       return
+    if not self._kvengine.is_ready():
+      _dbg("LAUNCH_TASKS skipped: TransferManager not ready yet")
+      return
     _dbg(f"LAUNCH_TASKS count={len(self.tasks_to_launch)} ids={list(self.tasks_to_launch.keys())}")
 
     get_task_ids: List[int] = []
