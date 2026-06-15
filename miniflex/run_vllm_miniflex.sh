@@ -41,7 +41,7 @@ if [ "${MINIFLEX_ENFORCE_EAGER:-1}" != "1" ]; then
     echo ">>> --enforce-eager 已关闭（CUDA graph 将启用）"
 fi
 
-exec .venv/bin/vllm serve "$MODEL" \
+exec vllm serve "$MODEL" \
   --kv-transfer-config '{"kv_connector":"MiniFlexConnectorV1","kv_connector_module_path":"miniflex.integration.vllm.connector","kv_role":"kv_both"}' \
   --disable-hybrid-kv-cache-manager \
   --no-enable-prefix-caching \
