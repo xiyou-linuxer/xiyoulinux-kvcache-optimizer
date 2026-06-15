@@ -14,8 +14,14 @@ prepare_baseline_manifest.py — 为 longbench / needlebench 预筛选 token 级
 import argparse
 import json
 import random
+import sys
 from pathlib import Path
 from typing import Any
+
+# 确保 tests 包可导入（编排器从 repo root 运行，也支持直接 python tests/prepare_baseline_manifest.py）
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 from tests.common import (
     count_tokens,
