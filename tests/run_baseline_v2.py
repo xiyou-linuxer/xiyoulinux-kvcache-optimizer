@@ -180,7 +180,7 @@ def build_pipeline(cli: argparse.Namespace, mode: str) -> list[dict]:
     add_prepare("longbench", "narrativeqa", 10, 8000, 16000, 160000, 16000,
                 "longbench_narrativeqa_8k_16k.json")
     # NeedleBench (10 samples)
-    add_prepare("needlebench", "en_haystack_texts", 10, 8000, 24000,
+    add_prepare("needlebench", "en_haystack_texts", 5, 8000, 24000,
                 180000, 24000, "needlebench_en_haystack_8k_24k.json",
                 needle="en_haystack_texts")
 
