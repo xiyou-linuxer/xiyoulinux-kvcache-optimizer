@@ -254,7 +254,9 @@ class TransferWorkerBase(ABC):
           for op in batch_op:
             transfer_status = False
             try:
+              print(f"[DBG-WORKER] executing op_id={op.transfer_op_id} graph_id={getattr(op, 'transfer_graph_id', '?')} type={getattr(op, 'transfer_type', '?')}", flush=True)
               transfer_status = self.launch_transfer(op)
+              print(f"[DBG-WORKER] completed op_id={op.transfer_op_id} success={transfer_status}", flush=True)
             except Exception:
               logger.exception(
                 "worker %s failed to launch transfer op_id=%s graph_id=%s type=%s",
