@@ -272,6 +272,8 @@ class TransferManagerHandleInterProcessHandle(TransferManagerHandleBase):
         transfer_graphs = request.get("transfer_graphs")
         if not isinstance(transfer_graphs, list) or not all(isinstance(graph, TransferOpGraph) for graph in transfer_graphs):
           raise ValueError(f"invalid transfer graphs type: {type(transfer_graphs).__name__}")
+        for g in transfer_graphs:
+          print(f"[DBG-TFMGR] recv graph={g.graph_id} ops={g.num_ops}", flush=True)
         transfer_manager.submit_batch(transfer_graphs)
         return False
       case "shutdown":

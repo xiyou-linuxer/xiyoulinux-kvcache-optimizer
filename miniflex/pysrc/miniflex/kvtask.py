@@ -550,6 +550,7 @@ class KVTaskEngine:
 
         task = self._manager.tasks[task_id]
         if task.task_status == TaskStatus.UNREADY:
+          print(f"[DBG-KVTSK] task={task_id} UNREADY, only_return_finished={only_return_finished}", flush=True)
           return_responses[task_id] = KVResponse(
             status=KVResponseStatus.UNREADY,
             task_id=task_id,
