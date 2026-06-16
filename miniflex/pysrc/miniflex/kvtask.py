@@ -693,6 +693,7 @@ class KVTaskEngine:
     transfer_graphs: List[TransferOpGraph] = []
     for task_id in task_ids:
       transfer_graph = self._manager.check_task_ready(task_id)
+      print(f"[DBG-KVTSK] launch task={task_id} graph={transfer_graph.graph_id if transfer_graph else None} ops={transfer_graph.num_ops if transfer_graph else 0} status={self._manager.tasks[task_id].task_status.value}", flush=True)
       if transfer_graph is not None and transfer_graph.num_ops > 0:
         self._manager.tasks[task_id].submit_time = time.perf_counter()
         transfer_graphs.append(transfer_graph)
