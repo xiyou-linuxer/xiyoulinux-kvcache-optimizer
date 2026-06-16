@@ -75,12 +75,23 @@ class TensorSharedHandle:
   
   @staticmethod
   def _import_tensor_handle(rebuild_func: Callable, rebuild_args: Tuple[Any, ...], device: torch.device) -> torch.Tensor:
-    tensor = rebuild_func(*rebuild_args)
-    if not isinstance(tensor, torch.Tensor):
-      raise ValueError("rebuilt tensor must be a torch.Tensor")
-    if tensor.device != device:
-      raise ValueError(f"rebuilt tensor must be on {device}, got {tensor.device}")
-    return tensor
+    """重建 CUDA tensor，失败时重试（IPC handle 可能因 exporter 未完成初始化而暂时无效）。"""
+    max_retries = 5
+    last_error = None
+    for attempt in range(max_retries):
+      try:
+        tensor = rebuild_func(*rebuild_args)
+        if not isinstance(tensor, torch.Tensor):
+          raise ValueError("rebuilt tensor must be a torch.Tensor")
+        if tensor.device != device:
+          raise ValueError(f"rebuilt tensor must be on {device}, got {tensor.device}")
+        return tensor
+      except Exception as e:
+        last_error = e
+        if attempt < max_retries - 1:
+          import time
+          time.sleep(0.5 * (attempt + 1))
+    raise last_error  # type: ignore[misc]
 
   
   def get_tensor(self) -> torch.Tensor:

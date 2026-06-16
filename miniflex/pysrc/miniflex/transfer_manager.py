@@ -68,8 +68,16 @@ class TransferManager:
     if self._gpu_handle is not None:
       raise ValueError("GPU storage handle already registered")
 
+    # Rebuild tensors in TransferManager, then re-wrap as fresh TensorSharedHandle.
+    # The IPC handles exported by vLLM are 2 hops away from Worker (vLLM→ZMQ→us→Pipe→Worker)
+    # and may be invalid by the time they arrive. We open them here, then export fresh IPC
+    # handles from THIS process, so Worker receives single-hop parent→child IPC handles.
+    gpu_tensors = [handle.get_tensor() for handle in req.handles]
+    from miniflex.common.memory_handle import TensorSharedHandle
+    gpu_handles = [TensorSharedHandle(t, device_id=req.device_id) for t in gpu_tensors]
+
     self._storage_engine.register_gpu_blocks(
-      req.handles,
+      gpu_handles,
       req.gpu_layout,
       device_id=req.device_id,
       dtype=self.model_config.dtype,

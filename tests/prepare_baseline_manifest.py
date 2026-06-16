@@ -53,6 +53,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--subset", default="qasper")
     p.add_argument("--longbench-local-dir", default=None)
     p.add_argument("--needle-subset", default="en_haystack_texts")
+    p.add_argument("--needlebench-local-file", default=None,
+                   help="Local JSONL file for needlebench (bypasses HF download).")
     p.add_argument("--split", default="test")
     return p.parse_args()
 
@@ -88,13 +90,21 @@ def build_longbench_candidates(args: argparse.Namespace, tok: Any) -> list[dict]
 
 
 def build_needlebench_candidates(args: argparse.Namespace, tok: Any) -> list[dict]:
-    if hf_load_dataset is None:
-        raise SystemExit("pip install datasets")
-    ds = hf_load_dataset("opencompass/NeedleBench", args.needle_subset,
-                         split=args.split)
+    records = []
+    if args.needlebench_local_file:
+        path = Path(args.needlebench_local_file)
+        if not path.exists():
+            raise SystemExit(f"Not found: {path}")
+        with path.open(encoding="utf-8") as f:
+            records = [json.loads(line) for line in f if line.strip()]
+    else:
+        if hf_load_dataset is None:
+            raise SystemExit("pip install datasets")
+        ds = hf_load_dataset("opencompass/NeedleBench", args.needle_subset,
+                             split=args.split)
+        records = [ds[i] for i in range(len(ds))]
     prompts = []
-    for i in range(len(ds)):
-        sample = ds[i]
+    for i, sample in enumerate(records):
         raw, extra_meta = needlebench_prompt_from_sample(sample, args.max_input_chars)
         prompt = truncate_by_tokens(raw, args.max_input_tokens, tok)
         n = count_tokens(prompt, tok)
@@ -102,6 +112,7 @@ def build_needlebench_candidates(args: argparse.Namespace, tok: Any) -> list[dic
                          "prompt": prompt,
                          "meta": {"group": "needlebench",
                                    "subset": args.needle_subset,
+                                   "source": "local_jsonl" if args.needlebench_local_file else "hf",
                                    "dataset_index": i, **extra_meta},
                          "prompt_chars": len(prompt),
                          "prompt_tokens": n})
