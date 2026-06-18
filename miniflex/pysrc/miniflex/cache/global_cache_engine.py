@@ -6,6 +6,7 @@ from miniflex.cache.cache_engine import CacheEngine
 from miniflex.cache.radix_tree import MatchResult
 from miniflex.common.block import SequenceMeta
 from miniflex.common.config import CacheConfig, ModelConfig
+from miniflex.common.metrics import incr as _metrics_incr
 from miniflex.common.transfer import DeviceType, TransferOp, TransferOpGraph, TransferType
 
 
@@ -231,6 +232,7 @@ class GlobalCacheEngine:
     fragment2_num_blocks = max(fragment12_num_blocks - fragment1_num_blocks, 0)
 
     if fragment12_num_blocks == 0:
+      _metrics_incr("miniflex_get_miss_blocks", end_idx - start_idx)
       return self._empty_get_return(request_id)
     if fragment12_num_blocks > len(gpu_blocks):
       raise RuntimeError(f"not enough GPU blocks for GET, required {fragment12_num_blocks}, got {len(gpu_blocks)}")
@@ -310,6 +312,10 @@ class GlobalCacheEngine:
     if op_disk2h is not None:
       transfer_graph.add_dependency(op_h2d.op_id, op_disk2h.op_id)
     finished_ops_ids.append(op_h2d.op_id)
+
+    _metrics_incr("miniflex_get_hit_cpu_blocks", fragment1_num_blocks)
+    if fragment2_num_blocks > 0:
+      _metrics_incr("miniflex_get_hit_ssd_blocks", fragment2_num_blocks)
 
     return (
       transfer_graph,
@@ -436,6 +442,12 @@ class GlobalCacheEngine:
       else:
         buffer_to_free[DeviceType.SSD] = fragment2_ssd_blocks
 
+    _metrics_incr("miniflex_put_skip_cpu_blocks", num_skipped_blocks)
+    if fragment12_num_blocks > 0:
+      _metrics_incr("miniflex_put_d2h_blocks", fragment12_num_blocks)
+    if fragment2_num_blocks > 0:
+      _metrics_incr("miniflex_put_h2disk_blocks", fragment2_num_blocks)
+
     return (
       transfer_graph,
       finished_ops_ids,
@@ -445,7 +457,7 @@ class GlobalCacheEngine:
       len(fragment12_gpu_blocks),
       num_skipped_blocks,
     )
-      
+
   def _add_task_end_virtual_op(self, transfer_graph: TransferOpGraph, finished_ops_ids: List[int]) -> Tuple[TransferOpGraph, int]:
     if len(finished_ops_ids) == 0:
       return transfer_graph, -1
