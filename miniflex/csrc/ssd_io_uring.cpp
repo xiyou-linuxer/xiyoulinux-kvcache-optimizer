@@ -177,7 +177,7 @@ namespace miniflex{
           return false;
         }
         io_uring_prep_writev(sqe, fd, iov, static_cast<unsigned>(iovec_size), offset);
-        io_uring_sqe_set_data64(sqe, static_cast<__u64>(ssd_block_id));
+        io_uring_sqe_set_data(sqe, reinterpret_cast<void*>(static_cast<uintptr_t>(ssd_block_id)));
       }
 
       int submitted = 0;
@@ -204,7 +204,7 @@ namespace miniflex{
           fprintf(stderr, "[SSDIOCTX] io_uring_wait_cqe failed: %s\n",std::strerror(-ret));
           return false;
         }
-        const uint64_t finished_ssd_id = io_uring_cqe_get_data64(cqe);
+        const uint64_t finished_ssd_id = reinterpret_cast<uintptr_t>(io_uring_cqe_get_data(cqe));
         if(cqe->res < 0){
           fprintf(stderr,
             "[SSDIOCTX] io_uring write failed for ssd_block=%lu: %s\n",
@@ -279,7 +279,7 @@ namespace miniflex{
           return false;
         }
         io_uring_prep_readv(sqe, fd, iov, static_cast<unsigned>(iovec_size), offset);
-        io_uring_sqe_set_data64(sqe, static_cast<__u64>(ssd_block_id));
+        io_uring_sqe_set_data(sqe, reinterpret_cast<void*>(static_cast<uintptr_t>(ssd_block_id)));
       }
 
       int submitted = 0;
@@ -306,7 +306,7 @@ namespace miniflex{
           fprintf(stderr, "[SSDIOCTX] io_uring_wait_cqe failed: %s\n",std::strerror(-ret));
           return false;
         }
-        const uint64_t finished_ssd_id = io_uring_cqe_get_data64(cqe);
+        const uint64_t finished_ssd_id = reinterpret_cast<uintptr_t>(io_uring_cqe_get_data(cqe));
         if(cqe->res < 0){
           fprintf(stderr,
             "[SSDIOCTX] io_uring read failed for ssd_block=%lu: %s\n",
