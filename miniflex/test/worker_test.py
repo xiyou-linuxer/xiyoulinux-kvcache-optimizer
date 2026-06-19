@@ -197,10 +197,9 @@ def make_gpu_cpu_storage_handles(
     torch.zeros(layer_shape, dtype=dtype, device="cuda")
     for _ in range(num_layers)
   ]
-  cpu_layers = [
-    torch.zeros(layer_shape, dtype=dtype, device="cpu").share_memory_()
-    for _ in range(num_layers)
-  ]
+  # CE/C++ 路径要求 CPU 端是单块连续 LAYERFIRST 缓冲;按层切视图供校验。
+  cpu_buf = torch.zeros(layout.kv_shape, dtype=dtype, device="cpu").contiguous().share_memory_()
+  cpu_layers = [cpu_buf[layer_id] for layer_id in range(num_layers)]
   gpu_handle = StorageHandle(
     handle_type=StorageHandlerType.TENSOR,
     data=gpu_layers,
@@ -210,7 +209,7 @@ def make_gpu_cpu_storage_handles(
   )
   cpu_handle = StorageHandle(
     handle_type=StorageHandlerType.TENSOR,
-    data=cpu_layers,
+    data=cpu_buf.view(-1),
     kv_layout=layout,
     dtype=dtype,
   )
