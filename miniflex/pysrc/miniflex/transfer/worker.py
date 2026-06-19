@@ -323,7 +323,28 @@ class GPUCPUTransferWorker(TransferWorkerBase):
       for tensor in self.cpu_storage_handle.get_tensor_list():
         self._register_cuda_host_tensor(tensor)
     self.gpu_stream = torch.cuda.Stream()
-    
+
+    # CE 路径:把逐块 cudaMemcpy2DAsync 下放到 C++(GPUCPUTransferCTX),
+    # Python 上层只传 src/dst block id。CPU 端必须是单块连续的 LAYERFIRST 缓冲。
+    self.kv_dim = self.cpu_layout.kv_dim
+    self.slice_bytes = self.cpu_layout.get_chunk_size() * self.dtype.itemsize
+    cpu_data = self.cpu_storage_handle.data
+    if not isinstance(cpu_data, torch.Tensor):
+      raise ValueError("GPUCPUTransferCTX requires a single contiguous CPU tensor")
+    if not cpu_data.is_contiguous():
+      raise ValueError("CPU tensor must be contiguous for GPUCPUTransferCTX")
+    if self.gpu_device_id is not None:
+      torch.cuda.set_device(self.gpu_device_id)
+    self.gpu_cpu_ctx = _C.GPUCPUTransferCTX(
+      cpu_tensor=cpu_data,
+      gpu_tensors=self.gpu_tensors_list,
+      num_layers=self.num_layers,
+      kv_dim=self.kv_dim,
+      cpu_num_blocks=self.cpu_num_blocks,
+      gpu_num_blocks=self.gpu_num_blocks,
+      slice_bytes=self.slice_bytes,
+    )
+
   @staticmethod
   def _get_tensor_list(storage_handle: StorageHandle) -> list[torch.Tensor]:
     layout = storage_handle.kv_layout
@@ -346,6 +367,8 @@ class GPUCPUTransferWorker(TransferWorkerBase):
     raise ValueError(f"invalid storage handle data type: {type(storage_handle.data).__name__}")
   
    
+  # ===== gather / index_select 实现(已注释,保留备查)=====
+  '''
   def _transfer_impl(self,
                      src_block_ids: torch.Tensor,
                      dst_block_ids: torch.Tensor,
@@ -390,7 +413,9 @@ class GPUCPUTransferWorker(TransferWorkerBase):
       
       gathered_on_dst = gathered.to(device=dst_device, non_blocking=(transfer_type == TransferType.H2D))
       dst_layer.index_copy_(dim=1, index=dst_index, source=gathered_on_dst)
-  
+  '''
+
+  # ===== per-block torch.copy_ 实现(已注释,保留备查)=====
   '''
   def _transfer_impl(self,
                    src_block_ids: torch.Tensor,
@@ -434,7 +459,39 @@ class GPUCPUTransferWorker(TransferWorkerBase):
         for src_id, dst_id in zip(src_ids, dst_ids):
             dst_layer[:, dst_id].copy_(src_layer[:, src_id], non_blocking=True)
   '''
-  
+
+  # CE / C++ GPUCPUTransferCTX:整段逐块 cudaMemcpy2DAsync 下放到 C++,
+  # Python 只传 src/dst block id,一个 op 的全部层在单次跨语言调用内完成。
+  # 定义在最后,生效的是这个。
+  def _transfer_impl(self,
+                     src_block_ids: torch.Tensor,
+                     dst_block_ids: torch.Tensor,
+                     transfer_type: TransferType,
+                     **kwargs: Any):
+    if transfer_type not in (TransferType.D2H, TransferType.H2D):
+      raise ValueError(f"invalid transfer type: {transfer_type}")
+    if src_block_ids.numel() != dst_block_ids.numel():
+      raise ValueError("src_block_ids and dst_block_ids must have the same size")
+    if src_block_ids.dim() != 1 or dst_block_ids.dim() != 1:
+      raise ValueError("src_block_ids and dst_block_ids must be 1D tensors")
+    if src_block_ids.numel() == 0:
+      return
+
+    # D2H: src=GPU, dst=CPU;H2D: src=CPU, dst=GPU。在 Python 层做越界校验。
+    is_h2d = transfer_type == TransferType.H2D
+    if is_h2d:
+      src_num_blocks, dst_num_blocks = self.cpu_num_blocks, self.gpu_num_blocks
+    else:
+      src_num_blocks, dst_num_blocks = self.gpu_num_blocks, self.cpu_num_blocks
+    if src_block_ids.min().item() < 0 or src_block_ids.max().item() >= src_num_blocks:
+      raise ValueError(f"src_block_ids out of range [0, {src_num_blocks})")
+    if dst_block_ids.min().item() < 0 or dst_block_ids.max().item() >= dst_num_blocks:
+      raise ValueError(f"dst_block_ids out of range [0, {dst_num_blocks})")
+
+    ok = self.gpu_cpu_ctx.transfer_blocks(src_block_ids, dst_block_ids, is_h2d)
+    if not ok:
+      raise RuntimeError(f"GPUCPUTransferCTX.transfer_blocks failed ({transfer_type})")
+
   def launch_transfer(self,transfer_op: WorkerTransferOp) -> bool:
     src_block_ids, dst_block_ids = self.get_transfer_block_ids(transfer_op)
     with torch.cuda.stream(self.gpu_stream):

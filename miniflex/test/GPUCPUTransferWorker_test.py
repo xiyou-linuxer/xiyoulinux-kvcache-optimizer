@@ -6,31 +6,49 @@ from miniflex.transfer.worker import GPUCPUTransferWorker
 
 
 def make_test_worker(num_layers=2, num_blocks=4, block_shape=(4, 2, 8), dtype=torch.float16):
-    """绕过 __init__，直接构造测试用的 worker
-    
-    _transfer_impl 只用 5 个属性，全部手动赋值
-    每层 tensor 形状: [2, num_blocks, *block_shape]
+    """绕过 __init__，直接构造测试用的 worker。
+
+    CE/C++ 路径(GPUCPUTransferCTX)要求 CPU 端是单块连续的 LAYERFIRST 缓冲，
+    这里照此构造:CPU 一整块 [num_layers, kv_dim, num_blocks, *block_shape](pinned)，
+    按层切视图供逐字节校验;GPU 仍是逐层独立 tensor。再手动建 gpu_cpu_ctx。
     """
+    import miniflex._C as _C
+
+    kv_dim = 2
+    block_elems = 1
+    for x in block_shape:
+        block_elems *= x
+    slice_bytes = block_elems * torch.empty(0, dtype=dtype).element_size()
+
     worker = GPUCPUTransferWorker.__new__(GPUCPUTransferWorker)
     worker.num_layers = num_layers
     worker.gpu_num_blocks = num_blocks
     worker.cpu_num_blocks = num_blocks
+    worker.kv_dim = kv_dim
+    worker.slice_bytes = slice_bytes
     worker.gpu_tensors_list = [
-        torch.zeros(2, num_blocks, *block_shape, device='cuda', dtype=dtype)
+        torch.zeros(kv_dim, num_blocks, *block_shape, device='cuda', dtype=dtype)
         for _ in range(num_layers)
     ]
-    worker.cpu_tensors_list = [
-        torch.zeros(2, num_blocks, *block_shape, pin_memory=True, dtype=dtype)
-        for _ in range(num_layers)
-    ]
-    worker.gpu_stream = torch.cuda.Stream()
+    cpu_buf = torch.zeros(num_layers, kv_dim, num_blocks, *block_shape,
+                          pin_memory=True, dtype=dtype)
+    worker._cpu_buf = cpu_buf  # 持有连续缓冲，保证 C++ 抓到的指针存活
+    worker.cpu_tensors_list = [cpu_buf[layer_id] for layer_id in range(num_layers)]
+    worker.gpu_cpu_ctx = _C.GPUCPUTransferCTX(
+        cpu_tensor=cpu_buf,
+        gpu_tensors=worker.gpu_tensors_list,
+        num_layers=num_layers,
+        kv_dim=kv_dim,
+        cpu_num_blocks=num_blocks,
+        gpu_num_blocks=num_blocks,
+        slice_bytes=slice_bytes,
+    )
     return worker
 
 
 def launch_transfer(worker, src_ids, dst_ids, transfer_type):
-    with torch.cuda.stream(worker.gpu_stream):
-        worker._transfer_impl(src_ids, dst_ids, transfer_type)
-    worker.gpu_stream.synchronize()
+    # 和 production 一致:gpu_cpu_ctx 内部用自己的 stream 并同步，无需外层包裹
+    worker._transfer_impl(src_ids, dst_ids, transfer_type)
 
 
 def logical_transfer_bytes(worker, num_blocks):
