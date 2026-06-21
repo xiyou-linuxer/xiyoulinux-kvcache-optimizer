@@ -34,14 +34,17 @@ def make_test_worker(num_layers=2, num_blocks=4, block_shape=(4, 2, 8), dtype=to
                           pin_memory=True, dtype=dtype)
     worker._cpu_buf = cpu_buf  # 持有连续缓冲，保证 C++ 抓到的指针存活
     worker.cpu_tensors_list = [cpu_buf[layer_id] for layer_id in range(num_layers)]
+    # 测试用 LAYERFIRST 布局两边: block_step=slice_bytes, kv_pitch=num_blocks*slice_bytes
     worker.gpu_cpu_ctx = _C.GPUCPUTransferCTX(
-        cpu_tensor=cpu_buf,
+        cpu_tensors=worker.cpu_tensors_list,
         gpu_tensors=worker.gpu_tensors_list,
         num_layers=num_layers,
         kv_dim=kv_dim,
-        cpu_num_blocks=num_blocks,
-        gpu_num_blocks=num_blocks,
         slice_bytes=slice_bytes,
+        cpu_block_step=slice_bytes,
+        cpu_kv_pitch=num_blocks * slice_bytes,
+        gpu_block_step=slice_bytes,
+        gpu_kv_pitch=num_blocks * slice_bytes,
     )
     return worker
 
@@ -227,9 +230,70 @@ def test_transfer_performance_report():
         benchmark_transfer(worker, TransferType.H2D, num_blocks)
 
 
+def test_layerblock_gpu_roundtrip():
+    """vLLM 0.23 场景: GPU=LAYERBLOCK (num_blocks, kv, …) ↔ CPU=LAYERFIRST (kv, num_blocks, …)
+    非对称跨布局传输,验证 K/V 不窜、block 映射正确(字节级)。"""
+    import miniflex._C as _C
+    from miniflex.common.storage import KVCacheLayout, KVCacheLayoutType
+
+    L, KV, NBLK, TOK, H, HD = 2, 2, 4, 2, 1, 4
+    dt = torch.float16
+    it = torch.empty(0, dtype=dt).element_size()
+    slice_b = TOK * H * HD * it
+
+    # GPU = LAYERBLOCK 物理布局; CPU = LAYERFIRST 单块缓冲 + 逐层视图
+    gpu = [torch.zeros(NBLK, KV, TOK, H, HD, dtype=dt, device='cuda') for _ in range(L)]
+    cpu_buf = torch.full((L, KV, NBLK, TOK, H, HD), -1.0, dtype=dt).contiguous()
+    cpu_views = [cpu_buf[l] for l in range(L)]
+
+    gpu_layout = KVCacheLayout(layout_type=KVCacheLayoutType.LAYERBLOCK, num_layers=L,
+                               num_blocks=NBLK, tokens_per_block=TOK, num_heads=H,
+                               head_size=HD, use_mla=False)
+    cpu_layout = KVCacheLayout(layout_type=KVCacheLayoutType.LAYERFIRST, num_layers=L,
+                               num_blocks=NBLK, tokens_per_block=TOK, num_heads=H,
+                               head_size=HD, use_mla=False)
+
+    def make_ctx(gpu_tensors):
+        return _C.GPUCPUTransferCTX(
+            cpu_tensors=cpu_views, gpu_tensors=gpu_tensors, num_layers=L, kv_dim=KV,
+            slice_bytes=slice_b,
+            cpu_block_step=cpu_layout.get_block_stride() * it,
+            cpu_kv_pitch=cpu_layout.get_kv_stride() * it,
+            gpu_block_step=gpu_layout.get_block_stride() * it,
+            gpu_kv_pitch=gpu_layout.get_kv_stride() * it,
+        )
+
+    for l in range(L):
+        for b in range(NBLK):
+            for k in range(KV):
+                gpu[l][b, k].fill_(float(l * 1000 + b * 10 + k))
+
+    # D2H: gpu 块 [0,2] -> cpu 块 [3,1]
+    assert make_ctx(gpu).transfer_blocks(
+        torch.tensor([0, 2], dtype=torch.int64), torch.tensor([3, 1], dtype=torch.int64), False)
+    for l in range(L):
+        for sb, db in zip([0, 2], [3, 1]):
+            for k in range(KV):
+                exp = float(l * 1000 + sb * 10 + k)
+                assert cpu_views[l][k, db].eq(exp).all(), f"D2H l{l} gpu{sb}->cpu{db} kv{k} 期望 {exp}"
+
+    # H2D 回灌到清零的新 GPU: cpu 块 [3,1] -> gpu 块 [0,2],应还原
+    gpu2 = [torch.zeros(NBLK, KV, TOK, H, HD, dtype=dt, device='cuda') for _ in range(L)]
+    assert make_ctx(gpu2).transfer_blocks(
+        torch.tensor([3, 1], dtype=torch.int64), torch.tensor([0, 2], dtype=torch.int64), True)
+    src_of = {3: 0, 1: 2}  # cpu块3来自gpu块0, cpu块1来自gpu块2
+    for l in range(L):
+        for cb, gb in zip([3, 1], [0, 2]):
+            for k in range(KV):
+                exp = float(l * 1000 + src_of[cb] * 10 + k)
+                assert gpu2[l][gb, k].eq(exp).all(), f"H2D l{l} cpu{cb}->gpu{gb} kv{k} 期望 {exp}"
+    print("✓ test_layerblock_gpu_roundtrip")
+
+
 if __name__ == "__main__":
     assert torch.cuda.is_available(), "测试需要 CUDA 环境"
-    
+
+    test_layerblock_gpu_roundtrip()
     test_d2h_roundtrip()
     test_h2d_roundtrip()
     test_distinct_values_preserved()  # 这个最关键：验证 index 对应关系，不窜数据

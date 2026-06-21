@@ -568,13 +568,20 @@ class MiniFlexWorkerConnector:
       block_size = int(first_block.shape[1])
       num_heads = 1
       head_size = int(first_block.shape[2])
+      gpu_layout_type = KVCacheLayoutType.LAYERFIRST
     else:
       if first_block.ndim != 5:
         raise ValueError(f"kv_cache tensor must be 5D, got shape={tuple(first_block.shape)}")
-      kv_dim = int(first_block.shape[0])
-      if kv_dim != 2:
-        raise ValueError(f"non-MLA kv_cache tensor first dim must be 2, got {kv_dim}")
-      num_blocks = int(first_block.shape[1])
+      # 探测 GPU 布局: shape[1]==2 → vLLM 0.23 LAYERBLOCK (num_blocks, kv, …)
+      #                shape[0]==2 → 旧版 LAYERFIRST (kv, num_blocks, …)
+      if int(first_block.shape[1]) == 2:
+        gpu_layout_type = KVCacheLayoutType.LAYERBLOCK
+        num_blocks = int(first_block.shape[0])
+      elif int(first_block.shape[0]) == 2:
+        gpu_layout_type = KVCacheLayoutType.LAYERFIRST
+        num_blocks = int(first_block.shape[1])
+      else:
+        raise ValueError(f"non-MLA kv_cache 无法识别布局: {tuple(first_block.shape)}")
       block_size = int(first_block.shape[2])
       num_heads = int(first_block.shape[3])
       head_size = int(first_block.shape[4])
@@ -596,7 +603,7 @@ class MiniFlexWorkerConnector:
       )
 
     gpu_layout = KVCacheLayout(
-      layout_type=KVCacheLayoutType.LAYERFIRST,
+      layout_type=gpu_layout_type,
       num_layers=num_layers,
       num_blocks=num_blocks,
       tokens_per_block=block_size,

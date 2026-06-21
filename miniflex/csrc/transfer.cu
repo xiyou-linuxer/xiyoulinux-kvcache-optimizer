@@ -1,20 +1,24 @@
 #include "transfer.cuh"
 
 namespace miniflex {
-GPUCPUTransferCTX::GPUCPUTransferCTX(char* cpu_tensor_ptr,
+GPUCPUTransferCTX::GPUCPUTransferCTX(const std::vector<char*>& cpu_tensor_ptrs,
                                      const std::vector<char*>& gpu_tensor_ptrs,
                                      int64_t num_layers,
                                      int64_t kv_dim,
-                                     int64_t cpu_num_blocks,
-                                     int64_t gpu_num_blocks,
-                                     int64_t slice_bytes)
-    : cpu_tensor_ptr_(cpu_tensor_ptr),
+                                     int64_t slice_bytes,
+                                     int64_t cpu_block_step,
+                                     int64_t cpu_kv_pitch,
+                                     int64_t gpu_block_step,
+                                     int64_t gpu_kv_pitch)
+    : cpu_tensor_ptrs_(cpu_tensor_ptrs),
       gpu_tensor_ptrs_(gpu_tensor_ptrs),
       num_layers_(num_layers),
       kv_dim_(kv_dim),
-      cpu_num_blocks_(cpu_num_blocks),
-      gpu_num_blocks_(gpu_num_blocks),
-      slice_bytes_(slice_bytes) {
+      slice_bytes_(slice_bytes),
+      cpu_block_step_(cpu_block_step),
+      cpu_kv_pitch_(cpu_kv_pitch),
+      gpu_block_step_(gpu_block_step),
+      gpu_kv_pitch_(gpu_kv_pitch) {
   cudaStreamCreate(&stream_);
 }
 
@@ -47,19 +51,15 @@ auto GPUCPUTransferCTX::transfer_blocks_h2d(const torch::Tensor& src_block_ids,
   const int64_t* cids = cpu_ids.data_ptr<int64_t>();
   const int64_t* gids = gpu_ids.data_ptr<int64_t>();
 
-  const int64_t cpu_pitch = cpu_num_blocks_ * slice_bytes_;
-  const int64_t gpu_pitch = gpu_num_blocks_ * slice_bytes_;
-
   for (int64_t layer = 0; layer < num_layers_; ++layer) {
-    char* cpu_layer =
-        cpu_tensor_ptr_ + layer * kv_dim_ * cpu_num_blocks_ * slice_bytes_;
+    char* cpu_layer = cpu_tensor_ptrs_[layer];
     char* gpu_layer = gpu_tensor_ptrs_[layer];
     for (int64_t i = 0; i < num_transfer_blocks; ++i) {
-      char* cpu_blk = cpu_layer + cids[i] * slice_bytes_;
-      char* gpu_blk = gpu_layer + gids[i] * slice_bytes_;
+      char* cpu_blk = cpu_layer + cids[i] * cpu_block_step_;
+      char* gpu_blk = gpu_layer + gids[i] * gpu_block_step_;
       cudaError_t err = cudaMemcpy2DAsync(
-          gpu_blk, gpu_pitch,
-          cpu_blk, cpu_pitch,
+          gpu_blk, gpu_kv_pitch_,
+          cpu_blk, cpu_kv_pitch_,
           slice_bytes_, kv_dim_,
           cudaMemcpyHostToDevice, stream_);
       if (err != cudaSuccess) {
@@ -85,19 +85,15 @@ auto GPUCPUTransferCTX::transfer_blocks_d2h(const torch::Tensor& src_block_ids,
   const int64_t* gids = gpu_ids.data_ptr<int64_t>();
   const int64_t* cids = cpu_ids.data_ptr<int64_t>();
 
-  const int64_t cpu_pitch = cpu_num_blocks_ * slice_bytes_;
-  const int64_t gpu_pitch = gpu_num_blocks_ * slice_bytes_;
-
   for (int64_t layer = 0; layer < num_layers_; ++layer) {
-    char* cpu_layer =
-        cpu_tensor_ptr_ + layer * kv_dim_ * cpu_num_blocks_ * slice_bytes_;
+    char* cpu_layer = cpu_tensor_ptrs_[layer];
     char* gpu_layer = gpu_tensor_ptrs_[layer];
     for (int64_t i = 0; i < num_transfer_blocks; ++i) {
-      char* gpu_blk = gpu_layer + gids[i] * slice_bytes_;
-      char* cpu_blk = cpu_layer + cids[i] * slice_bytes_;
+      char* gpu_blk = gpu_layer + gids[i] * gpu_block_step_;
+      char* cpu_blk = cpu_layer + cids[i] * cpu_block_step_;
       cudaError_t err = cudaMemcpy2DAsync(
-          cpu_blk, cpu_pitch,
-          gpu_blk, gpu_pitch,
+          cpu_blk, cpu_kv_pitch_,
+          gpu_blk, gpu_kv_pitch_,
           slice_bytes_, kv_dim_,
           cudaMemcpyDeviceToHost, stream_);
       if (err != cudaSuccess) {

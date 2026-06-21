@@ -8,23 +8,27 @@
 namespace miniflex {
 class GPUCPUTransferCTX{
  private:
-  char* cpu_tensor_ptr_;
+  std::vector<char*> cpu_tensor_ptrs_;
   std::vector<char*> gpu_tensor_ptrs_;
   int64_t num_layers_;
   int64_t kv_dim_;
-  int64_t cpu_num_blocks_;
-  int64_t gpu_num_blocks_;
-  int64_t slice_bytes_;
+  int64_t slice_bytes_;     // 一块一层一份(K 或 V)的字节数 = 2D 拷贝的 width
+  int64_t cpu_block_step_;  // CPU 层内相邻 block 的字节跨距
+  int64_t cpu_kv_pitch_;    // CPU 层内 K->V 的字节跨距
+  int64_t gpu_block_step_;  // GPU 层内相邻 block 的字节跨距
+  int64_t gpu_kv_pitch_;    // GPU 层内 K->V 的字节跨距
   cudaStream_t stream_;
 
  public:
-  GPUCPUTransferCTX(char* cpu_tensor_ptr,
+  GPUCPUTransferCTX(const std::vector<char*>& cpu_tensor_ptrs,
                     const std::vector<char*>& gpu_tensor_ptrs,
                     int64_t num_layers,
                     int64_t kv_dim,
-                    int64_t cpu_num_blocks,
-                    int64_t gpu_num_blocks,
-                    int64_t slice_bytes);
+                    int64_t slice_bytes,
+                    int64_t cpu_block_step,
+                    int64_t cpu_kv_pitch,
+                    int64_t gpu_block_step,
+                    int64_t gpu_kv_pitch);
   ~GPUCPUTransferCTX();
   auto transfer_blocks(const torch::Tensor& src_block_ids,
                        const torch::Tensor& dst_block_ids,
