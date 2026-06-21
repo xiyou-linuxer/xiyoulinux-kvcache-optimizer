@@ -16,6 +16,7 @@ class StorageHandlerType(Enum):
 class KVCacheLayoutType(Enum):
   LAYERFIRST = "LAYERFIRST"
   BLOCKFIRST = "BLOCKFIRST"
+  LAYERBLOCK = "LAYERBLOCK"
 
   
 @dataclass
@@ -77,6 +78,13 @@ class KVCacheLayout:
     elif self.layout_type == KVCacheLayoutType.BLOCKFIRST:
       self._kv_shape = torch.Size([self.num_blocks,
                                    self.num_layers,
+                                   self._kv_dim,
+                                   self.tokens_per_block,
+                                   self.num_heads,
+                                   self.head_size])
+    elif self.layout_type == KVCacheLayoutType.LAYERBLOCK:
+      self._kv_shape = torch.Size([self.num_layers,
+                                   self.num_blocks,
                                    self._kv_dim,
                                    self.tokens_per_block,
                                    self.num_heads,
@@ -156,6 +164,8 @@ class KVCacheLayout:
       return self.kv_shape[1:].numel()
     if self.layout_type == KVCacheLayoutType.BLOCKFIRST:
       return self.kv_shape[2:].numel()
+    if self.layout_type == KVCacheLayoutType.LAYERBLOCK:
+      return self.kv_shape[1:].numel()
     raise ValueError(f"invalid layout type, got {self.layout_type}")
 
   def get_block_stride(self) -> int:
@@ -163,12 +173,16 @@ class KVCacheLayout:
       return self.kv_shape[3:].numel()
     if self.layout_type == KVCacheLayoutType.BLOCKFIRST:
       return self.kv_shape[1:].numel()
+    if self.layout_type == KVCacheLayoutType.LAYERBLOCK:
+      return self.kv_shape[2:].numel()
     raise ValueError(f"invalid layout type, got {self.layout_type}")
 
   def get_kv_stride(self) -> int:
     if self.layout_type == KVCacheLayoutType.LAYERFIRST:
       return self.kv_shape[2:].numel()
     if self.layout_type == KVCacheLayoutType.BLOCKFIRST:
+      return self.kv_shape[3:].numel()
+    if self.layout_type == KVCacheLayoutType.LAYERBLOCK:
       return self.kv_shape[3:].numel()
     raise ValueError(f"invalid layout type, got {self.layout_type}")
 
