@@ -301,8 +301,10 @@ class GPUCPUTransferWorker(TransferWorkerBase):
     self.cpu_num_blocks = cpu_layout.num_blocks
     self.dtype = gpu_storage_handle.dtype
     self.gpu_device_id = gpu_storage_handle.gpu_device_id
-    if gpu_layout.layout_type != KVCacheLayoutType.LAYERFIRST or cpu_layout.layout_type != KVCacheLayoutType.LAYERFIRST:
-      raise RuntimeError("miniflex first version only supports layer-first layout")
+    if cpu_layout.layout_type != KVCacheLayoutType.LAYERFIRST:
+      raise RuntimeError("miniflex first version only supports cpu layer-first layout")
+    if gpu_layout.layout_type not in (KVCacheLayoutType.LAYERFIRST, KVCacheLayoutType.LAYERBLOCK):
+      raise RuntimeError(f"unsupported gpu layout: {gpu_layout.layout_type}")
     if gpu_layout.num_layers != cpu_layout.num_layers:
       raise ValueError("gpu and cpu storage must have the same num_layers")
     if gpu_layout.tokens_per_block != cpu_layout.tokens_per_block:
@@ -324,25 +326,24 @@ class GPUCPUTransferWorker(TransferWorkerBase):
         self._register_cuda_host_tensor(tensor)
     self.gpu_stream = torch.cuda.Stream()
 
-    # CE 路径:把逐块 cudaMemcpy2DAsync 下放到 C++(GPUCPUTransferCTX),
-    # Python 上层只传 src/dst block id。CPU 端必须是单块连续的 LAYERFIRST 缓冲。
+    # CE 路径:逐块 cudaMemcpy2DAsync 下放到 C++(GPUCPUTransferCTX)。
+    # CPU/GPU 都按 per-layer 指针 + 字节跨距传入,布局(LAYERFIRST/LAYERBLOCK)
+    # 由各自的 KVCacheLayout.get_block_stride/get_kv_stride 决定,C++ 不认识布局。
     self.kv_dim = self.cpu_layout.kv_dim
     self.slice_bytes = self.cpu_layout.get_chunk_size() * self.dtype.itemsize
-    cpu_data = self.cpu_storage_handle.data
-    if not isinstance(cpu_data, torch.Tensor):
-      raise ValueError("GPUCPUTransferCTX requires a single contiguous CPU tensor")
-    if not cpu_data.is_contiguous():
-      raise ValueError("CPU tensor must be contiguous for GPUCPUTransferCTX")
     if self.gpu_device_id is not None:
       torch.cuda.set_device(self.gpu_device_id)
+    it = self.dtype.itemsize
     self.gpu_cpu_ctx = _C.GPUCPUTransferCTX(
-      cpu_tensor=cpu_data,
+      cpu_tensors=self.cpu_tensors_list,
       gpu_tensors=self.gpu_tensors_list,
       num_layers=self.num_layers,
       kv_dim=self.kv_dim,
-      cpu_num_blocks=self.cpu_num_blocks,
-      gpu_num_blocks=self.gpu_num_blocks,
       slice_bytes=self.slice_bytes,
+      cpu_block_step=self.cpu_layout.get_block_stride() * it,
+      cpu_kv_pitch=self.cpu_layout.get_kv_stride() * it,
+      gpu_block_step=self.gpu_layout.get_block_stride() * it,
+      gpu_kv_pitch=self.gpu_layout.get_kv_stride() * it,
     )
 
   @staticmethod
