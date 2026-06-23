@@ -28,6 +28,11 @@ pip install --no-build-isolation '.[vllm]'
 - `requires-python >= 3.10`（代码使用了 match-case）。
 - 运行依赖：`torch`、`numpy`、`pyzmq`；`vllm` 为可选依赖（不装也能 import 本包，
   只是用不了 connector）。
+- **新 GPU 架构**（如 Blackwell sm_120 / RTX 5090）：若 `_C` 编译报架构不匹配，编译时
+  指定 arch，例如 `TORCH_CUDA_ARCH_LIST="12.0" pip install --no-build-isolation .`；
+  开发时也可原地编译 `TORCH_CUDA_ARCH_LIST="12.0" python setup.py build_ext --inplace`。
+  此时还需保证 `CPATH` 能找到 `cuda_runtime.h` 与 `crt/host_config.h`（cu13 wheel 在
+  `.../site-packages/nvidia/cu13/include`），`LD_LIBRARY_PATH` 含对应 `cu13/lib` 与 torch `lib`。
 
 ## 2. 在 vLLM 下启动（单机单卡）
 
@@ -53,6 +58,27 @@ curl -s localhost:8000/v1/completions -H 'Content-Type: application/json' \
   -d '{"model":"<model>","prompt":"The capital of France is","max_tokens":16}'
 ```
 - Base URL：`http://localhost:8000/v1`，API Key 填 `EMPTY`（默认不校验）。
+
+### vLLM 版本与 KV 布局
+worker 注册 GPU KV 时**按张量形状自动探测布局**，无需配置、也不必区分 vLLM 版本：
+
+- vLLM ≤0.21 非 MLA → `LAYERFIRST`
+- vLLM 0.23+ 非 MLA → `LAYERBLOCK`（0.23 改了非 MLA 的 KV cache 物理布局）
+- MLA 模型 → `LAYERFIRST`
+
+已在 vLLM 0.21 与 0.23 实测验证（见 [validation.md](validation.md)），原理见
+[project_structure.md](project_structure.md) 的「KV 布局自适配」。
+
+### 一键演示 / 基准
+仓库根目录的自包含脚本 `demo.sh` 会内联启动 vLLM 的 MiniFlex / APC / 两者叠加三种配置，
+依次跑功能验证、长上下文加速、容量交叉、混合负载叠加，适合快速验证或录制：
+
+```bash
+bash demo.sh            # 每幕停顿
+PAUSE=0 bash demo.sh    # 连续跑
+```
+
+机器相关项（`HF_HOME` / `MODEL` / `GPU_MEM` / `MINIFLEX_*`）可用环境变量覆盖。
 
 ### 常见启动坑
 - **残留进程**：vLLM 的引擎进程名是 `VLLM::EngineCore`，`pkill -f "vllm serve"` 杀不到它，
@@ -98,6 +124,10 @@ curl -s localhost:8000/v1/completions -H 'Content-Type: application/json' \
 
 默认 CPU-only（`enable_cpu=True`、`enable_ssd=False`、`num_cpu_blocks=1024`）。
 启用 SSD 需同时给 `MINIFLEX_ENABLE_SSD=1` 和 `MINIFLEX_SSD_CACHE_DIR`。
+
+> `MINIFLEX_CPU_LAYOUT_TYPE` / `MINIFLEX_SSD_LAYOUT_TYPE` 只配 CPU/SSD 缓存布局
+> （当前实现 CPU 固定 `LAYERFIRST`、SSD 固定 `BLOCKFIRST`）；**GPU 布局不在此配置**，
+> 由注册时按形状自动探测（见上文「vLLM 版本与 KV 布局」）。
 
 JSON 文件示例（`MINIFLEX_CONFIG_PATH` 指向它）：
 
