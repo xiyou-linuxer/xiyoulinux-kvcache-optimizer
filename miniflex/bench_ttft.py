@@ -43,12 +43,13 @@ def measure_ttft(url, model, prompt, max_tokens=8, timeout=120):
         stream=True, proxies=NO_PROXY, timeout=timeout,
     )
     resp.raise_for_status()
+    ttft = None
     for raw in resp.iter_lines():
         if raw and raw.startswith(b"data: ") and raw != b"data: [DONE]":
-            t = time.perf_counter() - t0
-            resp.close()
-            return t
-    return None
+            if ttft is None:
+                ttft = time.perf_counter() - t0
+    resp.close()  # 读完整个流再关,避免 abort -> MiniFlex 不 PUT
+    return ttft
 
 
 def main():
