@@ -51,10 +51,11 @@ def main():
                 for i in range(args.num_prefixes)]
     print(f">>> [{args.tag}] {args.num_prefixes} prefixes x ~{approx} tok = ~{total_k}k working set (GPU KV ~68k)")
 
-    print(">>> warmup ...")
-    for p in prefixes:
-        one(args.url, args.model, p + " q: summarize.")
-        one(args.url, args.model, "pump " + uuid.uuid4().hex, 4)
+    print(">>> warmup (2 遍,确保 PUT 全部 commit) ...")
+    for _ in range(2):
+        for p in prefixes:
+            one(args.url, args.model, p + " q: summarize.")
+            one(args.url, args.model, "pump " + uuid.uuid4().hex, 4)
 
     print(">>> measure (round-robin) ...")
     ttfts = []
