@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：Hasher（blake2b 64-bit）增量哈希的正确性与稳定性。
+
 import numpy as np
 
 from miniflex.common.hash import gen_block_hashes
