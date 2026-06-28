@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：KVTaskEngine 的 GET/PUT 任务编排：异步完成上报、batch 合并、提前返回成功后图完成再释放任务、cancel。
+
 import tempfile
 import traceback
 

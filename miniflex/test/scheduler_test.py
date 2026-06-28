@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：TransferScheduler 的依赖调度：就绪 op 出队、依赖链、多图插入序、虚拟 op、未知 op 忽略、空图完成。
+
 import numpy as np
 
 from miniflex.common.transfer import TransferOp, TransferOpGraph, TransferOpStatus, TransferType

@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：SSDCPUTransferWorker 初始化构造 SSDIOCTX（布局/dtype 校验、direct IO）与 H2DISK/DISK2H 方向映射及输入校验。
+
 import tempfile
 import sys
 import types

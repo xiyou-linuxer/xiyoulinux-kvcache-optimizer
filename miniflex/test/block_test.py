@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：SequenceMeta 的 block 切分与 namespace/salt 哈希隔离。
+
 import miniflex.common.block as block
 import numpy as np
 

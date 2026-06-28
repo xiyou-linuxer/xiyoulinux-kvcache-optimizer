@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：TransferEngine 的 submit（需 start、单图/图列表）、完成查询超时、handle 不匹配校验、op buffer 复用，以及 H2DISK/DISK2H 真实文件往返。
+
 import os
 import tempfile
 import threading

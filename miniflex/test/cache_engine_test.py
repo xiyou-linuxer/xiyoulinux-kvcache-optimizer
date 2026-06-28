@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：单层 CacheEngine 的初始化校验、block 申请/回收、前缀匹配与共享前缀、pending/ready 状态、淘汰（含 protected 保护、pin/unpin 控制）与 reset。
+
 import numpy as np
 
 from miniflex.cache.cache_engine import CacheEngine

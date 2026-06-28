@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：TransferOp / TransferOpGraph 的校验、单 op 生命周期、依赖（DISK2H→H2D、D2H→H2DISK）、虚拟 op 多前驱、GPU block 绑定与 graph id。
+
 import numpy as np
 
 from miniflex.common.transfer import (

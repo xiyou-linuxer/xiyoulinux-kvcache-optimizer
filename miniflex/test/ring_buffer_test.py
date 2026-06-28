@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：SharedOpPool 共享内存 block-id buffer 的分配复用/释放、容量限制与跨进程可见性。
+
 import traceback
 
 import numpy as np

@@ -1,3 +1,6 @@
+// 本测试文件由 Claude (Anthropic) 编写。
+// 测试内容：C++ SSD io_uring 后端：普通 file IO、O_DIRECT、io_uring 分块、io_uring+O_DIRECT 的写入/清零/读回 payload 校验。
+
 #include <torch/torch.h>
 
 #include <cstdio>

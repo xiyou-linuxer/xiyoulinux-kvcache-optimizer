@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：vLLM connector 适配：prefill GET 与 request_finished PUT 生命周期、batch GET、preemption 取消、worker no-op、no-match 取消、部分命中只写未命中、abort 不 PUT、失败上报、SYNC_GET，以及真实 PUT→GET 经 CPU 的端到端往返。
+
 import os
 import tempfile
 import time

@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：GlobalCacheEngine 的跨层 GET/PUT 规划：CPU/SSD 命中构图（H2D、DISK2H+H2D）、分段读、非对齐拒绝、PUT 的 D2H/H2DISK、前缀跳过、空间不足回收等。
+
 import numpy as np
 
 from miniflex.cache.global_cache_engine import GlobalCacheEngine
