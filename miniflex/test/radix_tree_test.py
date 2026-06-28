@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：RadixTree 的节点校验/叶语义、前缀匹配、插入分裂、pending/ready、pin/unpin、淘汰（lru/lfu/slru/fifo 各策略优先级）与 reset。
+
 import numpy as np
 
 from miniflex.cache.radix_tree import RadixTree, RadixTreeNode
