@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：StorageEngine 的 CPU/SSD 初始化（多目录、配置校验、CPU/SSD 布局可不同）与 GPU block 注册（tensor/handle、参数校验、重复注册拒绝）。
+
 import tempfile
 import traceback
 from pathlib import Path
@@ -72,7 +75,7 @@ def test_cpu_storage_initialized():
   assert handle.kv_layout.tokens_per_block == cache.tokens_per_block
   assert handle.get_tensor().numel() == handle.kv_layout.get_total_elements()
   assert not engine.has_storage_handle(DeviceType.SSD)
-  assert_raises(ValueError, lambda: engine.get_storage_handle(DeviceType.SSD))
+  assert engine.get_storage_handle(DeviceType.SSD) is None
 
 
 def test_ssd_storage_initialized_and_prefix_used():

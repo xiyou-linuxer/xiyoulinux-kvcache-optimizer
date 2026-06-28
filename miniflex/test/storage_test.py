@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：KVCacheLayout 三种布局（LAYERFIRST/BLOCKFIRST/MLA）的 shape 与 stride、StorageHandle（tensor/handle/file）的 getter 与校验、SSD allocator 建文件，以及 TensorSharedHandle 的校验与跨进程 CUDA tensor 共享。
+
 import traceback
 import tempfile
 from pathlib import Path

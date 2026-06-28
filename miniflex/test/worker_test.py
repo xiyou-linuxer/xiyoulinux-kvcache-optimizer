@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：TransferWorkerBase worker 进程的 D2H/H2D/H2DISK/DISK2H 提交与张量更新、共享 op slot、shutdown 排空任务，以及 GPU↔CPU、SSD↔CPU 端到端吞吐基准。
+
 import queue
 import tempfile
 import time

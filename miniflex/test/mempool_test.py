@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：Mempool 物理 block-id 池的分配、回收与非法输入校验。
+
 from miniflex.cache.mempool import Mempool
 
 def test_mempool():

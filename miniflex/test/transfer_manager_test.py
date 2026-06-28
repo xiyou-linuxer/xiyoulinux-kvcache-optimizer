@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：独立进程 TransferManager 的真实 GPU↔CPU↔SSD 往返集成测试。
+
 import os
 import tempfile
 import time

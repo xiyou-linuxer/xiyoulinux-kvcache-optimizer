@@ -1,3 +1,6 @@
+# 本测试文件由 Claude (Anthropic) 编写。
+# 测试内容：GPU↔CPU worker 的 D2H/H2D 往返逐字节校验、空传输、越界/尺寸/类型错误，以及 LAYERBLOCK（vLLM 0.23 布局）往返。
+
 import time
 import torch
 
