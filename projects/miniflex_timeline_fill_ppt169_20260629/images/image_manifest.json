@@ -1,0 +1,94 @@
+[
+  {
+    "index": 1,
+    "filename": "image2.jpeg",
+    "original_filename": "image2.jpeg",
+    "asset_kind": "bitmap",
+    "svg_renderable": true,
+    "pptx_native_supported": true,
+    "source_kind": "pptx_picture",
+    "source_ext": ".jpg",
+    "source_target": "ppt/media/image2.jpeg",
+    "content_type": "image/jpeg",
+    "display_left_emu": 5074281,
+    "display_top_emu": 465381,
+    "display_width_emu": 1941265,
+    "display_height_emu": 1809903,
+    "display_width_in": 2.123,
+    "display_height_in": 1.9793,
+    "display_ratio": 1.07258,
+    "pixel_width": 863,
+    "pixel_height": 863,
+    "pixel_ratio": 1.0,
+    "occurrences": [
+      {
+        "slide_index": 1,
+        "shape_name": "图片 9",
+        "display_left_emu": 5074281,
+        "display_top_emu": 465381,
+        "display_width_emu": 1941265,
+        "display_height_emu": 1809903,
+        "display_width_in": 2.123,
+        "display_height_in": 1.9793,
+        "display_ratio": 1.07258
+      },
+      {
+        "slide_index": 18,
+        "shape_name": "图片 9",
+        "display_left_emu": 5125049,
+        "display_top_emu": 1452197,
+        "display_width_emu": 1941900,
+        "display_height_emu": 1925401,
+        "display_width_in": 2.1237,
+        "display_height_in": 2.1056,
+        "display_ratio": 1.008569
+      }
+    ],
+    "usage_count": 2,
+    "display_ratio_variants": [
+      1.008569,
+      1.07258
+    ],
+    "source_namespace": "模版"
+  },
+  {
+    "index": 2,
+    "filename": "image1.jpeg",
+    "original_filename": "image1.jpeg",
+    "asset_kind": "bitmap",
+    "svg_renderable": true,
+    "pptx_native_supported": true,
+    "source_kind": "pptx_picture",
+    "source_ext": ".jpg",
+    "source_target": "ppt/media/image1.jpeg",
+    "content_type": "image/jpeg",
+    "display_left_emu": 3763,
+    "display_top_emu": 5213518,
+    "display_width_emu": 4596465,
+    "display_height_emu": 1696307,
+    "display_width_in": 5.0268,
+    "display_height_in": 1.8551,
+    "display_ratio": 2.709689,
+    "pixel_width": 1620,
+    "pixel_height": 1080,
+    "pixel_ratio": 1.5,
+    "occurrences": [
+      {
+        "slide_index": 1,
+        "shape_name": "图片 2",
+        "display_left_emu": 3763,
+        "display_top_emu": 5213518,
+        "display_width_emu": 4596465,
+        "display_height_emu": 1696307,
+        "display_width_in": 5.0268,
+        "display_height_in": 1.8551,
+        "display_ratio": 2.709689
+      }
+    ],
+    "usage_count": 1,
+    "display_ratio_variants": [
+      2.709689
+    ],
+    "source_namespace": "模版"
+  }
+]

@@ -1,0 +1,1682 @@
+{
+  "schema": "template_fill_pptx_plan.v1",
+  "status": "confirmed",
+  "source_pptx": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629\\sources\\模版.pptx",
+  "accepted_warnings": [
+    {
+      "source_slide": 16,
+      "slot_id": "s16_sh10",
+      "reason": "??????????????????????????????????"
+    }
+  ],
+  "slides": [
+    {
+      "source_slide": 1,
+      "purpose": "cover_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s01_sh16",
+          "old_text": "面向AI推理负载的异构存储管理系统优化",
+          "text": "面向AI推理负载的异构存储管理系统优化"
+        },
+        {
+          "slot_id": "s01_sh20",
+          "old_text": "汇报队伍：古法编程继承人",
+          "text": "汇报队伍：古法编程继承人"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 2,
+      "purpose": "toc_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s02_sh5",
+          "old_text": "目录",
+          "text": "目录"
+        },
+        {
+          "slot_id": "s02_sh9",
+          "old_text": "1",
+          "text": "1"
+        },
+        {
+          "slot_id": "s02_sh10",
+          "old_text": "项目背景与赛题目标",
+          "text": "项目背景与赛题目标"
+        },
+        {
+          "slot_id": "s02_sh11",
+          "old_text": "说明问题来源、赛题任务和本项目的切入点。",
+          "text": "说明问题来源、赛题任务和本项目的切入点。"
+        },
+        {
+          "slot_id": "s02_sh15",
+          "old_text": "2",
+          "text": "2"
+        },
+        {
+          "slot_id": "s02_sh16",
+          "old_text": "系统设计与关键机制",
+          "text": "系统设计与关键机制"
+        },
+        {
+          "slot_id": "s02_sh17",
+          "old_text": "介绍 MiniFlexKV 的接入方式、模块分层与关键实现机制。",
+          "text": "介绍 MiniFlexKV 的接入方式、模块分层与关键实现机制。"
+        },
+        {
+          "slot_id": "s02_sh21",
+          "old_text": "3",
+          "text": "3"
+        },
+        {
+          "slot_id": "s02_sh22",
+          "old_text": "项目进展与实验成果",
+          "text": "项目进展与实验成果"
+        },
+        {
+          "slot_id": "s02_sh23",
+          "old_text": "呈现当前完成情况、正确性验证和性能结果。",
+          "text": "呈现当前完成情况、正确性验证和性能结果。"
+        },
+        {
+          "slot_id": "s02_sh27",
+          "old_text": "4",
+          "text": "4"
+        },
+        {
+          "slot_id": "s02_sh28",
+          "old_text": "成员分工与总结",
+          "text": "成员分工与总结"
+        },
+        {
+          "slot_id": "s02_sh29",
+          "old_text": "收束本阶段汇报内容，并说明团队职责分工。",
+          "text": "收束本阶段汇报内容，并说明团队职责分工。"
+        },
+        {
+          "slot_id": "s02_sh31",
+          "old_text": "02",
+          "text": "02"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 3,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s03_sh4",
+          "old_text": "项目背景",
+          "text": "项目背景"
+        },
+        {
+          "slot_id": "s03_sh5",
+          "old_text": "随着上下文长度增长，KV Cache 正在成为 LLM 推理中最突出的显存占用来源。",
+          "text": "随着上下文长度增长，KV Cache 正在成为 LLM 推理中最突出的显存占用来源。"
+        },
+        {
+          "slot_id": "s03_sh7",
+          "old_text": "问题来源",
+          "text": "问题来源"
+        },
+        {
+          "slot_id": "s03_sh8",
+          "old_text": "• LLM 推理需要保存历史 token 的 Key-Value 缓存，以减少重复 Attention 计算。\n• 当上下文从 2K、8K 增长到 16K、32K 甚至更高时，KV Cache 会近似线性膨胀。\n• 在资源受限设备上，KV Cache 会逐渐挤占模型权重、激活与运行时调度所需要的显存预算。",
+          "text": "• LLM 推理需要保存历史 token 的 Key-Value 缓存，以减少重复 Attention 计算。\n• 当上下文从 2K、8K 增长到 16K、32K 甚至更高时，KV Cache 会近似线性膨胀。\n• 在资源受限设备上，KV Cache 会逐渐挤占模型权重、激活与运行时调度所需要的显存预算。"
+        },
+        {
+          "slot_id": "s03_sh10",
+          "old_text": "显存压力的直观变化",
+          "text": "显存压力的直观变化"
+        },
+        {
+          "slot_id": "s03_sh17",
+          "old_text": "2K",
+          "text": "2K"
+        },
+        {
+          "slot_id": "s03_sh18",
+          "old_text": "8K",
+          "text": "8K"
+        },
+        {
+          "slot_id": "s03_sh19",
+          "old_text": "16K",
+          "text": "16K"
+        },
+        {
+          "slot_id": "s03_sh20",
+          "old_text": "32K+",
+          "text": "32K+"
+        },
+        {
+          "slot_id": "s03_sh21",
+          "old_text": "高",
+          "text": "高"
+        },
+        {
+          "slot_id": "s03_sh22",
+          "old_text": "低",
+          "text": "低"
+        },
+        {
+          "slot_id": "s03_sh23",
+          "old_text": "上下文越长，缓存显存压力越大",
+          "text": "上下文越长，缓存显存压力越大"
+        },
+        {
+          "slot_id": "s03_sh25",
+          "old_text": "03",
+          "text": "03"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 4,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s04_sh4",
+          "old_text": "赛题任务与目标",
+          "text": "赛题任务与目标"
+        },
+        {
+          "slot_id": "s04_sh5",
+          "old_text": "关注围绕监控、迁移、分配与透明集成形成系统方案",
+          "text": "关注围绕监控、迁移、分配与透明集成形成系统方案"
+        },
+        {
+          "slot_id": "s04_sh7",
+          "old_text": "任务一",
+          "text": "任务一"
+        },
+        {
+          "slot_id": "s04_sh8",
+          "old_text": "监控访问模式，定义块级热度",
+          "text": "监控访问模式，定义块级热度"
+        },
+        {
+          "slot_id": "s04_sh9",
+          "old_text": "观察访问频率、最近访问时间等信号，为 KV Cache 的冷热分层提供基础依据。",
+          "text": "观察访问频率、最近访问时间等信号，为 KV Cache 的冷热分层提供基础依据。"
+        },
+        {
+          "slot_id": "s04_sh12",
+          "old_text": "任务二",
+          "text": "任务二"
+        },
+        {
+          "slot_id": "s04_sh13",
+          "old_text": "热留显存，温迁内存，冷迁外存",
+          "text": "热留显存，温迁内存，冷迁外存"
+        },
+        {
+          "slot_id": "s04_sh14",
+          "old_text": "根据访问行为在 GPU、CPU、SSD 之间组织动态迁移与命中后回填。",
+          "text": "根据访问行为在 GPU、CPU、SSD 之间组织动态迁移与命中后回填。"
+        },
+        {
+          "slot_id": "s04_sh17",
+          "old_text": "任务三",
+          "text": "任务三"
+        },
+        {
+          "slot_id": "s04_sh18",
+          "old_text": "设计块级存储分配与碎片控制",
+          "text": "设计块级存储分配与碎片控制"
+        },
+        {
+          "slot_id": "s04_sh19",
+          "old_text": "以 block 为单位组织存储，减少动态增长带来的显存和内存碎片问题。",
+          "text": "以 block 为单位组织存储，减少动态增长带来的显存和内存碎片问题。"
+        },
+        {
+          "slot_id": "s04_sh22",
+          "old_text": "目标",
+          "text": "目标"
+        },
+        {
+          "slot_id": "s04_sh23",
+          "old_text": "尽量少改框架，提升吞吐并降低等待",
+          "text": "尽量少改框架，提升吞吐并降低等待"
+        },
+        {
+          "slot_id": "s04_sh24",
+          "old_text": "在尽量透明集成的前提下，支持更长上下文，并减少 GPU 等待迁移的时间。",
+          "text": "在尽量透明集成的前提下，支持更长上下文，并减少 GPU 等待迁移的时间。"
+        },
+        {
+          "slot_id": "s04_sh26",
+          "old_text": "04",
+          "text": "04"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 5,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s05_sh4",
+          "old_text": "总体思路",
+          "text": "总体思路"
+        },
+        {
+          "slot_id": "s05_sh5",
+          "old_text": "本项目以分层 KV Cache 为主线，在 vLLM 推理流程中实现可接入、可迁移、可复用、可验证的缓存管理能力。",
+          "text": "本项目以分层 KV Cache 为主线，在 vLLM 推理流程中实现可接入、可迁移、可复用、可验证的缓存管理能力。"
+        },
+        {
+          "slot_id": "s05_sh7",
+          "old_text": "用最少侵入的接入方式，把 KV 数据组织成可管理、可迁移、可复用的分层系统",
+          "text": "用最少侵入的接入方式，把 KV 数据组织成可管理、可迁移、可复用的分层系统"
+        },
+        {
+          "slot_id": "s05_sh9",
+          "old_text": "接入层面",
+          "text": "接入层面"
+        },
+        {
+          "slot_id": "s05_sh10",
+          "old_text": "以 vLLM V1 KV connector为入口，尽量减少对原推理框架的侵入。",
+          "text": "以 vLLM V1 KV connector为入口，尽量减少对原推理框架的侵入。"
+        },
+        {
+          "slot_id": "s05_sh13",
+          "old_text": "体系层面",
+          "text": "体系层面"
+        },
+        {
+          "slot_id": "s05_sh14",
+          "old_text": "围绕 GPU、CPU、SSD三层缓存路径组织数据的下沉、回填与复用。",
+          "text": "围绕 GPU、CPU、SSD三层缓存路径组织数据的下沉、回填与复用。"
+        },
+        {
+          "slot_id": "s05_sh17",
+          "old_text": "验证层面",
+          "text": "验证层面"
+        },
+        {
+          "slot_id": "s05_sh18",
+          "old_text": "从正确性、长上下文加速、超容量场景和混合负载表现建立证据链。",
+          "text": "从正确性、长上下文加速、超容量场景和混合负载表现建立证据链。"
+        },
+        {
+          "slot_id": "s05_sh20",
+          "old_text": "05",
+          "text": "05"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 6,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s06_sh4",
+          "old_text": "总体架构设计",
+          "text": "总体架构设计"
+        },
+        {
+          "slot_id": "s06_sh5",
+          "old_text": "MiniFlexKV 把接入、调度、缓存、存储和传输拆成清晰分层，以保持系统边界可控。",
+          "text": "MiniFlexKV 把接入、调度、缓存、存储和传输拆成清晰分层，以保持系统边界可控。"
+        },
+        {
+          "slot_id": "s06_sh7",
+          "old_text": "vLLM V1 Connector 接入层",
+          "text": "vLLM V1 Connector 接入层"
+        },
+        {
+          "slot_id": "s06_sh10",
+          "old_text": "Scheduler Connector",
+          "text": "Scheduler Connector"
+        },
+        {
+          "slot_id": "s06_sh11",
+          "old_text": "匹配、任务生成、状态轮询",
+          "text": "匹配、任务生成、状态轮询"
+        },
+        {
+          "slot_id": "s06_sh14",
+          "old_text": "Worker Connector",
+          "text": "Worker Connector"
+        },
+        {
+          "slot_id": "s06_sh15",
+          "old_text": "注册 GPU KV cache，承接执行端交互",
+          "text": "注册 GPU KV cache，承接执行端交互"
+        },
+        {
+          "slot_id": "s06_sh18",
+          "old_text": "KVTaskEngine / KVTaskManager",
+          "text": "KVTaskEngine / KVTaskManager"
+        },
+        {
+          "slot_id": "s06_sh19",
+          "old_text": "连接逻辑缓存规划与物理传输执行",
+          "text": "连接逻辑缓存规划与物理传输执行"
+        },
+        {
+          "slot_id": "s06_sh22",
+          "old_text": "Cache Engine",
+          "text": "Cache Engine"
+        },
+        {
+          "slot_id": "s06_sh23",
+          "old_text": "块级匹配、分配、淘汰与层间逻辑",
+          "text": "块级匹配、分配、淘汰与层间逻辑"
+        },
+        {
+          "slot_id": "s06_sh26",
+          "old_text": "Storage Engine",
+          "text": "Storage Engine"
+        },
+        {
+          "slot_id": "s06_sh27",
+          "old_text": "GPU / CPU / SSD 三类物理句柄",
+          "text": "GPU / CPU / SSD 三类物理句柄"
+        },
+        {
+          "slot_id": "s06_sh30",
+          "old_text": "Transfer Engine",
+          "text": "Transfer Engine"
+        },
+        {
+          "slot_id": "s06_sh31",
+          "old_text": "组织 D2H / H2D / H2DISK / DISK2H",
+          "text": "组织 D2H / H2D / H2DISK / DISK2H"
+        },
+        {
+          "slot_id": "s06_sh33",
+          "old_text": "06",
+          "text": "06"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 7,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s07_sh4",
+          "old_text": "关键机制设计",
+          "text": "关键机制设计"
+        },
+        {
+          "slot_id": "s07_sh7",
+          "old_text": "逻辑缓存管理",
+          "text": "逻辑缓存管理"
+        },
+        {
+          "slot_id": "s07_sh8",
+          "old_text": "以块级为基本单位，维护匹配、分配、淘汰、ready / pending 状态和层间缓存规划。",
+          "text": "以块级为基本单位，维护匹配、分配、淘汰、ready / pending 状态和层间缓存规划。"
+        },
+        {
+          "slot_id": "s07_sh11",
+          "old_text": "物理存储与数据搬运",
+          "text": "物理存储与数据搬运"
+        },
+        {
+          "slot_id": "s07_sh12",
+          "old_text": "统一管理 GPU、CPU、SSD 三类存储句柄，并按依赖顺序执行跨层搬运操作。",
+          "text": "统一管理 GPU、CPU、SSD 三类存储句柄，并按依赖顺序执行跨层搬运操作。"
+        },
+        {
+          "slot_id": "s07_sh15",
+          "old_text": "任务编排",
+          "text": "任务编排"
+        },
+        {
+          "slot_id": "s07_sh16",
+          "old_text": "通过 KVTaskEngine 把“命中规划”与“传输执行”连接为统一生命周期。",
+          "text": "通过 KVTaskEngine 把“命中规划”与“传输执行”连接为统一生命周期。"
+        },
+        {
+          "slot_id": "s07_sh19",
+          "old_text": "布局自适配",
+          "text": "布局自适配"
+        },
+        {
+          "slot_id": "s07_sh20",
+          "old_text": "通过 GPU KV 布局自探测兼容不同版本vLLM 的物理缓存组织方式。",
+          "text": "通过 GPU KV 布局自探测兼容不同版本vLLM 的物理缓存组织方式。"
+        },
+        {
+          "slot_id": "s07_sh22",
+          "old_text": "07",
+          "text": "07"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 8,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s08_sh4",
+          "old_text": "项目开发进度与任务推进",
+          "text": "项目开发进度与任务推进"
+        },
+        {
+          "slot_id": "s08_sh5",
+          "old_text": "当前项目已经从赛题分析推进到架构实现、实验验证和汇报整理阶段，路径清晰且阶段成果明确。",
+          "text": "当前项目已经从赛题分析推进到架构实现、实验验证和汇报整理阶段，路径清晰且阶段成果明确。"
+        },
+        {
+          "slot_id": "s08_sh7",
+          "old_text": "阶段",
+          "text": "阶段"
+        },
+        {
+          "slot_id": "s08_sh8",
+          "old_text": "主要任务",
+          "text": "主要任务"
+        },
+        {
+          "slot_id": "s08_sh9",
+          "old_text": "负责人",
+          "text": "负责人"
+        },
+        {
+          "slot_id": "s08_sh10",
+          "old_text": "状态",
+          "text": "状态"
+        },
+        {
+          "slot_id": "s08_sh12",
+          "old_text": "阶段一",
+          "text": "阶段一"
+        },
+        {
+          "slot_id": "s08_sh13",
+          "old_text": "赛题分析、资料搜集、技术路线初步调研",
+          "text": "赛题分析、资料搜集、技术路线初步调研"
+        },
+        {
+          "slot_id": "s08_sh14",
+          "old_text": "祁馨叶 / 徐子淳",
+          "text": "祁馨叶 / 徐子淳"
+        },
+        {
+          "slot_id": "s08_sh16",
+          "old_text": "已完成",
+          "text": "已完成"
+        },
+        {
+          "slot_id": "s08_sh19",
+          "old_text": "阶段二",
+          "text": "阶段二"
+        },
+        {
+          "slot_id": "s08_sh20",
+          "old_text": "方案设计、系统边界划分、模块分层与实现路径确定",
+          "text": "方案设计、系统边界划分、模块分层与实现路径确定"
+        },
+        {
+          "slot_id": "s08_sh21",
+          "old_text": "井光成",
+          "text": "井光成"
+        },
+        {
+          "slot_id": "s08_sh23",
+          "old_text": "已完成",
+          "text": "已完成"
+        },
+        {
+          "slot_id": "s08_sh26",
+          "old_text": "阶段三",
+          "text": "阶段三"
+        },
+        {
+          "slot_id": "s08_sh27",
+          "old_text": "vLLM 接入、缓存管理、传输链路与布局适配实现，核心模块开发",
+          "text": "vLLM 接入、缓存管理、传输链路与布局适配实现，核心模块开发"
+        },
+        {
+          "slot_id": "s08_sh28",
+          "old_text": "井光成",
+          "text": "井光成"
+        },
+        {
+          "slot_id": "s08_sh30",
+          "old_text": "已完成",
+          "text": "已完成"
+        },
+        {
+          "slot_id": "s08_sh33",
+          "old_text": "阶段四",
+          "text": "阶段四"
+        },
+        {
+          "slot_id": "s08_sh34",
+          "old_text": "正确性验证、性能测试、结果整理与汇报材料组织",
+          "text": "正确性验证、性能测试、结果整理与汇报材料组织"
+        },
+        {
+          "slot_id": "s08_sh35",
+          "old_text": "徐子淳 / 祁馨叶",
+          "text": "徐子淳 / 祁馨叶"
+        },
+        {
+          "slot_id": "s08_sh37",
+          "old_text": "已完成",
+          "text": "已完成"
+        },
+        {
+          "slot_id": "s08_sh39",
+          "old_text": "09",
+          "text": "09"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 8,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "four-row progress table",
+        "why_fit": "?????????????????????????????????????? PPT ???????",
+        "risk": "????????????????????????????? speaker notes?"
+      },
+      "replacements": [
+        {
+          "slot_id": "s08_sh4",
+          "old_text": "???????????",
+          "text": "??????????"
+        },
+        {
+          "slot_id": "s08_sh5",
+          "old_text": "???????????????????????????????????????????",
+          "text": "?????????????????? KV Cache ??????????????????????????????????????????????????"
+        },
+        {
+          "slot_id": "s08_sh7",
+          "old_text": "??",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh8",
+          "old_text": "????",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh9",
+          "old_text": "???",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh10",
+          "old_text": "??",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh12",
+          "old_text": "???",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh13",
+          "old_text": "??????????????????",
+          "text": "3.25 - 4.7????????????????? KV Cache ????????????? vLLM connector?prefix cache?????? FlexKV?LMCache?Mooncake ????"
+        },
+        {
+          "slot_id": "s08_sh14",
+          "old_text": "??? / ???",
+          "text": "?? vLLM V1 connector + ??????"
+        },
+        {
+          "slot_id": "s08_sh16",
+          "old_text": "???",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh19",
+          "old_text": "???",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh20",
+          "old_text": "???????????????????????",
+          "text": "4.8 - 4.28??????????????? Python?C++ / CUDA ????????????? KV Cache ??????????????????? MiniFlex ????? connector ?????????"
+        },
+        {
+          "slot_id": "s08_sh21",
+          "old_text": "???",
+          "text": "???????"
+        },
+        {
+          "slot_id": "s08_sh23",
+          "old_text": "???",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh26",
+          "old_text": "???",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh27",
+          "old_text": "vLLM ??????????????????????????",
+          "text": "4.29 - 5.31??? block ? KV Cache ??????????????????????? SSD ??????? GPU / CPU / SSD ???????????? GPU?CPU ? CPU?SSD ???????"
+        },
+        {
+          "slot_id": "s08_sh28",
+          "old_text": "???",
+          "text": "????????????"
+        },
+        {
+          "slot_id": "s08_sh30",
+          "old_text": "???",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh33",
+          "old_text": "???",
+          "text": "????"
+        },
+        {
+          "slot_id": "s08_sh34",
+          "old_text": "??????????????????????",
+          "text": "6.1 - 6.30??????????????????????? vLLM ?????????????????????????????????????? README???????????"
+        },
+        {
+          "slot_id": "s08_sh35",
+          "old_text": "??? / ???",
+          "text": "???????????"
+        },
+        {
+          "slot_id": "s08_sh37",
+          "old_text": "???",
+          "text": "??"
+        },
+        {
+          "slot_id": "s08_sh39",
+          "old_text": "09",
+          "text": "10"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": [],
+      "notes": "?????????????????????????????????????????????? vLLM KV connector?prefix cache ????? FlexKV?LMCache?Mooncake ???????????????? vLLM V1 connector ? GPU?CPU?SSD ????????????????????? connector ????????????? block ??????????????????????????????????????????????????????"
+    },
+    {
+      "source_slide": 9,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s09_sh4",
+          "old_text": "当前完成情况总览",
+          "text": "当前完成情况总览"
+        },
+        {
+          "slot_id": "s09_sh7",
+          "old_text": "赛题要求",
+          "text": "赛题要求"
+        },
+        {
+          "slot_id": "s09_sh11",
+          "old_text": "当前实现对应能力",
+          "text": "当前实现对应能力"
+        },
+        {
+          "slot_id": "s09_sh15",
+          "old_text": "访问模式 / 热度",
+          "text": "访问模式 / 热度"
+        },
+        {
+          "slot_id": "s09_sh17",
+          "old_text": "已具备块级匹配、缓存行为组织与层间状态管理基础，可承载热度定义与访问观测逻辑。",
+          "text": "已具备块级匹配、缓存行为组织与层间状态管理基础，可承载热度定义与访问观测逻辑。"
+        },
+        {
+          "slot_id": "s09_sh20",
+          "old_text": "热 / 温 / 冷迁移",
+          "text": "热 / 温 / 冷迁移"
+        },
+        {
+          "slot_id": "s09_sh22",
+          "old_text": "已完成 GPU / CPU / SSD 分层缓存路径，以及低层命中后的回填与溢出承接能力。",
+          "text": "已完成 GPU / CPU / SSD 分层缓存路径，以及低层命中后的回填与溢出承接能力。"
+        },
+        {
+          "slot_id": "s09_sh25",
+          "old_text": "分配器 / 碎片控制",
+          "text": "分配器 / 碎片控制"
+        },
+        {
+          "slot_id": "s09_sh27",
+          "old_text": "当前方案以 block 为基本单位组织缓存管理，更贴近页式缓存布局和块级回收逻辑。",
+          "text": "当前方案以 block 为基本单位组织缓存管理，更贴近页式缓存布局和块级回收逻辑。"
+        },
+        {
+          "slot_id": "s09_sh30",
+          "old_text": "08",
+          "text": "11"
+        },
+        {
+          "slot_id": "s09_sh32",
+          "old_text": "整体框架已完成单机单卡版本MiniFlexKV 整体骨架,并进行了正确性校验与主要性能实验整理。",
+          "text": "整体框架已完成单机单卡版本MiniFlexKV 整体骨架,并进行了正确性校验与主要性能实验整理。"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 10,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s10_sh4",
+          "old_text": "成果一：功能与正确性",
+          "text": "成果一：功能与正确性"
+        },
+        {
+          "slot_id": "s10_sh5",
+          "old_text": "当前实现已经证明系统能正确接入、正确搬运并在不同布局间保持 KV 数据一致。",
+          "text": "当前实现已经证明系统能正确接入、正确搬运并在不同布局间保持 KV 数据一致。"
+        },
+        {
+          "slot_id": "s10_sh7",
+          "old_text": "正确性检查项",
+          "text": "正确性检查项"
+        },
+        {
+          "slot_id": "s10_sh8",
+          "old_text": "✓ 启动成功：8B + vLLM 0.23 +",
+          "text": "✓ 启动成功：8B + vLLM 0.23 +"
+        },
+        {
+          "slot_id": "s10_sh9",
+          "old_text": "MiniFlex connector 正常工作",
+          "text": "MiniFlex connector 正常工作"
+        },
+        {
+          "slot_id": "s10_sh10",
+          "old_text": "✓ 补全正确：基础请求可得到",
+          "text": "✓ 补全正确：基础请求可得到"
+        },
+        {
+          "slot_id": "s10_sh11",
+          "old_text": "合理输出，推理链路可用",
+          "text": "合理输出，推理链路可用"
+        },
+        {
+          "slot_id": "s10_sh12",
+          "old_text": "✓ KV 传输正确：PUT / GET 后",
+          "text": "✓ KV 传输正确：PUT / GET 后"
+        },
+        {
+          "slot_id": "s10_sh13",
+          "old_text": "`torch.equal` 逐字节相等",
+          "text": "`torch.equal` 逐字节相等"
+        },
+        {
+          "slot_id": "s10_sh14",
+          "old_text": "✓ 布局一致：GPU ↔ CPU",
+          "text": "✓ 布局一致：GPU ↔ CPU"
+        },
+        {
+          "slot_id": "s10_sh15",
+          "old_text": "往返后字节一致",
+          "text": "往返后字节一致"
+        },
+        {
+          "slot_id": "s10_sh17",
+          "old_text": "证据 1：启动与补全链路",
+          "text": "证据 1：启动与补全链路"
+        },
+        {
+          "slot_id": "s10_sh18",
+          "old_text": "系统能够在目标环境中成功启动，并完成从 connector 到推理输出的完整链路。",
+          "text": "系统能够在目标环境中成功启动，并完成从 connector 到推理输出的完整链路。"
+        },
+        {
+          "slot_id": "s10_sh21",
+          "old_text": "证据 2：数据传输一致性",
+          "text": "证据 2：数据传输一致性"
+        },
+        {
+          "slot_id": "s10_sh22",
+          "old_text": "PUT 把 GPU block 写入 CPU 层，GET 读回后可达到逐字节一致，说明基础搬运链路正确。",
+          "text": "PUT 把 GPU block 写入 CPU 层，GET 读回后可达到逐字节一致，说明基础搬运链路正确。"
+        },
+        {
+          "slot_id": "s10_sh25",
+          "old_text": "证据 3：布局自适配成立",
+          "text": "证据 3：布局自适配成立"
+        },
+        {
+          "slot_id": "s10_sh26",
+          "old_text": "GPU `LAYERBLOCK` 与 CPU `LAYERFIRST` 间往返保持一致，说明不同布局的适配逻辑成立。",
+          "text": "GPU `LAYERBLOCK` 与 CPU `LAYERFIRST` 间往返保持一致，说明不同布局的适配逻辑成立。"
+        },
+        {
+          "slot_id": "s10_sh28",
+          "old_text": "11",
+          "text": "12"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 11,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s11_sh4",
+          "old_text": "成果二：长上下文加速效果",
+          "text": "成果二：长上下文加速效果"
+        },
+        {
+          "slot_id": "s11_sh5",
+          "old_text": "在长上下文场景中，MiniFlex 命中后可以显著减少全量重算开销，而且上下文越长收益越大。",
+          "text": "在长上下文场景中，MiniFlex 命中后可以显著减少全量重算开销，而且上下文越长收益越大。"
+        },
+        {
+          "slot_id": "s11_sh7",
+          "old_text": "加速比（热态命中 vs 冷态重算）",
+          "text": "加速比（热态命中 vs 冷态重算）"
+        },
+        {
+          "slot_id": "s11_sh18",
+          "old_text": "~1k",
+          "text": "~1k"
+        },
+        {
+          "slot_id": "s11_sh19",
+          "old_text": "~2k",
+          "text": "~2k"
+        },
+        {
+          "slot_id": "s11_sh20",
+          "old_text": "~4k",
+          "text": "~4k"
+        },
+        {
+          "slot_id": "s11_sh21",
+          "old_text": "~8k",
+          "text": "~8k"
+        },
+        {
+          "slot_id": "s11_sh22",
+          "old_text": "~15k",
+          "text": "~15k"
+        },
+        {
+          "slot_id": "s11_sh23",
+          "old_text": "~23k",
+          "text": "~23k"
+        },
+        {
+          "slot_id": "s11_sh24",
+          "old_text": "~30k",
+          "text": "~30k"
+        },
+        {
+          "slot_id": "s11_sh26",
+          "old_text": "1.63×",
+          "text": "1.63×"
+        },
+        {
+          "slot_id": "s11_sh27",
+          "old_text": "2.02×",
+          "text": "2.02×"
+        },
+        {
+          "slot_id": "s11_sh28",
+          "old_text": "2.76×",
+          "text": "2.76×"
+        },
+        {
+          "slot_id": "s11_sh29",
+          "old_text": "4.06×",
+          "text": "4.06×"
+        },
+        {
+          "slot_id": "s11_sh30",
+          "old_text": "6.81×",
+          "text": "6.81×"
+        },
+        {
+          "slot_id": "s11_sh31",
+          "old_text": "7.71×",
+          "text": "7.71×"
+        },
+        {
+          "slot_id": "s11_sh32",
+          "old_text": "9.32×",
+          "text": "9.32×"
+        },
+        {
+          "slot_id": "s11_sh35",
+          "old_text": "结论",
+          "text": "结论"
+        },
+        {
+          "slot_id": "s11_sh36",
+          "old_text": "• 加速收益随上下文长度",
+          "text": "• 加速收益随上下文长度"
+        },
+        {
+          "slot_id": "s11_sh37",
+          "old_text": "持续扩大",
+          "text": "持续扩大"
+        },
+        {
+          "slot_id": "s11_sh38",
+          "old_text": "• 省下的重算比例从",
+          "text": "• 省下的重算比例从"
+        },
+        {
+          "slot_id": "s11_sh39",
+          "old_text": "约 39% 提升到约 89%",
+          "text": "约 39% 提升到约 89%"
+        },
+        {
+          "slot_id": "s11_sh40",
+          "old_text": "• 约 30k 上下文场景下，",
+          "text": "• 约 30k 上下文场景下，"
+        },
+        {
+          "slot_id": "s11_sh41",
+          "old_text": "TTFT 从 3806 ms",
+          "text": "TTFT 从 3806 ms"
+        },
+        {
+          "slot_id": "s11_sh42",
+          "old_text": "降到 408 ms",
+          "text": "降到 408 ms"
+        },
+        {
+          "slot_id": "s11_sh44",
+          "old_text": "12",
+          "text": "13"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 12,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s12_sh4",
+          "old_text": "成果三：容量优势与 APC 对比",
+          "text": "成果三：容量优势与 APC 对比"
+        },
+        {
+          "slot_id": "s12_sh5",
+          "old_text": "一旦工作集超出 GPU 容量，MiniFlex 的 CPU-backed 复用路径会明显比原生 APC 更稳定。",
+          "text": "一旦工作集超出 GPU 容量，MiniFlex 的 CPU-backed 复用路径会明显比原生 APC 更稳定。"
+        },
+        {
+          "slot_id": "s12_sh7",
+          "old_text": "TTFT 对比（ms）",
+          "text": "TTFT 对比（ms）"
+        },
+        {
+          "slot_id": "s12_sh17",
+          "old_text": "95",
+          "text": "95"
+        },
+        {
+          "slot_id": "s12_sh18",
+          "old_text": "199",
+          "text": "199"
+        },
+        {
+          "slot_id": "s12_sh19",
+          "old_text": "684",
+          "text": "684"
+        },
+        {
+          "slot_id": "s12_sh20",
+          "old_text": "191",
+          "text": "191"
+        },
+        {
+          "slot_id": "s12_sh21",
+          "old_text": "700",
+          "text": "700"
+        },
+        {
+          "slot_id": "s12_sh22",
+          "old_text": "190",
+          "text": "190"
+        },
+        {
+          "slot_id": "s12_sh24",
+          "old_text": "~45k",
+          "text": "~45k"
+        },
+        {
+          "slot_id": "s12_sh25",
+          "old_text": "~75k",
+          "text": "~75k"
+        },
+        {
+          "slot_id": "s12_sh26",
+          "old_text": "~105k",
+          "text": "~105k"
+        },
+        {
+          "slot_id": "s12_sh29",
+          "old_text": "APC",
+          "text": "APC"
+        },
+        {
+          "slot_id": "s12_sh31",
+          "old_text": "MiniFlex",
+          "text": "MiniFlex"
+        },
+        {
+          "slot_id": "s12_sh33",
+          "old_text": "关键信息",
+          "text": "关键信息"
+        },
+        {
+          "slot_id": "s12_sh34",
+          "old_text": "• ~45k 工作集仍装得进      GPU 时，",
+          "text": "• ~45k 工作集仍装得进      GPU 时，"
+        },
+        {
+          "slot_id": "s12_sh35",
+          "old_text": "APC 命中更快",
+          "text": "APC 命中更快"
+        },
+        {
+          "slot_id": "s12_sh36",
+          "old_text": "• 一旦工作集超过 GPU KV 容量，APC 迅速出现 100% miss",
+          "text": "• 一旦工作集超过 GPU KV 容量，APC 迅速出现 100% miss"
+        },
+        {
+          "slot_id": "s12_sh38",
+          "old_text": "• MiniFlex 通过 CPU 层承接溢出，仍维持约 190 ms 且0% miss",
+          "text": "• MiniFlex 通过 CPU 层承接溢出，仍维持约 190 ms 且0% miss"
+        },
+        {
+          "slot_id": "s12_sh41",
+          "old_text": "13",
+          "text": "14"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 13,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s13_sh4",
+          "old_text": "成果四：混合负载与指标体系",
+          "text": "成果四：混合负载与指标体系"
+        },
+        {
+          "slot_id": "s13_sh5",
+          "old_text": "在热点与长尾共存的真实负载里，MiniFlex 与 APC 组合能在速度与容量之间取得更平衡的效果。",
+          "text": "在热点与长尾共存的真实负载里，MiniFlex 与 APC 组合能在速度与容量之间取得更平衡的效果。"
+        },
+        {
+          "slot_id": "s13_sh7",
+          "old_text": "混合负载结果（TTFT, ms）",
+          "text": "混合负载结果（TTFT, ms）"
+        },
+        {
+          "slot_id": "s13_sh9",
+          "old_text": "配置",
+          "text": "配置"
+        },
+        {
+          "slot_id": "s13_sh10",
+          "old_text": "hot",
+          "text": "hot"
+        },
+        {
+          "slot_id": "s13_sh11",
+          "old_text": "tail",
+          "text": "tail"
+        },
+        {
+          "slot_id": "s13_sh12",
+          "old_text": "overall",
+          "text": "overall"
+        },
+        {
+          "slot_id": "s13_sh14",
+          "old_text": "APC",
+          "text": "APC"
+        },
+        {
+          "slot_id": "s13_sh15",
+          "old_text": "60",
+          "text": "60"
+        },
+        {
+          "slot_id": "s13_sh16",
+          "old_text": "707",
+          "text": "707"
+        },
+        {
+          "slot_id": "s13_sh17",
+          "old_text": "515",
+          "text": "515"
+        },
+        {
+          "slot_id": "s13_sh19",
+          "old_text": "MiniFlex",
+          "text": "MiniFlex"
+        },
+        {
+          "slot_id": "s13_sh20",
+          "old_text": "103",
+          "text": "103"
+        },
+        {
+          "slot_id": "s13_sh21",
+          "old_text": "177",
+          "text": "177"
+        },
+        {
+          "slot_id": "s13_sh22",
+          "old_text": "153",
+          "text": "153"
+        },
+        {
+          "slot_id": "s13_sh24",
+          "old_text": "APC + MiniFlex",
+          "text": "APC + MiniFlex"
+        },
+        {
+          "slot_id": "s13_sh25",
+          "old_text": "67",
+          "text": "67"
+        },
+        {
+          "slot_id": "s13_sh26",
+          "old_text": "188",
+          "text": "188"
+        },
+        {
+          "slot_id": "s13_sh27",
+          "old_text": "165",
+          "text": "165"
+        },
+        {
+          "slot_id": "s13_sh30",
+          "old_text": "结果解读",
+          "text": "结果解读"
+        },
+        {
+          "slot_id": "s13_sh31",
+          "old_text": "• APC 更擅长热点数据留在 GPU 的极快命中\n• MiniFlex 更擅长长尾超容量场景的稳定复用\n• 两者叠加后更贴近真实业务的混合负载",
+          "text": "• APC 更擅长热点数据留在 GPU 的极快命中\n• MiniFlex 更擅长长尾超容量场景的稳定复用\n• 两者叠加后更贴近真实业务的混合负载"
+        },
+        {
+          "slot_id": "s13_sh34",
+          "old_text": "当前指标体系",
+          "text": "当前指标体系"
+        },
+        {
+          "slot_id": "s13_sh35",
+          "old_text": "• 服务可用性：成功率、失败率\n• 核心性能：TTFT、TPOT、吞吐\n• 缓存行为：KV 使用率、prefix 命中\n• 资源压力：GPU / CPU 占用与上下文分档",
+          "text": "• 服务可用性：成功率、失败率\n• 核心性能：TTFT、TPOT、吞吐\n• 缓存行为：KV 使用率、prefix 命中\n• 资源压力：GPU / CPU 占用与上下文分档"
+        },
+        {
+          "slot_id": "s13_sh37",
+          "old_text": "14",
+          "text": "15"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 14,
+      "purpose": "chapter_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s14_sh4",
+          "old_text": "创新点与增量贡献（1/2）",
+          "text": "创新点与增量贡献（1/2）"
+        },
+        {
+          "slot_id": "s14_sh5",
+          "old_text": "本项目选择性参考了部分开源项目FlexKV 的总体思路，但并非整体照搬；\n本页展示与版本适配、任务管理和布局解耦相关的代表性增量贡献。\n在项目开发期间，我队积极与flexkv开发者沟通，并累计形成 8 项公开开发记录，其中包括 6 项已合并 PR、1 项待合并 PR 和 1 项 Issue 讨论，体现了我队对项目底层机制的持续投入。",
+          "text": "本项目选择性参考了部分开源项目FlexKV 的总体思路，但并非整体照搬；\n本页展示与版本适配、任务管理和布局解耦相关的代表性增量贡献。\n在项目开发期间，我队积极与flexkv开发者沟通，并累计形成 8 项公开开发记录，其中包括 6 项已合并 PR、1 项待合并 PR 和 1 项 Issue 讨论，体现了我队对项目底层机制的持续投入。"
+        },
+        {
+          "slot_id": "s14_sh8",
+          "old_text": "1",
+          "text": "1"
+        },
+        {
+          "slot_id": "s14_sh9",
+          "old_text": "vLLM 0.23 版本布局适配",
+          "text": "vLLM 0.23 版本布局适配"
+        },
+        {
+          "slot_id": "s14_sh10",
+          "old_text": "• 面向非 MLA 场景新增 `LAYERBLOCK` 路径，适配 GPU KV Cache 新布局\n• 用 stride / pitch 描述布局差异，避免将旧版布局假设写死在实现中",
+          "text": "• 面向非 MLA 场景新增 `LAYERBLOCK` 路径，适配 GPU KV Cache 新布局\n• 用 stride / pitch 描述布局差异，避免将旧版布局假设写死在实现中"
+        },
+        {
+          "slot_id": "s14_sh14",
+          "old_text": "2",
+          "text": "2"
+        },
+        {
+          "slot_id": "s14_sh15",
+          "old_text": "批处理任务生命周期重构",
+          "text": "批处理任务生命周期重构"
+        },
+        {
+          "slot_id": "s14_sh16",
+          "old_text": "• 下层与上层共同跟踪 merged task，修正“子任务视角等待”错配\n• 降低状态丢失、任务泄漏与完成通知错位风险",
+          "text": "• 下层与上层共同跟踪 merged task，修正“子任务视角等待”错配\n• 降低状态丢失、任务泄漏与完成通知错位风险"
+        },
+        {
+          "slot_id": "s14_sh20",
+          "old_text": "3",
+          "text": "3"
+        },
+        {
+          "slot_id": "s14_sh21",
+          "old_text": "同步 GET 完成清理机制",
+          "text": "同步 GET 完成清理机制"
+        },
+        {
+          "slot_id": "s14_sh22",
+          "old_text": "• 为 `complete=false` 任务增加标志位，区分“已被上层查询”状态\n• 真正完成时可立即清理字典项，而非长期滞留等待超时",
+          "text": "• 为 `complete=false` 任务增加标志位，区分“已被上层查询”状态\n• 真正完成时可立即清理字典项，而非长期滞留等待超时"
+        },
+        {
+          "slot_id": "s14_sh26",
+          "old_text": "4",
+          "text": "4"
+        },
+        {
+          "slot_id": "s14_sh27",
+          "old_text": "CPU / SSD 异构 layout 解耦",
+          "text": "CPU / SSD 异构 layout 解耦"
+        },
+        {
+          "slot_id": "s14_sh28",
+          "old_text": "• SSD 固定 `BLOCKFIRST`，CPU 保持上层访问友好的布局\n• 借助 `preadv/pwritev` 连接离散内存与连续磁盘区域",
+          "text": "• SSD 固定 `BLOCKFIRST`，CPU 保持上层访问友好的布局\n• 借助 `preadv/pwritev` 连接离散内存与连续磁盘区域"
+        },
+        {
+          "slot_id": "s14_sh33",
+          "old_text": "15",
+          "text": "16"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 15,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s15_sh4",
+          "old_text": "创新点与增量贡献（2/2）",
+          "text": "创新点与增量贡献（2/2）"
+        },
+        {
+          "slot_id": "s15_sh5",
+          "old_text": "本页展示与传输热路径、内存池行为和工程边界增强相关的补充增量贡献。",
+          "text": "本页展示与传输热路径、内存池行为和工程边界增强相关的补充增量贡献。"
+        },
+        {
+          "slot_id": "s15_sh8",
+          "old_text": "5",
+          "text": "5"
+        },
+        {
+          "slot_id": "s15_sh9",
+          "old_text": "传输类封装与初始化前移",
+          "text": "传输类封装与初始化前移"
+        },
+        {
+          "slot_id": "s15_sh10",
+          "old_text": "• 将 SSD↔CPU、CPU↔GPU 传输封装为可复用 C++ 类，在 worker 初始化时完成参数准备\n• 减少每次传输重复计算步长、指针与文件参数的调用开销",
+          "text": "• 将 SSD↔CPU、CPU↔GPU 传输封装为可复用 C++ 类，在 worker 初始化时完成参数准备\n• 减少每次传输重复计算步长、指针与文件参数的调用开销"
+        },
+        {
+          "slot_id": "s15_sh14",
+          "old_text": "6",
+          "text": "6"
+        },
+        {
+          "slot_id": "s15_sh15",
+          "old_text": "底层 2D 传输实现优化",
+          "text": "底层 2D 传输实现优化"
+        },
+        {
+          "slot_id": "s15_sh16",
+          "old_text": "• 调整 GPU/CPU 底层 2D 传输函数实现方式，改为更适合当前场景的双层循环组织\n• 属于对 FlexKV 原始热路径实现的本地化工程优化",
+          "text": "• 调整 GPU/CPU 底层 2D 传输函数实现方式，改为更适合当前场景的双层循环组织\n• 属于对 FlexKV 原始热路径实现的本地化工程优化"
+        },
+        {
+          "slot_id": "s15_sh20",
+          "old_text": "7",
+          "text": "7"
+        },
+        {
+          "slot_id": "s15_sh21",
+          "old_text": "mempool 回收感知增强",
+          "text": "mempool 回收感知增强"
+        },
+        {
+          "slot_id": "s15_sh22",
+          "old_text": "• 为释放后的块增加即时可感知标志，分配阶段可更早触发重统计\n• 面向“大量申请、较少释放”的推理负载场景做工程性优化探索",
+          "text": "• 为释放后的块增加即时可感知标志，分配阶段可更早触发重统计\n• 面向“大量申请、较少释放”的推理负载场景做工程性优化探索"
+        },
+        {
+          "slot_id": "s15_sh26",
+          "old_text": "8",
+          "text": "8"
+        },
+        {
+          "slot_id": "s15_sh27",
+          "old_text": "非整体照搬",
+          "text": "非整体照搬"
+        },
+        {
+          "slot_id": "s15_sh28",
+          "old_text": "• 当前实现聚焦单机单卡、vLLM V1 connector 与 GPU/CPU/SSD 三层缓存管理",
+          "text": "• 当前实现聚焦单机单卡、vLLM V1 connector 与 GPU/CPU/SSD 三层缓存管理"
+        },
+        {
+          "slot_id": "s15_sh33",
+          "old_text": "16",
+          "text": "17"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 16,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s16_sh4",
+          "old_text": "AI 工具使用说明与披露",
+          "text": "AI 工具使用说明与披露"
+        },
+        {
+          "slot_id": "s16_sh5",
+          "old_text": "本队将 AI 定位为辅助工具，而非替代成员实现的主体",
+          "text": "本队将 AI 定位为辅助工具，而非替代成员实现的主体"
+        },
+        {
+          "slot_id": "s16_sh8",
+          "old_text": "1",
+          "text": "1"
+        },
+        {
+          "slot_id": "s16_sh9",
+          "old_text": "当前使用场景",
+          "text": "当前使用场景"
+        },
+        {
+          "slot_id": "s16_sh10",
+          "old_text": "• 在写项目测试脚本时，我队使用了 AI 助手辅助，告诉ai思路后，让ai编写，人工复核\n• 使用模型：claude",
+          "text": "• 在写项目测试脚本时，我队使用了 AI 助手辅助，告诉ai思路后，让ai编写，人工复核\n• 使用模型：claude"
+        },
+        {
+          "slot_id": "s16_sh14",
+          "old_text": "2",
+          "text": "2"
+        },
+        {
+          "slot_id": "s16_sh15",
+          "old_text": "人工复核原则",
+          "text": "人工复核原则"
+        },
+        {
+          "slot_id": "s16_sh16",
+          "old_text": "• AI 输出内容由本队成员结合代码实现和实验结果进行人工核对\n• 所有技术表述、测试结论和答辩内容均以人工复核结果为准",
+          "text": "• AI 输出内容由本队成员结合代码实现和实验结果进行人工核对\n• 所有技术表述、测试结论和答辩内容均以人工复核结果为准"
+        },
+        {
+          "slot_id": "s16_sh27",
+          "old_text": "记录留存",
+          "text": "记录留存"
+        },
+        {
+          "slot_id": "s16_sh28",
+          "old_text": "• 当前已额外整理 AI 使用文件，见 `miniflex/docs/test_overview.md`",
+          "text": "• 当前已额外整理 AI 使用文件，见 `miniflex/docs/test_overview.md`"
+        },
+        {
+          "slot_id": "s16_sh26",
+          "old_text": "4",
+          "text": "4"
+        },
+        {
+          "slot_id": "s16_sh33",
+          "old_text": "17",
+          "text": "18"
+        },
+        {
+          "slot_id": "s16_sh37",
+          "old_text": "3",
+          "text": "3"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 17,
+      "purpose": "content_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s17_sh4",
+          "old_text": "成员分工",
+          "text": "成员分工"
+        },
+        {
+          "slot_id": "s17_sh8",
+          "old_text": "A",
+          "text": "A"
+        },
+        {
+          "slot_id": "s17_sh9",
+          "old_text": "井光成",
+          "text": "井光成"
+        },
+        {
+          "slot_id": "s17_sh10",
+          "old_text": "方案设计和代码实现",
+          "text": "方案设计和代码实现"
+        },
+        {
+          "slot_id": "s17_sh11",
+          "old_text": "• 负责系统方案设计\n• 推进核心模块实现\n• 打通接入与执行链路",
+          "text": "• 负责系统方案设计\n• 推进核心模块实现\n• 打通接入与执行链路"
+        },
+        {
+          "slot_id": "s17_sh15",
+          "old_text": "B",
+          "text": "B"
+        },
+        {
+          "slot_id": "s17_sh16",
+          "old_text": "祁馨叶",
+          "text": "祁馨叶"
+        },
+        {
+          "slot_id": "s17_sh17",
+          "old_text": "文档和资料的搜集",
+          "text": "文档和资料的搜集"
+        },
+        {
+          "slot_id": "s17_sh18",
+          "old_text": "• 负责文档整理与阅读\n• 支撑赛题信息梳理\n• 协同汇报材料组织",
+          "text": "• 负责文档整理与阅读\n• 支撑赛题信息梳理\n• 协同汇报材料组织"
+        },
+        {
+          "slot_id": "s17_sh22",
+          "old_text": "C",
+          "text": "C"
+        },
+        {
+          "slot_id": "s17_sh23",
+          "old_text": "徐子淳",
+          "text": "徐子淳"
+        },
+        {
+          "slot_id": "s17_sh24",
+          "old_text": "搜集资料，测试",
+          "text": "搜集资料，测试"
+        },
+        {
+          "slot_id": "s17_sh25",
+          "old_text": "• 负责测试与数据整理\n• 协助资料搜集与比对\n• 支撑结果页证据整理",
+          "text": "• 负责测试与数据整理\n• 协助资料搜集与比对\n• 支撑结果页证据整理"
+        },
+        {
+          "slot_id": "s17_sh27",
+          "old_text": "15",
+          "text": "19"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    },
+    {
+      "source_slide": 18,
+      "purpose": "ending_candidate",
+      "layout_rationale": {
+        "layout_pattern": "",
+        "why_fit": "",
+        "risk": ""
+      },
+      "replacements": [
+        {
+          "slot_id": "s18_sh12",
+          "old_text": "感谢聆听",
+          "text": "感谢聆听"
+        },
+        {
+          "slot_id": "s18_sh19",
+          "old_text": "THANKS",
+          "text": "THANKS"
+        }
+      ],
+      "table_edits": [],
+      "chart_edits": []
+    }
+  ]
+}

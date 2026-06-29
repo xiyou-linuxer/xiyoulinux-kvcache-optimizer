@@ -1,0 +1,12 @@
+{
+  "schema": "template_fill_pptx_validate.v1",
+  "project": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629",
+  "export": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629\\exports\\模版_时间线新增_20260629_113156.pptx",
+  "readback": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629\\validation\\readback.md",
+  "summary": {
+    "ok": 21,
+    "warn": 0,
+    "error": 0
+  },
+  "results": []
+}

@@ -1,0 +1,4554 @@
+{
+  "schema": "template_fill_pptx_library.v1",
+  "source_pptx": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629\\sources\\模版.pptx",
+  "slide_count": 18,
+  "canvas_px": {
+    "width": 1280,
+    "height": 720
+  },
+  "slides": [
+    {
+      "slide_index": 1,
+      "page_type": "cover_candidate",
+      "text_summary": "面向AI推理负载的异构存储管理系统优化\n汇报队伍：古法编程继承人",
+      "slots": [
+        {
+          "slot_id": "s01_sh14",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 0,
+            "y": 548,
+            "width": 1279,
+            "height": 172
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s01_sh28",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 494,
+            "y": 0,
+            "width": 292,
+            "height": 322
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s01_sh8",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 526,
+            "y": 95,
+            "width": 267,
+            "height": 267
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s01_sh9",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 542,
+            "y": 111,
+            "width": 232,
+            "height": 232
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s01_sh15",
+          "role": "label_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 0,
+            "y": 530,
+            "width": 1279,
+            "height": 8
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s01_sh16",
+          "role": "label_candidate",
+          "text": "面向AI推理负载的异构存储管理系统优化",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 119,
+            "y": 308,
+            "width": 1051,
+            "height": 184
+          },
+          "text_metrics": {
+            "font_size_px": 72.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s01_sh20",
+          "role": "label_candidate",
+          "text": "汇报队伍：古法编程继承人",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 266,
+            "y": 548,
+            "width": 714,
+            "height": 137
+          },
+          "text_metrics": {
+            "font_size_px": 26.67,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s01_sh17",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1279,
+            "height": 522
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 2,
+      "page_type": "toc_candidate",
+      "text_summary": "目录\n1\n项目背景与赛题目标\n说明问题来源、赛题任务和本项目的切入点。\n2\n系统设计与关键机制\n介绍 MiniFlexKV 的接入方式、模块分层与关键实现机制。\n3\n项目进展与实验成果\n呈现当前完成情况、正确性验证和性能结果。\n4\n成员分工与总结\n收束本阶段汇报内容，并说明团队职责分工。\n02",
+      "slots": [
+        {
+          "slot_id": "s02_sh5",
+          "role": "title_candidate",
+          "text": "目录",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 88,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh9",
+          "role": "label_candidate",
+          "text": "1",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 208,
+            "width": 14,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh10",
+          "role": "label_candidate",
+          "text": "项目背景与赛题目标",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 188,
+            "width": 289,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh11",
+          "role": "label_candidate",
+          "text": "说明问题来源、赛题任务和本项目的切入点。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 227,
+            "width": 468,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh15",
+          "role": "label_candidate",
+          "text": "2",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 324,
+            "width": 14,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh16",
+          "role": "label_candidate",
+          "text": "系统设计与关键机制",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 304,
+            "width": 289,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh17",
+          "role": "label_candidate",
+          "text": "介绍 MiniFlexKV 的接入方式、模块分层与关键实现机制。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 343,
+            "width": 611,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh21",
+          "role": "label_candidate",
+          "text": "3",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 440,
+            "width": 14,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh22",
+          "role": "label_candidate",
+          "text": "项目进展与实验成果",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 420,
+            "width": 289,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh23",
+          "role": "label_candidate",
+          "text": "呈现当前完成情况、正确性验证和性能结果。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 459,
+            "width": 468,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh27",
+          "role": "label_candidate",
+          "text": "4",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 556,
+            "width": 14,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh28",
+          "role": "label_candidate",
+          "text": "成员分工与总结",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 536,
+            "width": 225,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh29",
+          "role": "label_candidate",
+          "text": "收束本阶段汇报内容，并说明团队职责分工。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 165,
+            "y": 575,
+            "width": 468,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s02_sh31",
+          "role": "label_candidate",
+          "text": "02",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 3,
+      "page_type": "content_candidate",
+      "text_summary": "项目背景\n随着上下文长度增长，KV Cache 正在成为 LLM 推理中最突出的显存占用来源。\n问题来源\n• LLM 推理需要保存历史 token 的 Key-Value 缓存，以减少重复 Attention 计算。\n• 当上下文从 2K、8K 增长到 16K、32K 甚至更高时，KV Cache 会近似线性膨胀。\n• 在资源受限设备上，KV Cache 会逐渐挤占模型权重、激活与运行时调度所需要的显存预算。\n显存压力的直观变化\n2K\n8K\n16K\n32K+\n高\n低\n上下文越长，缓存显存压力越大\n03",
+      "slots": [
+        {
+          "slot_id": "s03_sh4",
+          "role": "title_candidate",
+          "text": "项目背景",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 173,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh5",
+          "role": "title_candidate",
+          "text": "随着上下文长度增长，KV Cache 正在成为 LLM 推理中最突出的显存占用来源。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1073,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh7",
+          "role": "label_candidate",
+          "text": "问题来源",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 91,
+            "y": 194,
+            "width": 130,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh8",
+          "role": "body_candidate",
+          "text": "• LLM 推理需要保存历史 token 的 Key-Value 缓存，以减少重复 Attention 计算。\n• 当上下文从 2K、8K 增长到 16K、32K 甚至更高时，KV Cache 会近似线性膨胀。\n• 在资源受限设备上，KV Cache 会逐渐挤占模型权重、激活与运行时调度所需要的显存预算。",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 91,
+            "y": 254,
+            "width": 472,
+            "height": 255
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s03_sh10",
+          "role": "label_candidate",
+          "text": "显存压力的直观变化",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 661,
+            "y": 194,
+            "width": 289,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh17",
+          "role": "label_candidate",
+          "text": "2K",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 768,
+            "y": 571,
+            "width": 24,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh18",
+          "role": "label_candidate",
+          "text": "8K",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 866,
+            "y": 571,
+            "width": 24,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh19",
+          "role": "label_candidate",
+          "text": "16K",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 959,
+            "y": 571,
+            "width": 35,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh20",
+          "role": "label_candidate",
+          "text": "32K+",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1051,
+            "y": 571,
+            "width": 46,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh21",
+          "role": "label_candidate",
+          "text": "高",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 663,
+            "y": 271,
+            "width": 21,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh22",
+          "role": "label_candidate",
+          "text": "低",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 661,
+            "y": 539,
+            "width": 21,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh23",
+          "role": "label_candidate",
+          "text": "上下文越长，缓存显存压力越大",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 678,
+            "y": 627,
+            "width": 328,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s03_sh25",
+          "role": "label_candidate",
+          "text": "03",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 4,
+      "page_type": "content_candidate",
+      "text_summary": "赛题任务与目标\n关注围绕监控、迁移、分配与透明集成形成系统方案\n任务一\n监控访问模式，定义块级热度\n观察访问频率、最近访问时间等信号，为 KV Cache 的冷热分层提供基础依据。\n任务二\n热留显存，温迁内存，冷迁外存\n根据访问行为在 GPU、CPU、SSD 之间组织动态迁移与命中后回填。\n任务三\n设计块级存储分配与碎片控制\n以 block 为单位组织存储，减少动态增长带来的显存和内存碎片问题。\n目标\n尽量少改框架，提升吞吐并降低等待\n在尽量透明集成的前提下，支持更长上下文，并减少 GPU 等待迁移的时间。\n04",
+      "slots": [
+        {
+          "slot_id": "s04_sh4",
+          "role": "title_candidate",
+          "text": "赛题任务与目标",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 300,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh5",
+          "role": "title_candidate",
+          "text": "关注围绕监控、迁移、分配与透明集成形成系统方案",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 644,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh7",
+          "role": "label_candidate",
+          "text": "任务一",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 195,
+            "width": 75,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh8",
+          "role": "label_candidate",
+          "text": "监控访问模式，定义块级热度",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 228,
+            "width": 388,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh9",
+          "role": "label_candidate",
+          "text": "观察访问频率、最近访问时间等信号，为 KV Cache 的冷热分层提供基础依据。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 285,
+            "width": 392,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh12",
+          "role": "label_candidate",
+          "text": "任务二",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 195,
+            "width": 75,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh13",
+          "role": "label_candidate",
+          "text": "热留显存，温迁内存，冷迁外存",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 228,
+            "width": 418,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh14",
+          "role": "label_candidate",
+          "text": "根据访问行为在 GPU、CPU、SSD 之间组织动态迁移与命中后回填。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 285,
+            "width": 366,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh17",
+          "role": "label_candidate",
+          "text": "任务三",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 415,
+            "width": 75,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh18",
+          "role": "label_candidate",
+          "text": "设计块级存储分配与碎片控制",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 448,
+            "width": 388,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh19",
+          "role": "label_candidate",
+          "text": "以 block 为单位组织存储，减少动态增长带来的显存和内存碎片问题。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 505,
+            "width": 400,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh22",
+          "role": "label_candidate",
+          "text": "目标",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 415,
+            "width": 51,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh23",
+          "role": "label_candidate",
+          "text": "尽量少改框架，提升吞吐并降低等待",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 448,
+            "width": 477,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh24",
+          "role": "label_candidate",
+          "text": "在尽量透明集成的前提下，支持更长上下文，并减少 GPU 等待迁移的时间。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 505,
+            "width": 381,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s04_sh26",
+          "role": "label_candidate",
+          "text": "04",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 5,
+      "page_type": "content_candidate",
+      "text_summary": "总体思路\n本项目以分层 KV Cache 为主线，在 vLLM 推理流程中实现可接入、可迁移、可复用、可验证的缓存管理能力。\n用最少侵入的接入方式，把 KV 数据组织成可管理、可迁移、可复用的分层系统\n接入层面\n以 vLLM V1 KV connector为入口，尽量减少对原推理框架的侵入。\n体系层面\n围绕 GPU、CPU、SSD三层缓存路径组织数据的下沉、回填与复用。\n验证层面\n从正确性、长上下文加速、超容量场景和混合负载表现建立证据链。\n05",
+      "slots": [
+        {
+          "slot_id": "s05_sh4",
+          "role": "title_candidate",
+          "text": "总体思路",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 173,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh5",
+          "role": "title_candidate",
+          "text": "本项目以分层 KV Cache 为主线，在 vLLM 推理流程中实现可接入、可迁移、可复用、可验证的缓存管理能力。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 103,
+            "width": 1181,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh7",
+          "role": "label_candidate",
+          "text": "用最少侵入的接入方式，把 KV 数据组织成可管理、可迁移、可复用的分层系统",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 123,
+            "y": 206,
+            "width": 1045,
+            "height": 82
+          },
+          "text_metrics": {
+            "font_size_px": 34.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh9",
+          "role": "label_candidate",
+          "text": "接入层面",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 135,
+            "y": 370,
+            "width": 130,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh10",
+          "role": "label_candidate",
+          "text": "以 vLLM V1 KV connector为入口，尽量减少对原推理框架的侵入。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 135,
+            "y": 426,
+            "width": 272,
+            "height": 103
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh13",
+          "role": "label_candidate",
+          "text": "体系层面",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 517,
+            "y": 370,
+            "width": 130,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh14",
+          "role": "label_candidate",
+          "text": "围绕 GPU、CPU、SSD三层缓存路径组织数据的下沉、回填与复用。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 517,
+            "y": 426,
+            "width": 255,
+            "height": 103
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh17",
+          "role": "label_candidate",
+          "text": "验证层面",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 899,
+            "y": 370,
+            "width": 130,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh18",
+          "role": "label_candidate",
+          "text": "从正确性、长上下文加速、超容量场景和混合负载表现建立证据链。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 898,
+            "y": 426,
+            "width": 278,
+            "height": 103
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s05_sh20",
+          "role": "label_candidate",
+          "text": "05",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 6,
+      "page_type": "content_candidate",
+      "text_summary": "总体架构设计\nMiniFlexKV 把接入、调度、缓存、存储和传输拆成清晰分层，以保持系统边界可控。\nvLLM V1 Connector 接入层\nScheduler Connector\n匹配、任务生成、状态轮询\nWorker Connector\n注册 GPU KV cache，承接执行端交互\nKVTaskEngine / KVTaskManager\n连接逻辑缓存规划与物理传输执行\nCache Engine\n块级匹配、分配、淘汰与层间逻辑\nStorage Engine\nGPU / CPU / SSD 三类物理句柄\nTransfer Engine\n组织 D2H / H2D / H2DISK / DISK2H\n06",
+      "slots": [
+        {
+          "slot_id": "s06_sh4",
+          "role": "title_candidate",
+          "text": "总体架构设计",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 258,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh5",
+          "role": "title_candidate",
+          "text": "MiniFlexKV 把接入、调度、缓存、存储和传输拆成清晰分层，以保持系统边界可控。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1133,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh7",
+          "role": "label_candidate",
+          "text": "vLLM V1 Connector 接入层",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 425,
+            "y": 201,
+            "width": 430,
+            "height": 49
+          },
+          "text_metrics": {
+            "font_size_px": 32.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh10",
+          "role": "label_candidate",
+          "text": "Scheduler Connector",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 234,
+            "y": 304,
+            "width": 321,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh11",
+          "role": "label_candidate",
+          "text": "匹配、任务生成、状态轮询",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 266,
+            "y": 343,
+            "width": 256,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh14",
+          "role": "label_candidate",
+          "text": "Worker Connector",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 745,
+            "y": 304,
+            "width": 283,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh15",
+          "role": "label_candidate",
+          "text": "注册 GPU KV cache，承接执行端交互",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 706,
+            "y": 343,
+            "width": 359,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh18",
+          "role": "label_candidate",
+          "text": "KVTaskEngine / KVTaskManager",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 398,
+            "y": 439,
+            "width": 483,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh19",
+          "role": "label_candidate",
+          "text": "连接逻辑缓存规划与物理传输执行",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 480,
+            "y": 476,
+            "width": 320,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh22",
+          "role": "label_candidate",
+          "text": "Cache Engine",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 178,
+            "y": 566,
+            "width": 185,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh23",
+          "role": "label_candidate",
+          "text": "块级匹配、分配、淘汰与层间逻辑",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 111,
+            "y": 603,
+            "width": 320,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh26",
+          "role": "label_candidate",
+          "text": "Storage Engine",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 531,
+            "y": 566,
+            "width": 218,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh27",
+          "role": "label_candidate",
+          "text": "GPU / CPU / SSD 三类物理句柄",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 487,
+            "y": 603,
+            "width": 305,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh30",
+          "role": "label_candidate",
+          "text": "Transfer Engine",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 892,
+            "y": 566,
+            "width": 234,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh31",
+          "role": "label_candidate",
+          "text": "组织 D2H / H2D / H2DISK / DISK2H",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 839,
+            "y": 603,
+            "width": 341,
+            "height": 31
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s06_sh33",
+          "role": "label_candidate",
+          "text": "06",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 7,
+      "page_type": "content_candidate",
+      "text_summary": "关键机制设计\n逻辑缓存管理\n以块级为基本单位，维护匹配、分配、淘汰、ready / pending 状态和层间缓存规划。\n物理存储与数据搬运\n统一管理 GPU、CPU、SSD 三类存储句柄，并按依赖顺序执行跨层搬运操作。\n任务编排\n通过 KVTaskEngine 把“命中规划”与“传输执行”连接为统一生命周期。\n布局自适配\n通过 GPU KV 布局自探测兼容不同版本vLLM 的物理缓存组织方式。\n07",
+      "slots": [
+        {
+          "slot_id": "s07_sh4",
+          "role": "title_candidate",
+          "text": "关键机制设计",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 258,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh7",
+          "role": "label_candidate",
+          "text": "逻辑缓存管理",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 200,
+            "width": 180,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh8",
+          "role": "label_candidate",
+          "text": "以块级为基本单位，维护匹配、分配、淘汰、ready / pending 状态和层间缓存规划。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 255,
+            "width": 442,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh11",
+          "role": "label_candidate",
+          "text": "物理存储与数据搬运",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 200,
+            "width": 269,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh12",
+          "role": "label_candidate",
+          "text": "统一管理 GPU、CPU、SSD 三类存储句柄，并按依赖顺序执行跨层搬运操作。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 255,
+            "width": 410,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh15",
+          "role": "label_candidate",
+          "text": "任务编排",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 436,
+            "width": 121,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh16",
+          "role": "label_candidate",
+          "text": "通过 KVTaskEngine 把“命中规划”与“传输执行”连接为统一生命周期。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 491,
+            "width": 355,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh19",
+          "role": "label_candidate",
+          "text": "布局自适配",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 436,
+            "width": 151,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh20",
+          "role": "label_candidate",
+          "text": "通过 GPU KV 布局自探测兼容不同版本vLLM 的物理缓存组织方式。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 699,
+            "y": 491,
+            "width": 368,
+            "height": 68
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s07_sh22",
+          "role": "label_candidate",
+          "text": "07",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 8,
+      "page_type": "content_candidate",
+      "text_summary": "项目开发进度与任务推进\n当前项目已经从赛题分析推进到架构实现、实验验证和汇报整理阶段，路径清晰且阶段成果明确。\n阶段\n主要任务\n负责人\n状态\n阶段一\n赛题分析、资料搜集、技术路线初步调研\n祁馨叶 / 徐子淳\n已完成\n阶段二\n方案设计、系统边界划分、模块分层与实现路径确定\n井光成\n已完成\n阶段三\nvLLM 接入、缓存管理、传输链路与布局适配实现，核心模块开发\n井光成\n已完成\n阶段四\n正确性验证、性能测试、结果整理与汇报材料组织\n徐子淳 / 祁馨叶\n已完成\n09",
+      "slots": [
+        {
+          "slot_id": "s08_sh4",
+          "role": "title_candidate",
+          "text": "项目开发进度与任务推进",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 470,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh5",
+          "role": "title_candidate",
+          "text": "当前项目已经从赛题分析推进到架构实现、实验验证和汇报整理阶段，路径清晰且阶段成果明确。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1278,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh7",
+          "role": "label_candidate",
+          "text": "阶段",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 192,
+            "width": 53,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh8",
+          "role": "label_candidate",
+          "text": "主要任务",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 409,
+            "y": 192,
+            "width": 104,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh9",
+          "role": "label_candidate",
+          "text": "负责人",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 789,
+            "y": 192,
+            "width": 78,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh10",
+          "role": "label_candidate",
+          "text": "状态",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1039,
+            "y": 192,
+            "width": 53,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh12",
+          "role": "label_candidate",
+          "text": "阶段一",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 264,
+            "width": 78,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh13",
+          "role": "label_candidate",
+          "text": "赛题分析、资料搜集、技术路线初步调研",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 277,
+            "y": 257,
+            "width": 422,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh14",
+          "role": "label_candidate",
+          "text": "祁馨叶 / 徐子淳",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 789,
+            "y": 265,
+            "width": 168,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh16",
+          "role": "label_candidate",
+          "text": "已完成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1050,
+            "y": 262,
+            "width": 72,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh19",
+          "role": "label_candidate",
+          "text": "阶段二",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 347,
+            "width": 78,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh20",
+          "role": "label_candidate",
+          "text": "方案设计、系统边界划分、模块分层与实现路径确定",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 277,
+            "y": 341,
+            "width": 472,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh21",
+          "role": "label_candidate",
+          "text": "井光成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 789,
+            "y": 353,
+            "width": 72,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh23",
+          "role": "label_candidate",
+          "text": "已完成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1050,
+            "y": 350,
+            "width": 72,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh26",
+          "role": "label_candidate",
+          "text": "阶段三",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 440,
+            "width": 78,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh27",
+          "role": "label_candidate",
+          "text": "vLLM 接入、缓存管理、传输链路与布局适配实现，核心模块开发",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 275,
+            "y": 432,
+            "width": 477,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh28",
+          "role": "label_candidate",
+          "text": "井光成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 789,
+            "y": 441,
+            "width": 72,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh30",
+          "role": "label_candidate",
+          "text": "已完成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1053,
+            "y": 438,
+            "width": 66,
+            "height": 27
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh33",
+          "role": "label_candidate",
+          "text": "阶段四",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 109,
+            "y": 528,
+            "width": 78,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh34",
+          "role": "label_candidate",
+          "text": "正确性验证、性能测试、结果整理与汇报材料组织",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 277,
+            "y": 517,
+            "width": 474,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh35",
+          "role": "label_candidate",
+          "text": "徐子淳 / 祁馨叶",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 789,
+            "y": 529,
+            "width": 168,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh37",
+          "role": "label_candidate",
+          "text": "已完成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1050,
+            "y": 526,
+            "width": 72,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s08_sh39",
+          "role": "label_candidate",
+          "text": "09",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 9,
+      "page_type": "content_candidate",
+      "text_summary": "当前完成情况总览\n赛题要求\n当前实现对应能力\n访问模式 / 热度\n已具备块级匹配、缓存行为组织与层间状态管理基础，可承载热度定义与访问观测逻辑。\n热 / 温 / 冷迁移\n已完成 GPU / CPU / SSD 分层缓存路径，以及低层命中后的回填与溢出承接能力。\n分配器 / 碎片控制\n当前方案以 block 为基本单位组织缓存管理，更贴近页式缓存布局和块级回收逻辑。\n08\n整体框架已完成单机单卡版本MiniFlexKV 整体骨架,并进行了正确性校验与主要性能实验整理。",
+      "slots": [
+        {
+          "slot_id": "s09_sh4",
+          "role": "title_candidate",
+          "text": "当前完成情况总览",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 320,
+            "height": 48
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh7",
+          "role": "label_candidate",
+          "text": "赛题要求",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 150,
+            "y": 213,
+            "width": 121,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh11",
+          "role": "label_candidate",
+          "text": "当前实现对应能力",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 658,
+            "y": 214,
+            "width": 240,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh15",
+          "role": "label_candidate",
+          "text": "访问模式 / 热度",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 332,
+            "width": 199,
+            "height": 40
+          },
+          "text_metrics": {
+            "font_size_px": 26.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh17",
+          "role": "label_candidate",
+          "text": "已具备块级匹配、缓存行为组织与层间状态管理基础，可承载热度定义与访问观测逻辑。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 368,
+            "y": 319,
+            "width": 820,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh20",
+          "role": "label_candidate",
+          "text": "热 / 温 / 冷迁移",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 436,
+            "width": 203,
+            "height": 40
+          },
+          "text_metrics": {
+            "font_size_px": 26.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh22",
+          "role": "label_candidate",
+          "text": "已完成 GPU / CPU / SSD 分层缓存路径，以及低层命中后的回填与溢出承接能力。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 368,
+            "y": 433,
+            "width": 885,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh25",
+          "role": "label_candidate",
+          "text": "分配器 / 碎片控制",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 540,
+            "width": 227,
+            "height": 40
+          },
+          "text_metrics": {
+            "font_size_px": 26.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh27",
+          "role": "label_candidate",
+          "text": "当前方案以 block 为基本单位组织缓存管理，更贴近页式缓存布局和块级回收逻辑。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 368,
+            "y": 540,
+            "width": 867,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh30",
+          "role": "label_candidate",
+          "text": "08",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s09_sh32",
+          "role": "body_candidate",
+          "text": "整体框架已完成单机单卡版本MiniFlexKV 整体骨架,并进行了正确性校验与主要性能实验整理。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 113,
+            "y": 596,
+            "width": 1054,
+            "height": 75
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 10,
+      "page_type": "content_candidate",
+      "text_summary": "成果一：功能与正确性\n当前实现已经证明系统能正确接入、正确搬运并在不同布局间保持 KV 数据一致。\n正确性检查项\n✓ 启动成功：8B + vLLM 0.23 +\nMiniFlex connector 正常工作\n✓ 补全正确：基础请求可得到\n合理输出，推理链路可用\n✓ KV 传输正确：PUT / GET 后\n`torch.equal` 逐字节相等\n✓ 布局一致：GPU ↔ CPU\n往返后字节一致\n证据 1：启动与补全链路\n系统能够在目标环境中成功启动，并完成从 connector 到推理输出的完整链路。\n证据 2：数据传输一致性\nPUT 把 GPU block 写入 CPU 层，GET 读回后可达到逐字节一致，说明基础搬运链路正确。\n证据 3：布局自适配成立\nGPU `LAYERBLOCK` 与 CPU `LAYERFIRST` 间往返保持一致，说明不同布局的适配逻辑成立。\n11",
+      "slots": [
+        {
+          "slot_id": "s10_sh4",
+          "role": "title_candidate",
+          "text": "成果一：功能与正确性",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 427,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh5",
+          "role": "title_candidate",
+          "text": "当前实现已经证明系统能正确接入、正确搬运并在不同布局间保持 KV 数据一致。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1122,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh7",
+          "role": "label_candidate",
+          "text": "正确性检查项",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 198,
+            "width": 193,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh8",
+          "role": "label_candidate",
+          "text": "✓ 启动成功：8B + vLLM 0.23 +",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 266,
+            "width": 355,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh9",
+          "role": "label_candidate",
+          "text": "MiniFlex connector 正常工作",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 131,
+            "y": 300,
+            "width": 331,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh10",
+          "role": "label_candidate",
+          "text": "✓ 补全正确：基础请求可得到",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 352,
+            "width": 315,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh11",
+          "role": "label_candidate",
+          "text": "合理输出，推理链路可用",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 131,
+            "y": 386,
+            "width": 270,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh12",
+          "role": "label_candidate",
+          "text": "✓ KV 传输正确：PUT / GET 后",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 438,
+            "width": 337,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh13",
+          "role": "label_candidate",
+          "text": "`torch.equal` 逐字节相等",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 131,
+            "y": 472,
+            "width": 299,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh14",
+          "role": "label_candidate",
+          "text": "✓ 布局一致：GPU ↔ CPU",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 524,
+            "width": 267,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh15",
+          "role": "label_candidate",
+          "text": "往返后字节一致",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 131,
+            "y": 558,
+            "width": 172,
+            "height": 35
+          },
+          "text_metrics": {
+            "font_size_px": 22.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh17",
+          "role": "label_candidate",
+          "text": "证据 1：启动与补全链路",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 200,
+            "width": 324,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh18",
+          "role": "label_candidate",
+          "text": "系统能够在目标环境中成功启动，并完成从 connector 到推理输出的完整链路。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 246,
+            "width": 586,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh21",
+          "role": "label_candidate",
+          "text": "证据 2：数据传输一致性",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 359,
+            "width": 324,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh22",
+          "role": "label_candidate",
+          "text": "PUT 把 GPU block 写入 CPU 层，GET 读回后可达到逐字节一致，说明基础搬运链路正确。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 408,
+            "width": 578,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh25",
+          "role": "label_candidate",
+          "text": "证据 3：布局自适配成立",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 517,
+            "width": 324,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh26",
+          "role": "label_candidate",
+          "text": "GPU `LAYERBLOCK` 与 CPU `LAYERFIRST` 间往返保持一致，说明不同布局的适配逻辑成立。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 619,
+            "y": 561,
+            "width": 579,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s10_sh28",
+          "role": "label_candidate",
+          "text": "11",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 11,
+      "page_type": "content_candidate",
+      "text_summary": "成果二：长上下文加速效果\n在长上下文场景中，MiniFlex 命中后可以显著减少全量重算开销，而且上下文越长收益越大。\n加速比（热态命中 vs 冷态重算）\n~1k\n~2k\n~4k\n~8k\n~15k\n~23k\n~30k\n1.63×\n2.02×\n2.76×\n4.06×\n6.81×\n7.71×\n9.32×\n结论\n• 加速收益随上下文长度\n持续扩大\n• 省下的重算比例从\n约 39% 提升到约 89%\n• 约 30k 上下文场景下，\nTTFT 从 3806 ms\n降到 408 ms\n12",
+      "slots": [
+        {
+          "slot_id": "s11_sh4",
+          "role": "title_candidate",
+          "text": "成果二：长上下文加速效果",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 512,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh5",
+          "role": "title_candidate",
+          "text": "在长上下文场景中，MiniFlex 命中后可以显著减少全量重算开销，而且上下文越长收益越大。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1241,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh7",
+          "role": "label_candidate",
+          "text": "加速比（热态命中 vs 冷态重算）",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 196,
+            "width": 439,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh18",
+          "role": "label_candidate",
+          "text": "~1k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 189,
+            "y": 577,
+            "width": 33,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh19",
+          "role": "label_candidate",
+          "text": "~2k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 285,
+            "y": 577,
+            "width": 33,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh20",
+          "role": "label_candidate",
+          "text": "~4k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 381,
+            "y": 577,
+            "width": 33,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh21",
+          "role": "label_candidate",
+          "text": "~8k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 477,
+            "y": 577,
+            "width": 33,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh22",
+          "role": "label_candidate",
+          "text": "~15k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 567,
+            "y": 577,
+            "width": 43,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh23",
+          "role": "label_candidate",
+          "text": "~23k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 663,
+            "y": 577,
+            "width": 43,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh24",
+          "role": "label_candidate",
+          "text": "~30k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 759,
+            "y": 577,
+            "width": 43,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh26",
+          "role": "label_candidate",
+          "text": "1.63×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 178,
+            "y": 486,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh27",
+          "role": "label_candidate",
+          "text": "2.02×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 274,
+            "y": 473,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh28",
+          "role": "label_candidate",
+          "text": "2.76×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 370,
+            "y": 448,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh29",
+          "role": "label_candidate",
+          "text": "4.06×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 466,
+            "y": 405,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh30",
+          "role": "label_candidate",
+          "text": "6.81×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 562,
+            "y": 314,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh31",
+          "role": "label_candidate",
+          "text": "7.71×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 658,
+            "y": 284,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh32",
+          "role": "label_candidate",
+          "text": "9.32×",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 754,
+            "y": 231,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh35",
+          "role": "label_candidate",
+          "text": "结论",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 975,
+            "y": 204,
+            "width": 62,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh36",
+          "role": "label_candidate",
+          "text": "• 加速收益随上下文长度",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 969,
+            "y": 273,
+            "width": 244,
+            "height": 27
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh37",
+          "role": "label_candidate",
+          "text": "持续扩大",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 983,
+            "y": 306,
+            "width": 95,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh38",
+          "role": "label_candidate",
+          "text": "• 省下的重算比例从",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 969,
+            "y": 359,
+            "width": 208,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh39",
+          "role": "label_candidate",
+          "text": "约 39% 提升到约 89%",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 975,
+            "y": 393,
+            "width": 226,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh40",
+          "role": "label_candidate",
+          "text": "• 约 30k 上下文场景下，",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 969,
+            "y": 445,
+            "width": 261,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh41",
+          "role": "label_candidate",
+          "text": "TTFT 从 3806 ms",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 983,
+            "y": 479,
+            "width": 186,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh42",
+          "role": "label_candidate",
+          "text": "降到 408 ms",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 983,
+            "y": 511,
+            "width": 131,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s11_sh44",
+          "role": "label_candidate",
+          "text": "12",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 12,
+      "page_type": "content_candidate",
+      "text_summary": "成果三：容量优势与 APC 对比\n一旦工作集超出 GPU 容量，MiniFlex 的 CPU-backed 复用路径会明显比原生 APC 更稳定。\nTTFT 对比（ms）\n95\n199\n684\n191\n700\n190\n~45k\n~75k\n~105k\nAPC\nMiniFlex\n关键信息\n• ~45k 工作集仍装得进      GPU 时，\nAPC 命中更快\n• 一旦工作集超过 GPU KV 容量，APC 迅速出现 100% miss\n• MiniFlex 通过 CPU 层承接溢出，仍维持约 190 ms 且0% miss\n13",
+      "slots": [
+        {
+          "slot_id": "s12_sh4",
+          "role": "title_candidate",
+          "text": "成果三：容量优势与 APC 对比",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 597,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh5",
+          "role": "title_candidate",
+          "text": "一旦工作集超出 GPU 容量，MiniFlex 的 CPU-backed 复用路径会明显比原生 APC 更稳定。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1214,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh7",
+          "role": "label_candidate",
+          "text": "TTFT 对比（ms）",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 196,
+            "width": 242,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh17",
+          "role": "label_candidate",
+          "text": "95",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 204,
+            "y": 503,
+            "width": 21,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh18",
+          "role": "label_candidate",
+          "text": "199",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 251,
+            "y": 465,
+            "width": 31,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh19",
+          "role": "label_candidate",
+          "text": "684",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 407,
+            "y": 283,
+            "width": 31,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh20",
+          "role": "label_candidate",
+          "text": "191",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 459,
+            "y": 468,
+            "width": 31,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh21",
+          "role": "label_candidate",
+          "text": "700",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 615,
+            "y": 277,
+            "width": 31,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh22",
+          "role": "label_candidate",
+          "text": "190",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 667,
+            "y": 469,
+            "width": 31,
+            "height": 26
+          },
+          "text_metrics": {
+            "font_size_px": 17.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh24",
+          "role": "label_candidate",
+          "text": "~45k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 219,
+            "y": 581,
+            "width": 43,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh25",
+          "role": "label_candidate",
+          "text": "~75k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 427,
+            "y": 581,
+            "width": 43,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh26",
+          "role": "label_candidate",
+          "text": "~105k",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 630,
+            "y": 581,
+            "width": 54,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh29",
+          "role": "label_candidate",
+          "text": "APC",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 191,
+            "y": 613,
+            "width": 35,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh31",
+          "role": "label_candidate",
+          "text": "MiniFlex",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 291,
+            "y": 613,
+            "width": 76,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh33",
+          "role": "label_candidate",
+          "text": "关键信息",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 955,
+            "y": 204,
+            "width": 121,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh34",
+          "role": "label_candidate",
+          "text": "• ~45k 工作集仍装得进      GPU 时，",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 947,
+            "y": 257,
+            "width": 250,
+            "height": 53
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh35",
+          "role": "label_candidate",
+          "text": "APC 命中更快",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1040,
+            "y": 283,
+            "width": 148,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh36",
+          "role": "label_candidate",
+          "text": "• 一旦工作集超过 GPU KV 容量，APC 迅速出现 100% miss",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 947,
+            "y": 345,
+            "width": 241,
+            "height": 107
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh38",
+          "role": "label_candidate",
+          "text": "• MiniFlex 通过 CPU 层承接溢出，仍维持约 190 ms 且0% miss",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 947,
+            "y": 465,
+            "width": 250,
+            "height": 107
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s12_sh41",
+          "role": "label_candidate",
+          "text": "13",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 13,
+      "page_type": "content_candidate",
+      "text_summary": "成果四：混合负载与指标体系\n在热点与长尾共存的真实负载里，MiniFlex 与 APC 组合能在速度与容量之间取得更平衡的效果。\n混合负载结果（TTFT, ms）\n配置\nhot\ntail\noverall\nAPC\n60\n707\n515\nMiniFlex\n103\n177\n153\nAPC + MiniFlex\n67\n188\n165\n结果解读\n• APC 更擅长热点数据留在 GPU 的极快命中\n• MiniFlex 更擅长长尾超容量场景的稳定复用\n• 两者叠加后更贴近真实业务的混合负载\n当前指标体系\n• 服务可用性：成功率、失败率\n• 核心性能：TTFT、TPOT、吞吐\n• 缓存行为：KV 使用率、prefix 命中\n• 资源压力：GPU / CPU 占用与上下文分档\n14",
+      "slots": [
+        {
+          "slot_id": "s13_sh4",
+          "role": "title_candidate",
+          "text": "成果四：混合负载与指标体系",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 554,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh5",
+          "role": "title_candidate",
+          "text": "在热点与长尾共存的真实负载里，MiniFlex 与 APC 组合能在速度与容量之间取得更平衡的效果。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 100,
+            "width": 1293,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh7",
+          "role": "label_candidate",
+          "text": "混合负载结果（TTFT, ms）",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 103,
+            "y": 196,
+            "width": 383,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh9",
+          "role": "label_candidate",
+          "text": "配置",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 158,
+            "y": 264,
+            "width": 48,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh10",
+          "role": "label_candidate",
+          "text": "hot",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 456,
+            "y": 264,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh11",
+          "role": "label_candidate",
+          "text": "tail",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 673,
+            "y": 264,
+            "width": 41,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh12",
+          "role": "label_candidate",
+          "text": "overall",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 896,
+            "y": 264,
+            "width": 80,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh14",
+          "role": "label_candidate",
+          "text": "APC",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 161,
+            "y": 313,
+            "width": 42,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh15",
+          "role": "label_candidate",
+          "text": "60",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 462,
+            "y": 313,
+            "width": 27,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh16",
+          "role": "label_candidate",
+          "text": "707",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 674,
+            "y": 313,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh17",
+          "role": "label_candidate",
+          "text": "515",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 916,
+            "y": 313,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh19",
+          "role": "label_candidate",
+          "text": "MiniFlex",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 136,
+            "y": 359,
+            "width": 93,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh20",
+          "role": "label_candidate",
+          "text": "103",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 456,
+            "y": 359,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh21",
+          "role": "label_candidate",
+          "text": "177",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 674,
+            "y": 359,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh22",
+          "role": "label_candidate",
+          "text": "153",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 916,
+            "y": 359,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh24",
+          "role": "label_candidate",
+          "text": "APC + MiniFlex",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 102,
+            "y": 405,
+            "width": 161,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh25",
+          "role": "label_candidate",
+          "text": "67",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 462,
+            "y": 405,
+            "width": 27,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh26",
+          "role": "label_candidate",
+          "text": "188",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 674,
+            "y": 405,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh27",
+          "role": "label_candidate",
+          "text": "165",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 916,
+            "y": 405,
+            "width": 40,
+            "height": 34
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh30",
+          "role": "label_candidate",
+          "text": "结果解读",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 104,
+            "y": 496,
+            "width": 121,
+            "height": 30
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh31",
+          "role": "label_candidate",
+          "text": "• APC 更擅长热点数据留在 GPU 的极快命中\n• MiniFlex 更擅长长尾超容量场景的稳定复用\n• 两者叠加后更贴近真实业务的混合负载",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 104,
+            "y": 536,
+            "width": 442,
+            "height": 102
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s13_sh34",
+          "role": "label_candidate",
+          "text": "当前指标体系",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 684,
+            "y": 509,
+            "width": 180,
+            "height": 32
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s13_sh35",
+          "role": "body_candidate",
+          "text": "• 服务可用性：成功率、失败率\n• 核心性能：TTFT、TPOT、吞吐\n• 缓存行为：KV 使用率、prefix 命中\n• 资源压力：GPU / CPU 占用与上下文分档",
+          "paragraph_count": 4,
+          "geometry": {
+            "x": 674,
+            "y": 543,
+            "width": 482,
+            "height": 136
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 4
+          }
+        },
+        {
+          "slot_id": "s13_sh37",
+          "role": "label_candidate",
+          "text": "14",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 14,
+      "page_type": "chapter_candidate",
+      "text_summary": "创新点与增量贡献（1/2）\n本项目选择性参考了部分开源项目FlexKV 的总体思路，但并非整体照搬；\n本页展示与版本适配、任务管理和布局解耦相关的代表性增量贡献。\n在项目开发期间，我队积极与flexkv开发者沟通，并累计形成 8 项公开开发记录，其中包括 6 项已合并 PR、1 项待合并 PR 和 1 项 Issue 讨论，体现了我队对项目底层机制的持续投入。\n1\nvLLM 0.23 版本布局适配\n• 面向非 MLA 场景新增 `LAYERBLOCK` 路径，适配 GPU KV Cache 新布局\n• 用 stride / pitch 描述布局差异，避免将旧版布局假设写死在实现中\n2\n批处理任务生命周期重构\n• 下层与上层共同跟踪 merged task，修正“子任务视角等待”错配\n• 降低状态丢失、任务泄漏与完成通知错位风险\n3\n同步 GET 完成清理机制\n• 为 `complete=false` 任务增加标志位，区分“已被上层查询”状态\n• 真正完成时可立即清理字典项，而非长期滞留等待超时\n4\nCPU / SSD 异构 layout 解耦\n• SSD 固定 `BLOCKFIRST`",
+      "slots": [
+        {
+          "slot_id": "s14_sh4",
+          "role": "title_candidate",
+          "text": "创新点与增量贡献（1/2）",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 497,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh5",
+          "role": "body_candidate",
+          "text": "本项目选择性参考了部分开源项目FlexKV 的总体思路，但并非整体照搬；\n本页展示与版本适配、任务管理和布局解耦相关的代表性增量贡献。\n在项目开发期间，我队积极与flexkv开发者沟通，并累计形成 8 项公开开发记录，其中包括 6 项已合并 PR、1 项待合并 PR 和 1 项 Issue 讨论，体现了我队对项目底层机制的持续投入。",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 55,
+            "y": 103,
+            "width": 1180,
+            "height": 152
+          },
+          "text_metrics": {
+            "font_size_px": 25.07,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s14_sh8",
+          "role": "label_candidate",
+          "text": "1",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 106,
+            "y": 219,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh9",
+          "role": "label_candidate",
+          "text": "vLLM 0.23 版本布局适配",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 211,
+            "width": 336,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh10",
+          "role": "label_candidate",
+          "text": "• 面向非 MLA 场景新增 `LAYERBLOCK` 路径，适配 GPU KV Cache 新布局\n• 用 stride / pitch 描述布局差异，避免将旧版布局假设写死在实现中",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 103,
+            "y": 241,
+            "width": 504,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s14_sh14",
+          "role": "label_candidate",
+          "text": "2",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 694,
+            "y": 219,
+            "width": 12,
+            "height": 18
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh15",
+          "role": "label_candidate",
+          "text": "批处理任务生命周期重构",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 733,
+            "y": 211,
+            "width": 317,
+            "height": 27
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh16",
+          "role": "label_candidate",
+          "text": "• 下层与上层共同跟踪 merged task，修正“子任务视角等待”错配\n• 降低状态丢失、任务泄漏与完成通知错位风险",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 691,
+            "y": 241,
+            "width": 504,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s14_sh20",
+          "role": "label_candidate",
+          "text": "3",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 106,
+            "y": 378,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh21",
+          "role": "label_candidate",
+          "text": "同步 GET 完成清理机制",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 369,
+            "width": 312,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh22",
+          "role": "label_candidate",
+          "text": "• 为 `complete=false` 任务增加标志位，区分“已被上层查询”状态\n• 真正完成时可立即清理字典项，而非长期滞留等待超时",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 103,
+            "y": 419,
+            "width": 510,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s14_sh26",
+          "role": "label_candidate",
+          "text": "4",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 691,
+            "y": 480,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh27",
+          "role": "label_candidate",
+          "text": "CPU / SSD 异构 layout 解耦",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 730,
+            "y": 471,
+            "width": 367,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s14_sh28",
+          "role": "label_candidate",
+          "text": "• SSD 固定 `BLOCKFIRST`，CPU 保持上层访问友好的布局\n• 借助 `preadv/pwritev` 连接离散内存与连续磁盘区域",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 688,
+            "y": 521,
+            "width": 514,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s14_sh33",
+          "role": "label_candidate",
+          "text": "15",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 15,
+      "page_type": "content_candidate",
+      "text_summary": "创新点与增量贡献（2/2）\n本页展示与传输热路径、内存池行为和工程边界增强相关的补充增量贡献。\n5\n传输类封装与初始化前移\n• 将 SSD↔CPU、CPU↔GPU 传输封装为可复用 C++ 类，在 worker 初始化时完成参数准备\n• 减少每次传输重复计算步长、指针与文件参数的调用开销\n6\n底层 2D 传输实现优化\n• 调整 GPU/CPU 底层 2D 传输函数实现方式，改为更适合当前场景的双层循环组织\n• 属于对 FlexKV 原始热路径实现的本地化工程优化\n7\nmempool 回收感知增强\n• 为释放后的块增加即时可感知标志，分配阶段可更早触发重统计\n• 面向“大量申请、较少释放”的推理负载场景做工程性优化探索\n8\n非整体照搬\n• 当前实现聚焦单机单卡、vLLM V1 connector 与 GPU/CPU/SSD 三层缓存管理\n16",
+      "slots": [
+        {
+          "slot_id": "s15_sh4",
+          "role": "title_candidate",
+          "text": "创新点与增量贡献（2/2）",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 497,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh5",
+          "role": "title_candidate",
+          "text": "本页展示与传输热路径、内存池行为和工程边界增强相关的补充增量贡献。",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 103,
+            "width": 876,
+            "height": 38
+          },
+          "text_metrics": {
+            "font_size_px": 25.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh8",
+          "role": "label_candidate",
+          "text": "5",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 106,
+            "y": 208,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh9",
+          "role": "label_candidate",
+          "text": "传输类封装与初始化前移",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 199,
+            "width": 317,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh10",
+          "role": "label_candidate",
+          "text": "• 将 SSD↔CPU、CPU↔GPU 传输封装为可复用 C++ 类，在 worker 初始化时完成参数准备\n• 减少每次传输重复计算步长、指针与文件参数的调用开销",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 103,
+            "y": 249,
+            "width": 508,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s15_sh14",
+          "role": "label_candidate",
+          "text": "6",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 694,
+            "y": 208,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh15",
+          "role": "label_candidate",
+          "text": "底层 2D 传输实现优化",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 733,
+            "y": 199,
+            "width": 295,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh16",
+          "role": "label_candidate",
+          "text": "• 调整 GPU/CPU 底层 2D 传输函数实现方式，改为更适合当前场景的双层循环组织\n• 属于对 FlexKV 原始热路径实现的本地化工程优化",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 682,
+            "y": 249,
+            "width": 530,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s15_sh20",
+          "role": "label_candidate",
+          "text": "7",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 106,
+            "y": 454,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh21",
+          "role": "label_candidate",
+          "text": "mempool 回收感知增强",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 445,
+            "width": 297,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh22",
+          "role": "label_candidate",
+          "text": "• 为释放后的块增加即时可感知标志，分配阶段可更早触发重统计\n• 面向“大量申请、较少释放”的推理负载场景做工程性优化探索",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 103,
+            "y": 487,
+            "width": 508,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s15_sh26",
+          "role": "label_candidate",
+          "text": "8",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 694,
+            "y": 454,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh27",
+          "role": "label_candidate",
+          "text": "非整体照搬",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 733,
+            "y": 445,
+            "width": 135,
+            "height": 33
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh28",
+          "role": "label_candidate",
+          "text": "• 当前实现聚焦单机单卡、vLLM V1 connector 与 GPU/CPU/SSD 三层缓存管理",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 682,
+            "y": 487,
+            "width": 526,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s15_sh33",
+          "role": "label_candidate",
+          "text": "16",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 16,
+      "page_type": "content_candidate",
+      "text_summary": "AI 工具使用说明与披露\n本队将 AI 定位为辅助工具，而非替代成员实现的主体\n1\n当前使用场景\n• 在写项目测试脚本时，我队使用了 AI 助手辅助，告诉ai思路后，让ai编写，人工复核\n• 使用模型：claude\n2\n人工复核原则\n• AI 输出内容由本队成员结合代码实现和实验结果进行人工核对\n• 所有技术表述、测试结论和答辩内容均以人工复核结果为准\n记录留存\n• 当前已额外整理 AI 使用文件，见 `miniflex/docs/test_overview.md`\n4\n17\n3",
+      "slots": [
+        {
+          "slot_id": "s16_sh4",
+          "role": "title_candidate",
+          "text": "AI 工具使用说明与披露",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 458,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh5",
+          "role": "title_candidate",
+          "text": "本队将 AI 定位为辅助工具，而非替代成员实现的主体",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 55,
+            "y": 103,
+            "width": 588,
+            "height": 30
+          },
+          "text_metrics": {
+            "font_size_px": 25.07,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh8",
+          "role": "label_candidate",
+          "text": "1",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 106,
+            "y": 205,
+            "width": 12,
+            "height": 18
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh9",
+          "role": "label_candidate",
+          "text": "当前使用场景",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 199,
+            "width": 174,
+            "height": 27
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh10",
+          "role": "body_candidate",
+          "text": "• 在写项目测试脚本时，我队使用了 AI 助手辅助，告诉ai思路后，让ai编写，人工复核\n• 使用模型：claude",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 106,
+            "y": 234,
+            "width": 495,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s16_sh14",
+          "role": "label_candidate",
+          "text": "2",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 694,
+            "y": 208,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh15",
+          "role": "label_candidate",
+          "text": "人工复核原则",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 733,
+            "y": 199,
+            "width": 174,
+            "height": 42
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh16",
+          "role": "label_candidate",
+          "text": "• AI 输出内容由本队成员结合代码实现和实验结果进行人工核对\n• 所有技术表述、测试结论和答辩内容均以人工复核结果为准",
+          "paragraph_count": 2,
+          "geometry": {
+            "x": 691,
+            "y": 249,
+            "width": 511,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 2
+          }
+        },
+        {
+          "slot_id": "s16_sh27",
+          "role": "label_candidate",
+          "text": "记录留存",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 589,
+            "y": 484,
+            "width": 108,
+            "height": 33
+          },
+          "text_metrics": {
+            "font_size_px": 26.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh28",
+          "role": "label_candidate",
+          "text": "• 当前已额外整理 AI 使用文件，见 `miniflex/docs/test_overview.md`",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 311,
+            "y": 531,
+            "width": 658,
+            "height": 61
+          },
+          "text_metrics": {
+            "font_size_px": 20.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh26",
+          "role": "label_candidate",
+          "text": "4",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 550,
+            "y": 493,
+            "width": 12,
+            "height": 28
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh33",
+          "role": "label_candidate",
+          "text": "17",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s16_sh37",
+          "role": "label_candidate",
+          "text": "3",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 550,
+            "y": 493,
+            "width": 12,
+            "height": 22
+          },
+          "text_metrics": {
+            "font_size_px": 18.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 17,
+      "page_type": "content_candidate",
+      "text_summary": "成员分工\nA\n井光成\n方案设计和代码实现\n• 负责系统方案设计\n• 推进核心模块实现\n• 打通接入与执行链路\nB\n祁馨叶\n文档和资料的搜集\n• 负责文档整理与阅读\n• 支撑赛题信息梳理\n• 协同汇报材料组织\nC\n徐子淳\n搜集资料，测试\n• 负责测试与数据整理\n• 协助资料搜集与比对\n• 支撑结果页证据整理\n15",
+      "slots": [
+        {
+          "slot_id": "s17_sh4",
+          "role": "title_candidate",
+          "text": "成员分工",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 54,
+            "y": 22,
+            "width": 173,
+            "height": 62
+          },
+          "text_metrics": {
+            "font_size_px": 40.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh8",
+          "role": "label_candidate",
+          "text": "A",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 250,
+            "y": 260,
+            "width": 19,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh9",
+          "role": "label_candidate",
+          "text": "井光成",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 211,
+            "y": 326,
+            "width": 98,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh10",
+          "role": "label_candidate",
+          "text": "方案设计和代码实现",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 145,
+            "y": 382,
+            "width": 231,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh11",
+          "role": "label_candidate",
+          "text": "• 负责系统方案设计\n• 推进核心模块实现\n• 打通接入与执行链路",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 157,
+            "y": 433,
+            "width": 218,
+            "height": 102
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s17_sh15",
+          "role": "label_candidate",
+          "text": "B",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 630,
+            "y": 260,
+            "width": 19,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh16",
+          "role": "label_candidate",
+          "text": "祁馨叶",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 591,
+            "y": 326,
+            "width": 98,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh17",
+          "role": "label_candidate",
+          "text": "文档和资料的搜集",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 537,
+            "y": 382,
+            "width": 205,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh18",
+          "role": "label_candidate",
+          "text": "• 负责文档整理与阅读\n• 支撑赛题信息梳理\n• 协同汇报材料组织",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 531,
+            "y": 433,
+            "width": 218,
+            "height": 102
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s17_sh22",
+          "role": "label_candidate",
+          "text": "C",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1010,
+            "y": 260,
+            "width": 19,
+            "height": 43
+          },
+          "text_metrics": {
+            "font_size_px": 28.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh23",
+          "role": "label_candidate",
+          "text": "徐子淳",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 971,
+            "y": 326,
+            "width": 98,
+            "height": 46
+          },
+          "text_metrics": {
+            "font_size_px": 30.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh24",
+          "role": "label_candidate",
+          "text": "搜集资料，测试",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 930,
+            "y": 382,
+            "width": 180,
+            "height": 37
+          },
+          "text_metrics": {
+            "font_size_px": 24.0,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s17_sh25",
+          "role": "label_candidate",
+          "text": "• 负责测试与数据整理\n• 协助资料搜集与比对\n• 支撑结果页证据整理",
+          "paragraph_count": 3,
+          "geometry": {
+            "x": 916,
+            "y": 433,
+            "width": 218,
+            "height": 102
+          },
+          "text_metrics": {
+            "font_size_px": 22.0,
+            "paragraph_count": 3
+          }
+        },
+        {
+          "slot_id": "s17_sh27",
+          "role": "label_candidate",
+          "text": "15",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 1177,
+            "y": 672,
+            "width": 20,
+            "height": 25
+          },
+          "text_metrics": {
+            "font_size_px": 16.0,
+            "paragraph_count": 1
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    },
+    {
+      "slide_index": 18,
+      "page_type": "ending_candidate",
+      "text_summary": "感谢聆听\nTHANKS",
+      "slots": [
+        {
+          "slot_id": "s18_sh5",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1279,
+            "height": 255
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s18_sh6",
+          "role": "label_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 0,
+            "y": 262,
+            "width": 1279,
+            "height": 7
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s18_sh12",
+          "role": "label_candidate",
+          "text": "感谢聆听",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 371,
+            "y": 410,
+            "width": 537,
+            "height": 116
+          },
+          "text_metrics": {
+            "font_size_px": 87.93,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s18_sh19",
+          "role": "title_candidate",
+          "text": "THANKS",
+          "paragraph_count": 1,
+          "geometry": {
+            "x": 34,
+            "y": -2,
+            "width": 1211,
+            "height": 331
+          },
+          "text_metrics": {
+            "font_size_px": 265.13,
+            "paragraph_count": 1
+          }
+        },
+        {
+          "slot_id": "s18_sh8",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 526,
+            "y": 95,
+            "width": 267,
+            "height": 267
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        },
+        {
+          "slot_id": "s18_sh9",
+          "role": "title_candidate",
+          "text": "",
+          "paragraph_count": 0,
+          "geometry": {
+            "x": 542,
+            "y": 111,
+            "width": 232,
+            "height": 232
+          },
+          "text_metrics": {
+            "font_size_px": null,
+            "paragraph_count": 0
+          }
+        }
+      ],
+      "tables": [],
+      "charts": []
+    }
+  ],
+  "plan_contract": {
+    "schema": "template_fill_pptx_plan.v1",
+    "slides": [
+      {
+        "source_slide": 1,
+        "purpose": "封面 / 章节 / 内容 / 结尾",
+        "replacements": [
+          {
+            "slot_id": "s01_sh2",
+            "text": "替换后的文字"
+          }
+        ],
+        "table_edits": [
+          {
+            "table_id": "s01_tbl3",
+            "cells": [
+              {
+                "row": 0,
+                "col": 0,
+                "text": "替换后的单元格"
+              }
+            ]
+          }
+        ],
+        "chart_edits": [
+          {
+            "chart_id": "s01_ch4",
+            "categories": [
+              "A",
+              "B"
+            ],
+            "series": [
+              {
+                "name": "系列1",
+                "values": [
+                  1,
+                  2
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

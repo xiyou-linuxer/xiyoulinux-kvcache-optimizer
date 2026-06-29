@@ -1,0 +1,283 @@
+{
+  "schema": "pptx_intake_index.v1",
+  "deck_count": 1,
+  "decks": [
+    {
+      "schema": "pptx_intake_profile.v1",
+      "stem": "模版",
+      "source_pptx": "C:\\Users\\29785\\os\\xiyoulinux-kvcache-optimizer\\projects\\miniflex_timeline_fill_ppt169_20260629\\sources\\模版.pptx",
+      "slide_count": 18,
+      "usage_contract": {
+        "standard_generation": "Use identity and slide-library fields as source facts and recommendation candidates only; do not preserve original page count, order, or coordinates unless the user selected a beautify/template-fill workflow.",
+        "beautify": "Promote source text, page order, page count, colors, fonts, and font sizes into locked constraints after user confirmation.",
+        "template_fill": "Use slide slots, tables, charts, and geometry as the native PPTX fill contract."
+      },
+      "artifacts": {
+        "identity": "模版.identity.json",
+        "slide_library": "模版.slide_library.json"
+      },
+      "canvas": {
+        "width_px": 1280,
+        "height_px": 720,
+        "aspect": 1.7778
+      },
+      "identity": {
+        "theme_palette": {
+          "background": "#FFFFFF",
+          "background_alt": "#FFFFFF",
+          "text": "#000000",
+          "text_alt": "#0F1423",
+          "hyperlink": "#0563C1",
+          "accent1": "#6096E6",
+          "accent2": "#58B6E5",
+          "accent3": "#56CA95",
+          "accent4": "#FFBA55",
+          "accent5": "#F18870",
+          "accent6": "#EC5F74",
+          "primary": "#6096E6"
+        },
+        "theme_fonts": {
+          "title": {
+            "latin": "Arial",
+            "ea": "微软雅黑"
+          },
+          "body": {
+            "latin": "Arial",
+            "ea": "微软雅黑"
+          }
+        },
+        "theme_sizes": {
+          "title": 36.0,
+          "body": 18.0,
+          "body_levels": [
+            18.0,
+            16.0,
+            16.0,
+            14.0,
+            14.0,
+            18.0,
+            18.0,
+            18.0,
+            18.0
+          ]
+        },
+        "observed_colors": [
+          {
+            "value": "#0F1423",
+            "count": 259
+          },
+          {
+            "value": "#002060",
+            "count": 173
+          },
+          {
+            "value": "#44546A",
+            "count": 105
+          },
+          {
+            "value": "#FFFFFF",
+            "count": 67
+          },
+          {
+            "value": "#00B0F0",
+            "count": 59
+          },
+          {
+            "value": "#C9D9F2",
+            "count": 55
+          },
+          {
+            "value": "#F4F8FF",
+            "count": 46
+          },
+          {
+            "value": "#6B7280",
+            "count": 32
+          }
+        ],
+        "observed_fonts": {
+          "latin": [
+            {
+              "value": "Arial",
+              "count": 619
+            },
+            {
+              "value": "微软雅黑",
+              "count": 10
+            },
+            {
+              "value": "方正小标宋简体",
+              "count": 2
+            }
+          ],
+          "ea": [
+            {
+              "value": "微软雅黑",
+              "count": 312
+            },
+            {
+              "value": "Arial",
+              "count": 170
+            },
+            {
+              "value": "黑体",
+              "count": 147
+            },
+            {
+              "value": "方正小标宋简体",
+              "count": 2
+            }
+          ]
+        },
+        "observed_sizes_pt": [
+          {
+            "value": 16.5,
+            "count": 90
+          },
+          {
+            "value": 15.0,
+            "count": 38
+          },
+          {
+            "value": 13.5,
+            "count": 37
+          },
+          {
+            "value": 21.0,
+            "count": 35
+          },
+          {
+            "value": 18.8,
+            "count": 21
+          },
+          {
+            "value": 17.2,
+            "count": 17
+          },
+          {
+            "value": 18.0,
+            "count": 17
+          },
+          {
+            "value": 12.0,
+            "count": 16
+          }
+        ],
+        "layout_sizes_pt": [
+          {
+            "value": 18.65,
+            "count": 1
+          }
+        ]
+      },
+      "structure": {
+        "canvas_px": {
+          "width": 1280,
+          "height": 720
+        },
+        "page_types": [
+          {
+            "slide_index": 1,
+            "page_type": "cover_candidate",
+            "slot_count": 8
+          },
+          {
+            "slide_index": 2,
+            "page_type": "toc_candidate",
+            "slot_count": 14
+          },
+          {
+            "slide_index": 3,
+            "page_type": "content_candidate",
+            "slot_count": 13
+          },
+          {
+            "slide_index": 4,
+            "page_type": "content_candidate",
+            "slot_count": 15
+          },
+          {
+            "slide_index": 5,
+            "page_type": "content_candidate",
+            "slot_count": 10
+          },
+          {
+            "slide_index": 6,
+            "page_type": "content_candidate",
+            "slot_count": 16
+          },
+          {
+            "slide_index": 7,
+            "page_type": "content_candidate",
+            "slot_count": 10
+          },
+          {
+            "slide_index": 8,
+            "page_type": "content_candidate",
+            "slot_count": 23
+          },
+          {
+            "slide_index": 9,
+            "page_type": "content_candidate",
+            "slot_count": 11
+          },
+          {
+            "slide_index": 10,
+            "page_type": "content_candidate",
+            "slot_count": 18
+          },
+          {
+            "slide_index": 11,
+            "page_type": "content_candidate",
+            "slot_count": 26
+          },
+          {
+            "slide_index": 12,
+            "page_type": "content_candidate",
+            "slot_count": 20
+          },
+          {
+            "slide_index": 13,
+            "page_type": "content_candidate",
+            "slot_count": 24
+          },
+          {
+            "slide_index": 14,
+            "page_type": "chapter_candidate",
+            "slot_count": 15
+          },
+          {
+            "slide_index": 15,
+            "page_type": "content_candidate",
+            "slot_count": 15
+          },
+          {
+            "slide_index": 16,
+            "page_type": "content_candidate",
+            "slot_count": 13
+          },
+          {
+            "slide_index": 17,
+            "page_type": "content_candidate",
+            "slot_count": 14
+          },
+          {
+            "slide_index": 18,
+            "page_type": "ending_candidate",
+            "slot_count": 6
+          }
+        ]
+      },
+      "tables": {
+        "table_count": 0,
+        "tables": []
+      },
+      "charts": {
+        "chart_count": 0,
+        "series_count": 0,
+        "multi_plot_chart_count": 0,
+        "charts": []
+      }
+    }
+  ]
+}
