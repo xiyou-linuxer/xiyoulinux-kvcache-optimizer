@@ -81,9 +81,27 @@ class MigrationEngine:
     self._last_plan: Optional[MigrationPlan] = None
 
   # -- access passthrough --------------------------------------------------
-  def touch(self, tier: str, block_id: int):
-    """Record an access (called by the host engine on cache hit/miss)."""
-    return self.tracker.touch(tier, block_id)
+  def touch(
+    self,
+    tier: str,
+    block_id: int,
+    layer_id: Optional[int] = None,
+    phase: Optional[str] = None,
+    decode_step: Optional[int] = None,
+  ):
+    """Record an access (called by the host engine on cache hit/miss).
+
+    The extra optional fields make the engine KV-aware without breaking older
+    call sites: callers that only know tier+block_id keep the previous
+    behaviour; richer integrations can supply layer / phase / decode-step.
+    """
+    return self.tracker.touch(
+      tier,
+      block_id,
+      layer_id=layer_id,
+      phase=phase,
+      decode_step=decode_step,
+    )
 
   def block_heat(self, tier: str, block_id: int) -> Optional[float]:
     bh = self.tracker.get(tier, block_id)
