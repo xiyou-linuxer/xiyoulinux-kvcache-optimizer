@@ -11,8 +11,11 @@ Design notes:
   - ``resolve_blocks`` maps a logical ``(tier, block_id)`` to the physical
     ``np.ndarray`` of block IDs the transfer engine expects.  This indirection
     keeps the migration engine decoupled from the storage allocator.
-  - Two-hop SSD<->GPU moves are chained: we emit the first hop, and when it
-    completes the host schedules the second hop via ``on_first_hop_done``.
+  - Two-hop SSD<->GPU moves are chained *automatically*: when the first-hop
+    graph completes, ``handle_completion`` resolves the staging-tier block and
+    submits the second hop (SSD->CPU->GPU via H2D, GPU->CPU->SSD via H2DISK)
+    through the same ``submit_graph`` callable.  Hosts that need a hook after
+    each hop can still pass ``on_completion``.
 """
 from __future__ import annotations
 
@@ -23,7 +26,7 @@ from typing import Callable, Dict, List, Optional, Tuple
 import numpy as np
 
 from miniflex.common.transfer import TransferOp, TransferOpGraph, TransferType
-from miniflex.migration.engine import MigrationEngine
+from miniflex.migration.engine import MigrationEngine, _InflightOp
 from miniflex.migration.planner import MigrationOp, MigrationPlan
 
 
@@ -63,6 +66,10 @@ class MigrationExecutor:
     self.on_completion = on_completion
     # graph_id -> list of (src_tier, block_id) for completion feedback.
     self._graph_ops: Dict[int, List[Tuple[str, int]]] = {}
+    # graph_id -> list of (original_src_tier, block_id, final_dst_tier) for
+    # ops that were scheduled as two-hop moves and whose second hop has not
+    # been submitted yet.  Keyed by the *first-hop* graph id.
+    self._pending_second_hops: Dict[int, List[Tuple[str, int, str]]] = {}
     self._lock = threading.Lock()
 
   # -- plan -> graph ---------------------------------------------------------
@@ -114,10 +121,70 @@ class MigrationExecutor:
     if graph is None:
       return None
     # Remember which (tier, block) pairs this graph carries for completion.
+    # Two-hop ops additionally register a pending second hop so completion can
+    # chain the CPU<->GPU/SSD leg without host involvement.
     with self._lock:
       self._graph_ops[graph.graph_id] = [
         (op.src_tier, op.block_id) for op in plan.ops
       ]
+      pending = [
+        (op.src_tier, op.block_id, op.dst_tier)
+        for op in plan.ops
+        if op.needs_second_hop
+      ]
+      if pending:
+        self._pending_second_hops[graph.graph_id] = pending
+    self.submit_graph(graph)
+    return graph.graph_id
+
+  # -- second-hop construction -------------------------------------------------
+  # After the first hop of a two-hop move lands on CPU staging, the second hop
+  # is a plain CPU<->GPU/SSD transfer.  These are fixed per original direction.
+  _SECOND_HOP_TRANSFER_TYPE: Dict[Tuple[str, str], str] = {
+    ("ssd", "gpu"): "H2D",       # ssd -> cpu (done) -> gpu
+    ("gpu", "ssd"): "H2DISK",    # gpu -> cpu (done) -> ssd
+  }
+
+  def _submit_second_hop(
+    self,
+    original_src_tier: str,
+    block_id: int,
+    final_dst_tier: str,
+  ) -> Optional[int]:
+    """Resolve + submit the second hop for a two-hop move.
+
+    Returns the new graph_id, or ``None`` if the staging block cannot be
+    resolved (the engine has already been told the first hop completed, so the
+    block will sit on CPU until the policy re-decides).
+    """
+    ttype_name = self._SECOND_HOP_TRANSFER_TYPE[(original_src_tier, final_dst_tier)]
+    try:
+      src_ids = self.resolve_blocks("cpu", block_id)
+      dst_ids = self.resolve_blocks(final_dst_tier, block_id)
+    except Exception:
+      return None
+    if src_ids.size == 0 or dst_ids.size == 0:
+      return None
+
+    graph = TransferOpGraph()
+    op = TransferOp(
+      transfer_type=TransferType[ttype_name],
+      graph_id=graph.graph_id,
+      src_block_ids=src_ids,
+      dst_block_ids=dst_ids,
+    )
+    graph.add_transfer_op(op)
+    with self._lock:
+      self._graph_ops[graph.graph_id] = [("cpu", block_id)]
+    # Re-register the in-flight slot on the engine so the tracker's tier
+    # follows the block across the second hop (cpu -> final_dst_tier) and the
+    # slot is freed when the second-hop graph completes.
+    self.engine._inflight[("cpu", block_id)] = _InflightOp(
+      src_tier="cpu",
+      dst_tier=final_dst_tier,
+      block_id=block_id,
+      scheduled_at=self.engine.time_func(),
+    )
     self.submit_graph(graph)
     return graph.graph_id
 
@@ -126,12 +193,17 @@ class MigrationExecutor:
     """Notify the engine that a migration graph finished.
 
     Calls ``MigrationEngine.mark_completed`` for each op in the graph so the
-    heat tracker is updated and the in-flight slot is freed.  Then invokes the
-    optional ``on_completion`` hook (used to chain two-hop SSD<->GPU moves).
+    heat tracker is updated and the in-flight slot is freed.  If any op in the
+    graph was the first hop of a two-hop SSD<->GPU move, automatically submits
+    the second hop.  Then invokes the optional ``on_completion`` hook.
     """
     with self._lock:
       ops = self._graph_ops.pop(graph_id, [])
+      pending = self._pending_second_hops.pop(graph_id, [])
     for src_tier, block_id in ops:
       self.engine.mark_completed(src_tier, block_id)
+    # Chain second hops for any two-hop ops that just finished their first leg.
+    for original_src_tier, block_id, final_dst_tier in pending:
+      self._submit_second_hop(original_src_tier, block_id, final_dst_tier)
     if self.on_completion is not None:
       self.on_completion(graph_id)

@@ -161,6 +161,75 @@ def test_two_hop_marks_first_hop_correctly():
   assert eng.tracker.get("cpu", 1) is not None
 
 
+
+
+def test_two_hop_second_leg_submitted_automatically():
+  """SSD->GPU: first hop DISK2H completes -> H2D second hop auto-submitted."""
+  clock = FakeClock()
+  eng = _make_engine(clock=clock)
+  for _ in range(10):
+    eng.touch("ssd", 1)
+    clock.advance(0.1)
+  plan = eng.tick()
+  te = FakeTransferEngine()
+  ex = MigrationExecutor(eng, te.submit, _resolve_blocks)
+  gid1 = ex.submit_plan(plan)
+  assert len(te.graphs) == 1
+  ex.handle_completion(gid1)
+  # Second hop should have been submitted automatically.
+  assert len(te.graphs) == 2
+  second = te.graphs[1]
+  types = [op.transfer_type for op in second._op_map.values()]
+  assert TransferType.H2D in types
+  h2d = [op for op in second._op_map.values() if op.transfer_type == TransferType.H2D][0]
+  assert h2d.src_block_ids[0] == 1      # cpu staging block
+  assert h2d.dst_block_ids[0] == 1001   # gpu block
+
+
+def test_two_hop_second_leg_demotion_submitted_automatically():
+  """GPU->SSD: first hop D2H completes -> H2DISK second hop auto-submitted."""
+  clock = FakeClock()
+  # Force GPU block to be cold so it demotes to SSD.
+  eng = _make_engine(clock=clock, hot_threshold=100.0, cold_threshold=99.0)
+  eng.touch("gpu", 7)  # score ~1.0 * weights, well below cold_threshold
+  clock.advance(0.1)
+  plan = eng.tick()
+  te = FakeTransferEngine()
+  ex = MigrationExecutor(eng, te.submit, _resolve_blocks)
+  gid1 = ex.submit_plan(plan)
+  assert gid1 is not None
+  first_types = [op.transfer_type for op in te.graphs[0]._op_map.values()]
+  assert TransferType.D2H in first_types
+  ex.handle_completion(gid1)
+  assert len(te.graphs) == 2
+  second_types = [op.transfer_type for op in te.graphs[1]._op_map.values()]
+  assert TransferType.H2DISK in second_types
+  h2disk = [op for op in te.graphs[1]._op_map.values()
+            if op.transfer_type == TransferType.H2DISK][0]
+  assert h2disk.src_block_ids[0] == 7      # cpu staging block
+  assert h2disk.dst_block_ids[0] == 2007   # ssd block
+
+
+def test_two_hop_completion_of_second_leg_frees_engine_state():
+  """Completing both hops leaves the tracker at the final tier."""
+  clock = FakeClock()
+  eng = _make_engine(clock=clock)
+  for _ in range(10):
+    eng.touch("ssd", 3)
+    clock.advance(0.1)
+  plan = eng.tick()
+  te = FakeTransferEngine()
+  ex = MigrationExecutor(eng, te.submit, _resolve_blocks)
+  gid1 = ex.submit_plan(plan)
+  ex.handle_completion(gid1)
+  gid2 = te.graphs[1].graph_id
+  ex.handle_completion(gid2)
+  # Engine tracker should now show the block on GPU (final tier).
+  assert eng.tracker.get("ssd", 3) is None
+  assert eng.tracker.get("cpu", 3) is None
+  assert eng.tracker.get("gpu", 3) is not None
+
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0
