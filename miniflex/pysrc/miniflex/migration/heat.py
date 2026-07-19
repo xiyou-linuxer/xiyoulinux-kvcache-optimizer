@@ -1,10 +1,11 @@
-"""Per-block KV access tracking and heat scoring.
+"""Per-block KV access tracking and heat scoring (enhanced heat model).
 
 We model heat as a combination of:
   - access frequency (how often the block is touched)
   - recency (how recently it was touched)
-  - current tier (blocks already on a cold tier get a small penalty so we prefer
-    to promote hot blocks that are far from GPU)
+  - tier weight (a hit on a cold tier is more valuable to promote than a hit on
+    a hot tier, because it currently costs more to serve)
+  - burst detection (sudden access spikes should heat a block up faster)
 
 The tracker is intentionally decoupled from the storage backend: it only knows
 about ``(tier, block_id)`` keys and the current time, so it can be unit tested
@@ -12,13 +13,24 @@ in isolation and wired into the real engines later.
 """
 from __future__ import annotations
 
+import math
 import time
+from collections import deque
 from dataclasses import dataclass, field
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Deque, Dict, Iterable, List, Optional, Tuple
 
 
 # Canonical tier ordering, from hottest (closest to compute) to coldest.
 TIER_ORDER = {"gpu": 0, "cpu": 1, "ssd": 2}
+
+# A hit on a colder tier is worth more heat: it currently costs more to serve,
+# so promoting it yields a bigger win.  GPU hit -> 1.0x, CPU -> 2.0x, SSD -> 4.0x.
+TIER_WEIGHT = {"gpu": 1.0, "cpu": 2.0, "ssd": 4.0}
+
+# Burst detection: a "burst" is >= N accesses within a short window.
+BURST_WINDOW_SECONDS = 2.0
+BURST_MIN_ACCESSES = 3
+BURST_BONUS = 1.5  # multiplier applied to a touch during a burst
 
 
 @dataclass
@@ -30,23 +42,37 @@ class BlockHeat:
   last_access: float = 0.0
   # Exponentially-decayed heat score (higher = hotter).
   score: float = 0.0
+  # Recent access timestamps for burst detection (bounded in size).
+  recent_accesses: Deque[float] = field(default_factory=lambda: deque(maxlen=16))
+  # Set when the block is currently in a burst (>=N hits in the window).
+  is_bursting: bool = False
 
-  def touch(self, now: float, decay: float) -> None:
+  def touch(self, now: float, decay: float, tier_weight: float = 1.0) -> None:
     self.access_count += 1
     self.last_access = now
+    self.recent_accesses.append(now)
     # Decay the existing score then add a unit of heat, so old heat fades.
-    self.score = self.score * decay + 1.0
+    # The tier weight makes cold-tier hits count for more.
+    self.score = self.score * decay + tier_weight
+    # Burst detection: are there >= BURST_MIN_ACCESSES within the window?
+    window_start = now - BURST_WINDOW_SECONDS
+    in_window = sum(1 for t in self.recent_accesses if t >= window_start)
+    self.is_bursting = in_window >= BURST_MIN_ACCESSES
+    if self.is_bursting:
+      self.score *= BURST_BONUS
 
   def age(self, now: float, decay: float) -> None:
     """Apply time decay without a fresh access."""
     if self.last_access <= 0.0:
       return
-    # Approximate continuous decay based on seconds since last access.
     seconds = max(0.0, now - self.last_access)
-    # Normalize so that ~10s of silence halves the heat.
-    effective = 1.0 - (1.0 - decay) * seconds
-    effective = max(0.0, min(1.0, effective))
+    # Exponential decay: half-life of ~10s by default.
+    effective = math.exp(-seconds * (1.0 - decay) * 0.693)
     self.score *= effective
+    # Burst state decays too: if no recent hits, it's no longer bursting.
+    window_start = now - BURST_WINDOW_SECONDS
+    in_window = sum(1 for t in self.recent_accesses if t >= window_start)
+    self.is_bursting = in_window >= BURST_MIN_ACCESSES
 
 
 class HeatTracker:
@@ -55,13 +81,15 @@ class HeatTracker:
   Args:
     decay: per-touch exponential decay factor in [0, 1). Lower = shorter memory.
     time_func: injectable clock for deterministic testing.
+    use_tier_weight: whether cold-tier hits should heat a block up faster.
   """
 
-  def __init__(self, decay: float = 0.95, time_func=None):
+  def __init__(self, decay: float = 0.95, time_func=None, use_tier_weight: bool = True):
     if not 0.0 <= decay < 1.0:
       raise ValueError(f"decay must be in [0, 1), got {decay}")
     self.decay = decay
     self.time_func = time_func or time.time
+    self.use_tier_weight = use_tier_weight
     self._blocks: Dict[Tuple[str, int], BlockHeat] = {}
 
   # -- basic API -----------------------------------------------------------
@@ -78,7 +106,8 @@ class HeatTracker:
 
   def touch(self, tier: str, block_id: int) -> BlockHeat:
     bh = self.register(tier, block_id)
-    bh.touch(self.time_func(), self.decay)
+    weight = TIER_WEIGHT[tier] if self.use_tier_weight else 1.0
+    bh.touch(self.time_func(), self.decay, tier_weight=weight)
     return bh
 
   def remove(self, tier: str, block_id: int) -> None:
@@ -106,18 +135,27 @@ class HeatTracker:
     return self._blocks.values()
 
   def top_hot(self, n: int, tier: Optional[str] = None) -> List[BlockHeat]:
-    """Return the ``n`` hottest blocks, optionally filtered by current tier."""
+    """Return the ``n`` hottest blocks, optionally filtered by current tier.
+
+    Sorted by score desc, then recency desc (most recent first) as tiebreaker,
+    then burst status (bursting blocks prioritized).
+    """
     candidates = [b for b in self._blocks.values() if tier is None or b.tier == tier]
-    # Sort by score desc, break ties by recency (most recent first).
-    candidates.sort(key=lambda b: (b.score, b.last_access), reverse=True)
+    candidates.sort(key=lambda b: (b.score, b.last_access, float(b.is_bursting)), reverse=True)
     return candidates[:n]
 
   def top_cold(self, n: int, tier: Optional[str] = None) -> List[BlockHeat]:
     """Return the ``n`` coldest blocks (lowest score, oldest access)."""
     candidates = [b for b in self._blocks.values() if tier is None or b.tier == tier]
-    # Coldest = lowest score, then oldest access (ascending on both).
     candidates.sort(key=lambda b: (b.score, b.last_access))
     return candidates[:n]
+
+  def tier_distribution(self) -> Dict[str, int]:
+    """Count tracked blocks per tier."""
+    dist: Dict[str, int] = {"gpu": 0, "cpu": 0, "ssd": 0}
+    for bh in self._blocks.values():
+      dist[bh.tier] = dist.get(bh.tier, 0) + 1
+    return dist
 
   def decay_all(self) -> None:
     """Apply time decay to every tracked block (call periodically)."""
