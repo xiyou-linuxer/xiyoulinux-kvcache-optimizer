@@ -27,6 +27,11 @@ TIER_ORDER = {"gpu": 0, "cpu": 1, "ssd": 2}
 # so promoting it yields a bigger win.  GPU hit -> 1.0x, CPU -> 2.0x, SSD -> 4.0x.
 TIER_WEIGHT = {"gpu": 1.0, "cpu": 2.0, "ssd": 4.0}
 
+# Phase-aware weighting: decode-time hits are more valuable than prefill-time
+# hits because decode sits on the critical path and blocking there hurts
+# throughput/latency more directly.
+PHASE_WEIGHT = {"prefill": 1.0, "decode": 1.5}
+
 # Burst detection: a "burst" is >= N accesses within a short window.
 BURST_WINDOW_SECONDS = 2.0
 BURST_MIN_ACCESSES = 3
@@ -47,6 +52,7 @@ class BlockHeat:
   # Set when the block is currently in a burst (>=N hits in the window).
   is_bursting: bool = False
   layer_id: Optional[int] = None
+  phase: Optional[str] = None
 
   def touch(self, now: float, decay: float, tier_weight: float = 1.0) -> None:
     self.access_count += 1
@@ -92,6 +98,7 @@ class HeatTracker:
     time_func=None,
     use_tier_weight: bool = True,
     layer_weights: Optional[Dict[int, float]] = None,
+    phase_weights: Optional[Dict[str, float]] = None,
   ):
     if not 0.0 <= decay < 1.0:
       raise ValueError(f"decay must be in [0, 1), got {decay}")
@@ -99,6 +106,7 @@ class HeatTracker:
     self.time_func = time_func or time.time
     self.use_tier_weight = use_tier_weight
     self.layer_weights = layer_weights or {}
+    self.phase_weights = {**PHASE_WEIGHT, **(phase_weights or {})}
     self._blocks: Dict[Tuple[str, int], BlockHeat] = {}
 
   # -- basic API -----------------------------------------------------------
@@ -107,20 +115,41 @@ class HeatTracker:
       raise ValueError(f"unknown tier: {tier}")
     return (tier, block_id)
 
-  def register(self, tier: str, block_id: int, layer_id: Optional[int] = None) -> BlockHeat:
+  def register(
+    self,
+    tier: str,
+    block_id: int,
+    layer_id: Optional[int] = None,
+    phase: Optional[str] = None,
+  ) -> BlockHeat:
     key = self._key(tier, block_id)
     if key not in self._blocks:
-      self._blocks[key] = BlockHeat(tier=tier, block_id=block_id, layer_id=layer_id)
+      self._blocks[key] = BlockHeat(
+        tier=tier,
+        block_id=block_id,
+        layer_id=layer_id,
+        phase=phase,
+      )
     elif layer_id is not None:
       # Preserve the most specific layer information we have seen.
       self._blocks[key].layer_id = layer_id
+    if phase is not None:
+      self._blocks[key].phase = phase
     return self._blocks[key]
 
-  def touch(self, tier: str, block_id: int, layer_id: Optional[int] = None) -> BlockHeat:
-    bh = self.register(tier, block_id, layer_id)
+  def touch(
+    self,
+    tier: str,
+    block_id: int,
+    layer_id: Optional[int] = None,
+    phase: Optional[str] = None,
+  ) -> BlockHeat:
+    bh = self.register(tier, block_id, layer_id, phase)
     weight = TIER_WEIGHT[tier] if self.use_tier_weight else 1.0
     if layer_id is not None:
       weight *= self.layer_weights.get(layer_id, 1.0)
+    if phase is not None:
+      weight *= self.phase_weights.get(phase, 1.0)
     bh.touch(self.time_func(), self.decay, tier_weight=weight)
     return bh
 

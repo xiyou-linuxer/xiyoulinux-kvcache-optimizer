@@ -175,6 +175,31 @@ def test_heat_layer_weight_backward_compatible():
   assert abs(b.score - 2.0) < 1e-6
   assert b.layer_id is None
 
+
+def test_heat_phase_weight():
+  """Decode phase should heat a block more than prefill."""
+  clk = FakeClock()
+  ht = HeatTracker(decay=0.9, time_func=clk.time)
+  ht.touch("cpu", 1, phase="prefill")
+  ht.touch("cpu", 2, phase="decode")
+  b1 = ht.get("cpu", 1)
+  b2 = ht.get("cpu", 2)
+  assert b1 is not None and b2 is not None
+  assert b2.score > b1.score
+  assert b1.phase == "prefill"
+  assert b2.phase == "decode"
+
+
+def test_heat_phase_weight_backward_compatible():
+  """Without phase, behavior remains unchanged."""
+  clk = FakeClock()
+  ht = HeatTracker(decay=0.9, time_func=clk.time, phase_weights={"decode": 100.0})
+  ht.touch("cpu", 1)
+  b = ht.get("cpu", 1)
+  assert b is not None
+  assert abs(b.score - 2.0) < 1e-6
+  assert b.phase is None
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0
