@@ -37,6 +37,7 @@ from miniflex.migration.engine import MigrationEngine, MigrationEngineConfig
 from miniflex.migration.executor import MigrationExecutor, ResolvedMigrationOp
 from miniflex.migration.adaptive import AdaptiveTuner, AdaptiveConfig
 from miniflex.migration.runtime_bridge import MigrationRuntimeBridge, RuntimeBridgeStats
+from miniflex.migration.host_adapter import TransferEngineHostAdapter, build_runtime_bridge
 
 __all__ = [
   "HeatTracker",
@@ -58,4 +59,6 @@ __all__ = [
   "AdaptiveConfig",
   "MigrationRuntimeBridge",
   "RuntimeBridgeStats",
+  "TransferEngineHostAdapter",
+  "build_runtime_bridge",
 ]
