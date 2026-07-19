@@ -31,6 +31,10 @@ class AdaptiveConfig:
   cold_step: float = 0.1
   # How many cold-tier accesses trigger a threshold relaxation.
   cold_access_trigger: int = 20
+  # Hysteresis: once cold pressure has stopped, only restore (raise) the
+  # thresholds after this many consecutive idle rounds.  Prevents flap when a
+  # bursty workload alternates between "some SSD hits" and "none".
+  idle_restore_rounds: int = 5
   # How many rounds to wait between adjustments (avoid oscillation).
   cooldown_rounds: int = 3
 
@@ -41,6 +45,7 @@ class AdaptiveTuner:
   def __init__(self, config: Optional[AdaptiveConfig] = None):
     self.config = config or AdaptiveConfig()
     self._rounds_since_adjust = 0
+    self._consecutive_idle_rounds = 0
 
   def tune(
     self,
@@ -66,17 +71,29 @@ class AdaptiveTuner:
     adjusted = False
 
     # If cold-tier accesses are high, the hot/warm tiers are too small:
-    # expand them by lowering both thresholds.
+    # expand them by lowering both thresholds.  Reset the idle counter so the
+    # restore path needs fresh evidence before raising thresholds again.
     if cold_accesses >= self.config.cold_access_trigger:
       new_hot = max(self.config.min_hot_threshold, current_hot - self.config.hot_step)
       new_cold = max(self.config.min_cold_threshold, current_cold - self.config.cold_step)
       adjusted = True
-    # Only relax (shrink hot tier) when the system is idle: no cold pressure
-    # and no migration activity at all.
+      self._consecutive_idle_rounds = 0
+    # Restore (shrink hot tier) only after sustained idleness: no cold
+    # pressure AND no migration activity for ``idle_restore_rounds``
+    # consecutive rounds.  This prevents the previous behaviour where a single
+    # quiet round after a cold-access spike would immediately undo the
+    # expansion, causing threshold flap.
     elif promotions == 0 and demotions == 0 and cold_accesses == 0:
-      new_hot = min(self.config.max_hot_threshold, current_hot + self.config.hot_step)
-      new_cold = min(self.config.max_cold_threshold, current_cold + self.config.cold_step)
-      adjusted = True
+      self._consecutive_idle_rounds += 1
+      if self._consecutive_idle_rounds >= self.config.idle_restore_rounds:
+        new_hot = min(self.config.max_hot_threshold, current_hot + self.config.hot_step)
+        new_cold = min(self.config.max_cold_threshold, current_cold + self.config.cold_step)
+        adjusted = True
+        self._consecutive_idle_rounds = 0
+    else:
+      # Mixed signals (some migration activity but below the cold trigger):
+      # treat as not-idle for hysteresis purposes.
+      self._consecutive_idle_rounds = 0
 
     # Clamp to bounds.
     new_hot = max(self.config.min_hot_threshold, min(self.config.max_hot_threshold, new_hot))

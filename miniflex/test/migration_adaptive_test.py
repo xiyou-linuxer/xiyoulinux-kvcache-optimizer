@@ -113,6 +113,51 @@ def test_engine_adaptive_keeps_thresholds_valid():
   assert eng.policy.hot_threshold > eng.policy.cold_threshold
 
 
+
+
+def test_adaptive_tuner_idle_restore_requires_sustained_idleness():
+  """A single quiet round must not undo a cold-pressure expansion."""
+  cfg = AdaptiveConfig(cold_access_trigger=10, cooldown_rounds=0, idle_restore_rounds=3)
+  tuner = AdaptiveTuner(cfg)
+  # Expand once under cold pressure.
+  h1, c1 = tuner.tune(3.0, 0.5, promotions=0, demotions=0, cold_accesses=100)
+  assert h1 < 3.0
+  # Two idle rounds: below the restore threshold, thresholds must hold.
+  h2, c2 = tuner.tune(h1, c1, promotions=0, demotions=0, cold_accesses=0)
+  assert (h2, c2) == (h1, c1), "first idle round must not restore"
+  h3, c3 = tuner.tune(h2, c2, promotions=0, demotions=0, cold_accesses=0)
+  assert (h3, c3) == (h1, c1), "second idle round must not restore"
+  # Third consecutive idle round: restore kicks in.
+  h4, c4 = tuner.tune(h3, c3, promotions=0, demotions=0, cold_accesses=0)
+  assert h4 > h3 and c4 > c3, "sustained idleness should restore thresholds"
+
+
+def test_adaptive_tuner_cold_pressure_resets_idle_streak():
+  """Cold pressure between idle rounds resets the restore countdown."""
+  cfg = AdaptiveConfig(cold_access_trigger=10, cooldown_rounds=0, idle_restore_rounds=3)
+  tuner = AdaptiveTuner(cfg)
+  tuner.tune(3.0, 0.5, promotions=0, demotions=0, cold_accesses=100)  # expand
+  tuner.tune(2.5, 0.4, promotions=0, demotions=0, cold_accesses=0)    # idle 1
+  tuner.tune(2.5, 0.4, promotions=0, demotions=0, cold_accesses=0)    # idle 2
+  # Cold pressure returns: streak resets.
+  tuner.tune(2.5, 0.4, promotions=0, demotions=0, cold_accesses=100)
+  h, c = tuner.tune(2.0, 0.3, promotions=0, demotions=0, cold_accesses=0)  # idle 1 again
+  assert (h, c) == (2.0, 0.3), "idle streak must restart after cold pressure"
+
+
+def test_adaptive_tuner_mixed_signals_reset_idle_streak():
+  """Migration activity below the cold trigger counts as not-idle."""
+  cfg = AdaptiveConfig(cold_access_trigger=10, cooldown_rounds=0, idle_restore_rounds=2)
+  tuner = AdaptiveTuner(cfg)
+  tuner.tune(3.0, 0.5, promotions=0, demotions=0, cold_accesses=100)  # expand
+  tuner.tune(2.5, 0.4, promotions=0, demotions=0, cold_accesses=0)    # idle 1
+  # Active migration round (not idle): resets streak.
+  h, c = tuner.tune(2.5, 0.4, promotions=3, demotions=0, cold_accesses=0)
+  assert (h, c) == (2.5, 0.3 + 0.1) or (h, c) == (2.5, 0.4), "mixed round must not restore"
+  h2, c2 = tuner.tune(h, c, promotions=0, demotions=0, cold_accesses=0)  # idle 1 again
+  assert (h2, c2) == (h, c), "streak must have been reset by the active round"
+
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0
