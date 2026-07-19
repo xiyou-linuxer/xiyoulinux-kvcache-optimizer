@@ -66,7 +66,8 @@ class BlockHeat:
     if self.last_access <= 0.0:
       return
     seconds = max(0.0, now - self.last_access)
-    # Exponential decay: half-life of ~10s by default.
+    # Exponential decay: with decay=0.95, ~13.9s half-life (retains ~70.7%
+    # after 10s).  decay=0.9 gives a true 10s half-life.
     effective = math.exp(-seconds * (1.0 - decay) * 0.693)
     self.score *= effective
     # Burst state decays too: if no recent hits, it's no longer bursting.

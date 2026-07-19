@@ -27,10 +27,6 @@ from miniflex.migration.engine import MigrationEngine
 from miniflex.migration.planner import MigrationOp, MigrationPlan
 
 
-# Map our tier names to the DeviceType int used by the transfer engine's
-# pin-buffer allocation.  GPU=1, CPU=0, SSD=2 (matches common/transfer.py).
-_TIER_TO_DEVICE = {"cpu": 0, "gpu": 1, "ssd": 2}
-
 
 @dataclass
 class ResolvedMigrationOp:

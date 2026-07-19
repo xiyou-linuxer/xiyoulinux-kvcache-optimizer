@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from miniflex.migration.heat import HeatTracker
 from miniflex.migration.metrics import MigrationMetrics, Stopwatch
