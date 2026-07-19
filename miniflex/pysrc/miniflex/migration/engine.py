@@ -27,6 +27,7 @@ from typing import Dict, List, Optional, Set, Tuple
 
 from miniflex.migration.heat import HeatTracker
 from miniflex.migration.metrics import MigrationMetrics, Stopwatch
+from miniflex.migration.adaptive import AdaptiveTuner, AdaptiveConfig
 from miniflex.migration.planner import MigrationPlan, MigrationPlanner
 from miniflex.migration.policy import MigrationPolicy
 from miniflex.migration.prefetch import PrefetchDecision, PrefetchPlanner
@@ -42,6 +43,8 @@ class MigrationEngineConfig:
   max_prefetch_ratio: float = 1.0
   # Global in-flight bandwidth cap (max blocks scheduled but not completed).
   max_inflight_blocks: int = 256
+  # Adaptive threshold tuning (None = disabled).
+  adaptive: Optional[AdaptiveConfig] = None
 
 
 @dataclass
@@ -73,6 +76,7 @@ class MigrationEngine:
     self.prefetch_planner = PrefetchPlanner(max_prefetch_ratio=self.config.max_prefetch_ratio)
     self.metrics = MigrationMetrics()
     # Blocks currently scheduled but not yet completed (src_tier, block_id).
+    self._tuner = AdaptiveTuner(self.config.adaptive) if self.config.adaptive else None
     self._inflight: Dict[Tuple[str, int], _InflightOp] = {}
     self._last_plan: Optional[MigrationPlan] = None
 
@@ -103,6 +107,7 @@ class MigrationEngine:
       self.metrics.record_noop(noops)
       self.metrics.record_promotion(plan.num_promotions)
       self.metrics.record_demotion(plan.num_demotions)
+      self._adapt_thresholds(plan)
     self._last_plan = plan
     return plan
 
@@ -180,6 +185,22 @@ class MigrationEngine:
         block_id=op.block_id,
         scheduled_at=now,
       )
+
+  def _adapt_thresholds(self, plan: MigrationPlan) -> None:
+    """Adjust hot/cold thresholds based on the last round's metrics."""
+    if self._tuner is None:
+      return
+    stats = self.metrics.snapshot()
+    cold_accesses = stats["tier_distribution"].get("ssd", 0)
+    new_hot, new_cold = self._tuner.tune(
+      current_hot=self.policy.hot_threshold,
+      current_cold=self.policy.cold_threshold,
+      promotions=plan.num_promotions,
+      demotions=plan.num_demotions,
+      cold_accesses=cold_accesses,
+    )
+    self.policy.hot_threshold = new_hot
+    self.policy.cold_threshold = new_cold
 
   # -- reporting -----------------------------------------------------------
   def stats(self) -> Dict:

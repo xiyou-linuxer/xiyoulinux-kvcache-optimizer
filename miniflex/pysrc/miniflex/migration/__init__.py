@@ -23,6 +23,8 @@ Modules:
   completion feedback.
 - ``executor``: bridges MigrationPlan -> TransferOpGraph for the real
   TransferEngine, with completion feedback and two-hop chaining.
+- ``adaptive``: adaptive threshold tuning based on metrics feedback, so the
+  policy can expand/contract the hot tier automatically.
 
 All pure-Python and self-contained for unit testing without C++/CUDA extensions.
 """
@@ -33,6 +35,7 @@ from miniflex.migration.prefetch import PrefetchPlanner, PrefetchDecision
 from miniflex.migration.metrics import MigrationMetrics, Stopwatch
 from miniflex.migration.engine import MigrationEngine, MigrationEngineConfig
 from miniflex.migration.executor import MigrationExecutor, ResolvedMigrationOp
+from miniflex.migration.adaptive import AdaptiveTuner, AdaptiveConfig
 
 __all__ = [
   "HeatTracker",
@@ -50,4 +53,6 @@ __all__ = [
   "MigrationEngineConfig",
   "MigrationExecutor",
   "ResolvedMigrationOp",
+  "AdaptiveTuner",
+  "AdaptiveConfig",
 ]
