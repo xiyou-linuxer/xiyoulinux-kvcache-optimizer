@@ -36,6 +36,7 @@ from miniflex.migration.metrics import MigrationMetrics, Stopwatch
 from miniflex.migration.engine import MigrationEngine, MigrationEngineConfig
 from miniflex.migration.executor import MigrationExecutor, ResolvedMigrationOp
 from miniflex.migration.adaptive import AdaptiveTuner, AdaptiveConfig
+from miniflex.migration.runtime_bridge import MigrationRuntimeBridge, RuntimeBridgeStats
 
 __all__ = [
   "HeatTracker",
@@ -55,4 +56,6 @@ __all__ = [
   "ResolvedMigrationOp",
   "AdaptiveTuner",
   "AdaptiveConfig",
+  "MigrationRuntimeBridge",
+  "RuntimeBridgeStats",
 ]
