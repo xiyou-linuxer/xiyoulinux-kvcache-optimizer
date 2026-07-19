@@ -21,6 +21,8 @@ Modules:
 - ``engine``: the unified ``MigrationEngine`` that ties heat -> policy -> plan
   -> prefetch together, with in-flight deduplication, bandwidth caps and
   completion feedback.
+- ``executor``: bridges MigrationPlan -> TransferOpGraph for the real
+  TransferEngine, with completion feedback and two-hop chaining.
 
 All pure-Python and self-contained for unit testing without C++/CUDA extensions.
 """
@@ -30,6 +32,7 @@ from miniflex.migration.planner import MigrationPlanner, MigrationPlan, Migratio
 from miniflex.migration.prefetch import PrefetchPlanner, PrefetchDecision
 from miniflex.migration.metrics import MigrationMetrics, Stopwatch
 from miniflex.migration.engine import MigrationEngine, MigrationEngineConfig
+from miniflex.migration.executor import MigrationExecutor, ResolvedMigrationOp
 
 __all__ = [
   "HeatTracker",
@@ -45,4 +48,6 @@ __all__ = [
   "Stopwatch",
   "MigrationEngine",
   "MigrationEngineConfig",
+  "MigrationExecutor",
+  "ResolvedMigrationOp",
 ]
