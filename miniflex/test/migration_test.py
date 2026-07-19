@@ -145,6 +145,36 @@ def test_prefetch_budget_throttle():
   assert dec.total_blocks == 5  # 50% of 10
 
 
+
+def test_heat_layer_weight():
+  """Same access pattern, different layers -> weighted heat differs."""
+  clk = FakeClock()
+  ht = HeatTracker(
+    decay=0.9,
+    time_func=clk.time,
+    layer_weights={0: 1.0, 10: 2.0},
+  )
+  ht.touch("cpu", 1, layer_id=0)
+  ht.touch("cpu", 2, layer_id=10)
+  b1 = ht.get("cpu", 1)
+  b2 = ht.get("cpu", 2)
+  assert b1 is not None and b2 is not None
+  assert b2.score > b1.score
+  assert b1.layer_id == 0
+  assert b2.layer_id == 10
+
+
+def test_heat_layer_weight_backward_compatible():
+  """Without layer_id, behavior should remain unchanged."""
+  clk = FakeClock()
+  ht = HeatTracker(decay=0.9, time_func=clk.time, layer_weights={3: 10.0})
+  ht.touch("cpu", 1)
+  b = ht.get("cpu", 1)
+  assert b is not None
+  # CPU base weight remains 2.0 because no layer_id was supplied.
+  assert abs(b.score - 2.0) < 1e-6
+  assert b.layer_id is None
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0

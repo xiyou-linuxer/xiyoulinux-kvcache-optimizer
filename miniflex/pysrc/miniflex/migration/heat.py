@@ -46,6 +46,7 @@ class BlockHeat:
   recent_accesses: Deque[float] = field(default_factory=lambda: deque(maxlen=16))
   # Set when the block is currently in a burst (>=N hits in the window).
   is_bursting: bool = False
+  layer_id: Optional[int] = None
 
   def touch(self, now: float, decay: float, tier_weight: float = 1.0) -> None:
     self.access_count += 1
@@ -85,12 +86,19 @@ class HeatTracker:
     use_tier_weight: whether cold-tier hits should heat a block up faster.
   """
 
-  def __init__(self, decay: float = 0.95, time_func=None, use_tier_weight: bool = True):
+  def __init__(
+    self,
+    decay: float = 0.95,
+    time_func=None,
+    use_tier_weight: bool = True,
+    layer_weights: Optional[Dict[int, float]] = None,
+  ):
     if not 0.0 <= decay < 1.0:
       raise ValueError(f"decay must be in [0, 1), got {decay}")
     self.decay = decay
     self.time_func = time_func or time.time
     self.use_tier_weight = use_tier_weight
+    self.layer_weights = layer_weights or {}
     self._blocks: Dict[Tuple[str, int], BlockHeat] = {}
 
   # -- basic API -----------------------------------------------------------
@@ -99,15 +107,20 @@ class HeatTracker:
       raise ValueError(f"unknown tier: {tier}")
     return (tier, block_id)
 
-  def register(self, tier: str, block_id: int) -> BlockHeat:
+  def register(self, tier: str, block_id: int, layer_id: Optional[int] = None) -> BlockHeat:
     key = self._key(tier, block_id)
     if key not in self._blocks:
-      self._blocks[key] = BlockHeat(tier=tier, block_id=block_id)
+      self._blocks[key] = BlockHeat(tier=tier, block_id=block_id, layer_id=layer_id)
+    elif layer_id is not None:
+      # Preserve the most specific layer information we have seen.
+      self._blocks[key].layer_id = layer_id
     return self._blocks[key]
 
-  def touch(self, tier: str, block_id: int) -> BlockHeat:
-    bh = self.register(tier, block_id)
+  def touch(self, tier: str, block_id: int, layer_id: Optional[int] = None) -> BlockHeat:
+    bh = self.register(tier, block_id, layer_id)
     weight = TIER_WEIGHT[tier] if self.use_tier_weight else 1.0
+    if layer_id is not None:
+      weight *= self.layer_weights.get(layer_id, 1.0)
     bh.touch(self.time_func(), self.decay, tier_weight=weight)
     return bh
 
