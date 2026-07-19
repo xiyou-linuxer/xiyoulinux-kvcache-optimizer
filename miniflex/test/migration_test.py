@@ -226,6 +226,37 @@ def test_heat_decode_step_backward_compatible():
   assert abs(b.score - 3.0) < 1e-6
   assert b.decode_step is None
 
+
+
+def test_heat_tracker_half_life_s_equivalence():
+  """half_life_s=10 must behave exactly like decay=0.9."""
+  clk1, clk2 = FakeClock(), FakeClock()
+  ht_legacy = HeatTracker(decay=0.9, time_func=clk1.time)
+  ht_hl = HeatTracker(half_life_s=10.0, time_func=clk2.time)
+  for ht, clk in ((ht_legacy, clk1), (ht_hl, clk2)):
+    ht.touch("cpu", 1)
+    clk.advance(10)
+    ht.decay_all()
+  s1 = ht_legacy.get("cpu", 1).score
+  s2 = ht_hl.get("cpu", 1).score
+  assert abs(s1 - s2) < 1e-9, f"half_life_s=10 should equal decay=0.9: {s1} vs {s2}"
+
+
+def test_heat_tracker_half_life_s_overrides_decay():
+  """When both are given, half_life_s wins."""
+  ht = HeatTracker(decay=0.99, half_life_s=10.0)
+  # decay resolved from half_life_s=10 -> 0.9, not 0.99.
+  assert abs(ht.decay - 0.9) < 1e-9
+
+
+def test_heat_tracker_half_life_s_validation():
+  import pytest
+  with pytest.raises(ValueError):
+    HeatTracker(half_life_s=0.5)
+  with pytest.raises(ValueError):
+    HeatTracker(half_life_s=1.0)
+
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0

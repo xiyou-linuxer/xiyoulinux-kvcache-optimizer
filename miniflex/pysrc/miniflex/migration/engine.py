@@ -36,6 +36,9 @@ from miniflex.migration.prefetch import PrefetchDecision, PrefetchPlanner
 @dataclass
 class MigrationEngineConfig:
   decay: float = 0.95
+  # Preferred explicit memory control: heat score half-life in seconds.
+  # When set, overrides ``decay`` (see HeatTracker).
+  half_life_s: Optional[float] = None
   hot_threshold: float = 2.0
   cold_threshold: float = 0.5
   max_promotions_per_round: int = 64
@@ -65,7 +68,11 @@ class MigrationEngine:
   ):
     self.config = config or MigrationEngineConfig()
     self.time_func = time_func or time.time
-    self.tracker = HeatTracker(decay=self.config.decay, time_func=self.time_func)
+    self.tracker = HeatTracker(
+      decay=self.config.decay,
+      half_life_s=self.config.half_life_s,
+      time_func=self.time_func,
+    )
     self.policy = MigrationPolicy(
       hot_threshold=self.config.hot_threshold,
       cold_threshold=self.config.cold_threshold,

@@ -83,12 +83,25 @@ class BlockHeat:
       self.score *= BURST_BONUS
 
   def age(self, now: float, decay: float) -> None:
-    """Apply time decay without a fresh access."""
+    """Apply time decay without a fresh access.
+
+    ``decay`` is the tracker-level knob; when the tracker was configured with
+    an explicit ``half_life_s`` it is converted to the equivalent ``decay``
+    before reaching this method (see ``HeatTracker._resolve_decay``), so this
+    function only ever sees the legacy knob.
+    """
     if self.last_access <= 0.0:
       return
     seconds = max(0.0, now - self.last_access)
-    # Exponential decay: with decay=0.95, ~13.9s half-life (retains ~70.7%
-    # after 10s).  decay=0.9 gives a true 10s half-life.
+    # Exponential decay.  `decay` here is the per-second retention raised to
+    # the elapsed time, reparametrised so that decay=0.9 corresponds to a
+    # 10s half-life (i.e. score halves every 10s).  Formally:
+    #   score *= exp(-seconds * (1 - decay) * ln(2) / 10 * 10)  -- see below
+    # The implementation uses exp(-seconds * (1-decay) * 0.693) which yields:
+    #   decay=0.9  -> 10.0s half-life
+    #   decay=0.95 -> 20.0s half-life
+    #   decay=0.99 -> 100.0s half-life
+    # Prefer configuring via ``HeatTracker(half_life_s=...)`` for clarity.
     effective = math.exp(-seconds * (1.0 - decay) * 0.693)
     self.score *= effective
     # Burst state decays too: if no recent hits, it's no longer bursting.
@@ -101,7 +114,13 @@ class HeatTracker:
   """Tracks per-block heat and reports hot/cold candidates.
 
   Args:
-    decay: per-touch exponential decay factor in [0, 1). Lower = shorter memory.
+    decay: legacy decay knob in [0, 1).  Semantics: ``decay=0.9`` corresponds
+      to a 10-second half-life, ``decay=0.95`` to 20s, ``decay=0.99`` to 100s
+      (see ``BlockHeat.age``).  Ignored when ``half_life_s`` is given.
+    half_life_s: preferred, explicit way to configure memory: the number of
+      seconds after which a block's heat score halves with no new accesses.
+      When provided, it is converted internally to the equivalent ``decay``
+      value so all downstream behaviour is identical.
     time_func: injectable clock for deterministic testing.
     use_tier_weight: whether cold-tier hits should heat a block up faster.
   """
@@ -109,21 +128,37 @@ class HeatTracker:
   def __init__(
     self,
     decay: float = 0.95,
+    half_life_s: Optional[float] = None,
     time_func=None,
     use_tier_weight: bool = True,
     layer_weights: Optional[Dict[int, float]] = None,
     phase_weights: Optional[Dict[str, float]] = None,
     decode_step_weights: Optional[Dict[int, float]] = None,
   ):
-    if not 0.0 <= decay < 1.0:
-      raise ValueError(f"decay must be in [0, 1), got {decay}")
-    self.decay = decay
+    self.decay = self._resolve_decay(decay, half_life_s)
     self.time_func = time_func or time.time
     self.use_tier_weight = use_tier_weight
     self.layer_weights = layer_weights or {}
     self.phase_weights = {**PHASE_WEIGHT, **(phase_weights or {})}
     self.decode_step_weights = decode_step_weights or {}
     self._blocks: Dict[Tuple[str, int], BlockHeat] = {}
+
+  # -- configuration resolution ---------------------------------------------
+  @staticmethod
+  def _resolve_decay(decay: float, half_life_s: Optional[float]) -> float:
+    """Resolve the effective ``decay`` knob from legacy or half-life input.
+
+    Mapping derived from ``BlockHeat.age``: score halves after ``t`` seconds
+    when ``exp(-t * (1-decay) * ln(2)) == 0.5``, i.e. ``t = 1 / (1-decay)``.
+    So ``half_life_s = H`` maps to ``decay = 1 - 1/H``.
+    """
+    if half_life_s is not None:
+      if half_life_s <= 1.0:
+        raise ValueError(f"half_life_s must be > 1.0, got {half_life_s}")
+      return 1.0 - 1.0 / half_life_s
+    if not 0.0 <= decay < 1.0:
+      raise ValueError(f"decay must be in [0, 1), got {decay}")
+    return decay
 
   # -- basic API -----------------------------------------------------------
   def _key(self, tier: str, block_id: int) -> Tuple[str, int]:
