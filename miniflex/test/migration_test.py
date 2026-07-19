@@ -200,6 +200,32 @@ def test_heat_phase_weight_backward_compatible():
   assert abs(b.score - 2.0) < 1e-6
   assert b.phase is None
 
+
+def test_heat_decode_step_weight():
+  """Later decode steps should get slightly higher heat."""
+  clk = FakeClock()
+  ht = HeatTracker(decay=0.9, time_func=clk.time)
+  ht.touch("cpu", 1, phase="decode", decode_step=1)
+  ht.touch("cpu", 2, phase="decode", decode_step=10)
+  b1 = ht.get("cpu", 1)
+  b2 = ht.get("cpu", 2)
+  assert b1 is not None and b2 is not None
+  assert b2.score > b1.score
+  assert b1.decode_step == 1
+  assert b2.decode_step == 10
+
+
+def test_heat_decode_step_backward_compatible():
+  """Without decode_step, behavior remains unchanged."""
+  clk = FakeClock()
+  ht = HeatTracker(decay=0.9, time_func=clk.time, decode_step_weights={10: 100.0})
+  ht.touch("cpu", 1, phase="decode")
+  b = ht.get("cpu", 1)
+  assert b is not None
+  # CPU tier 2.0 * decode phase 1.5 = 3.0 when no decode_step is supplied.
+  assert abs(b.score - 3.0) < 1e-6
+  assert b.decode_step is None
+
 def _main():
   funcs = [v for k, v in sorted(globals().items()) if k.startswith("test_") and callable(v)]
   failed = 0

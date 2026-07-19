@@ -32,6 +32,19 @@ TIER_WEIGHT = {"gpu": 1.0, "cpu": 2.0, "ssd": 4.0}
 # throughput/latency more directly.
 PHASE_WEIGHT = {"prefill": 1.0, "decode": 1.5}
 
+
+def _default_decode_step_weight(step: int) -> float:
+  """Small monotonic bonus for later decode steps.
+
+  We keep this intentionally conservative: later decode steps are more likely to
+  be re-accessed on the critical path, but the bonus should not dominate tier /
+  phase / layer weighting.  The function is linear and capped by callers if
+  they want stronger specialization later.
+  """
+  if step < 0:
+    raise ValueError(f"decode_step must be non-negative, got {step}")
+  return 1.0 + 0.01 * step
+
 # Burst detection: a "burst" is >= N accesses within a short window.
 BURST_WINDOW_SECONDS = 2.0
 BURST_MIN_ACCESSES = 3
@@ -53,6 +66,7 @@ class BlockHeat:
   is_bursting: bool = False
   layer_id: Optional[int] = None
   phase: Optional[str] = None
+  decode_step: Optional[int] = None
 
   def touch(self, now: float, decay: float, tier_weight: float = 1.0) -> None:
     self.access_count += 1
@@ -99,6 +113,7 @@ class HeatTracker:
     use_tier_weight: bool = True,
     layer_weights: Optional[Dict[int, float]] = None,
     phase_weights: Optional[Dict[str, float]] = None,
+    decode_step_weights: Optional[Dict[int, float]] = None,
   ):
     if not 0.0 <= decay < 1.0:
       raise ValueError(f"decay must be in [0, 1), got {decay}")
@@ -107,6 +122,7 @@ class HeatTracker:
     self.use_tier_weight = use_tier_weight
     self.layer_weights = layer_weights or {}
     self.phase_weights = {**PHASE_WEIGHT, **(phase_weights or {})}
+    self.decode_step_weights = decode_step_weights or {}
     self._blocks: Dict[Tuple[str, int], BlockHeat] = {}
 
   # -- basic API -----------------------------------------------------------
@@ -121,6 +137,7 @@ class HeatTracker:
     block_id: int,
     layer_id: Optional[int] = None,
     phase: Optional[str] = None,
+    decode_step: Optional[int] = None,
   ) -> BlockHeat:
     key = self._key(tier, block_id)
     if key not in self._blocks:
@@ -129,12 +146,17 @@ class HeatTracker:
         block_id=block_id,
         layer_id=layer_id,
         phase=phase,
+        decode_step=decode_step,
       )
     elif layer_id is not None:
       # Preserve the most specific layer information we have seen.
       self._blocks[key].layer_id = layer_id
     if phase is not None:
       self._blocks[key].phase = phase
+    if decode_step is not None:
+      if decode_step < 0:
+        raise ValueError(f"decode_step must be non-negative, got {decode_step}")
+      self._blocks[key].decode_step = decode_step
     return self._blocks[key]
 
   def touch(
@@ -143,13 +165,16 @@ class HeatTracker:
     block_id: int,
     layer_id: Optional[int] = None,
     phase: Optional[str] = None,
+    decode_step: Optional[int] = None,
   ) -> BlockHeat:
-    bh = self.register(tier, block_id, layer_id, phase)
+    bh = self.register(tier, block_id, layer_id, phase, decode_step)
     weight = TIER_WEIGHT[tier] if self.use_tier_weight else 1.0
     if layer_id is not None:
       weight *= self.layer_weights.get(layer_id, 1.0)
     if phase is not None:
       weight *= self.phase_weights.get(phase, 1.0)
+    if decode_step is not None:
+      weight *= self.decode_step_weights.get(decode_step, _default_decode_step_weight(decode_step))
     bh.touch(self.time_func(), self.decay, tier_weight=weight)
     return bh
 
