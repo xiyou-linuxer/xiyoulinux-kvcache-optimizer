@@ -9,6 +9,10 @@ class TransferType(Enum):
   H2D = "H2D"
   H2DISK = "H2DISK"
   DISK2H = "DISK2H"
+  # GDS direct SSD<->GPU (bypasses the CPU bounce buffer).  Planned only when
+  # CacheConfig.enable_gds is on; otherwise GPU<->SSD stages through CPU.
+  D2DISK = "D2DISK"
+  DISK2D = "DISK2D"
   VIRTUAL = "VIRTUAL"
 
 class DeviceType(IntEnum):
@@ -47,7 +51,7 @@ class TransferOp:
       raise ValueError("src_block_ids and dst_block_ids must be 1D arrays of int64")
     if self.src_block_ids.size != self.dst_block_ids.size and self.transfer_type != TransferType.VIRTUAL:
       raise ValueError("src_block_ids and dst_block_ids must have the same size")
-    if self.transfer_type not in [TransferType.D2H, TransferType.H2D, TransferType.H2DISK, TransferType.DISK2H, TransferType.VIRTUAL]:
+    if self.transfer_type not in [TransferType.D2H, TransferType.H2D, TransferType.H2DISK, TransferType.DISK2H, TransferType.D2DISK, TransferType.DISK2D, TransferType.VIRTUAL]:
       raise ValueError("invalid transfer type")
     if self.graph_id < 0:
       raise ValueError("graph_id must be non-negative")

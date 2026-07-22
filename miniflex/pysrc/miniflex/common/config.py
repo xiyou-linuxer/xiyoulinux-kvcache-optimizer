@@ -49,6 +49,12 @@ class CacheConfig:
   hit_add_counts: float = 1.0
   protected_threshold: int = 2
   use_direct_io: bool = True
+  # GPU Direct Storage: plan direct SSD<->GPU transfers (D2DISK/DISK2D)
+  # instead of staging through CPU.  Requires the miniflex._C extension to be
+  # built with cuFile; otherwise the GDS worker reports unavailable and the
+  # planner keeps using the CPU two-hop path.  Default off (no behaviour
+  # change).
+  enable_gds: bool = False
   
   def __post_init__(self):
     if self.tokens_per_block <= 0 or (self.tokens_per_block & (self.tokens_per_block - 1)) != 0:
@@ -78,6 +84,8 @@ class CacheConfig:
         raise ValueError("ssd_file_prefix must be a non-empty string")
       if self.ssd_max_file_size_gb != -1 and self.ssd_max_file_size_gb <= 0:
         raise ValueError(f"ssd_max_file_size_gb must be positive or -1, got {self.ssd_max_file_size_gb}")
+    if self.enable_gds and not self.enable_ssd:
+      raise ValueError("enable_gds requires enable_ssd=True")
     if self.eviction_policy not in ["lru", "lfu", "slru", "fifo"]:
       raise ValueError(f"invalid eviction policy, got {self.eviction_policy}")
     if self.evict_ratio < 0 or self.evict_ratio >= 1:

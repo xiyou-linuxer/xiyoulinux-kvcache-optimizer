@@ -70,7 +70,7 @@ def _load_json_config(path: str) -> dict[str, Any]:
 def _apply_cache_overrides(cache_config: CacheConfig, values: dict[str, Any]) -> None:
   int_fields = ("tokens_per_block", "num_cpu_blocks", "num_ssd_blocks", "protected_threshold")
   float_fields = ("ssd_max_file_size_gb", "evict_ratio", "evict_start_threshold", "hit_add_counts")
-  bool_fields = ("enable_cpu", "enable_ssd", "use_direct_io")
+  bool_fields = ("enable_cpu", "enable_ssd", "use_direct_io", "enable_gds")
   str_fields = ("ssd_file_prefix", "eviction_policy")
 
   for key in int_fields:
@@ -104,6 +104,7 @@ def _env_overrides() -> dict[str, Any]:
     "MINIFLEX_ENABLE_CPU": "enable_cpu",
     "MINIFLEX_ENABLE_SSD": "enable_ssd",
     "MINIFLEX_USE_DIRECT_IO": "use_direct_io",
+    "MINIFLEX_ENABLE_GDS": "enable_gds",
     "MINIFLEX_EVICTION_POLICY": "eviction_policy",
     "MINIFLEX_EVICT_RATIO": "evict_ratio",
     "MINIFLEX_EVICT_START_THRESHOLD": "evict_start_threshold",

@@ -17,7 +17,7 @@ from miniflex.common.transfer import (
   TransferType,
 )
 from miniflex.transfer.scheduler import TransferScheduler
-from miniflex.transfer.worker import GPUCPUTransferWorker, SSDCPUTransferWorker, WorkerHandle
+from miniflex.transfer.worker import GDSTransferWorker, GPUCPUTransferWorker, SSDCPUTransferWorker, WorkerHandle
 
 
 class TransferEngine:
@@ -124,6 +124,29 @@ class TransferEngine:
       )
       self._transfer_worker[TransferType.DISK2H] = self._disk2h_worker
 
+      # Optional GDS direct SSD<->GPU workers. They are created only when
+      # CacheConfig.enable_gds is on. This registers worker endpoints only;
+      # the planner decides whether to emit direct operations, and the worker
+      # itself does not perform a CPU two-hop fallback.
+      if getattr(self.cache_config, "enable_gds", False):
+        self._d2disk_worker = GDSTransferWorker.create_worker(
+          self._mp_ctx,
+          self._finished_op_queue,
+          self._pin_buffer.get_buffer(),
+          self._gpu_handle,
+          self._ssd_handle,
+        )
+        self._disk2d_worker = GDSTransferWorker.create_worker(
+          self._mp_ctx,
+          self._finished_op_queue,
+          self._pin_buffer.get_buffer(),
+          self._gpu_handle,
+          self._ssd_handle,
+        )
+
+        self._transfer_worker[TransferType.D2DISK] = self._d2disk_worker
+        self._transfer_worker[TransferType.DISK2D] = self._disk2d_worker
+
     if len(self._transfer_worker) == 0:
       raise ValueError("No transfer workers created")
 
@@ -224,6 +247,8 @@ class TransferEngine:
       TransferType.H2D: (DeviceType.CPU, DeviceType.GPU),
       TransferType.H2DISK: (DeviceType.CPU, DeviceType.SSD),
       TransferType.DISK2H: (DeviceType.SSD, DeviceType.CPU),
+      TransferType.D2DISK: (DeviceType.GPU, DeviceType.SSD),
+      TransferType.DISK2D: (DeviceType.SSD, DeviceType.GPU),
     }
     src_device, dst_device = transfer_devices.get(op.transfer_type, (0, 0))
     op.src_slot_id = self._pin_buffer.allocate_slot(op.src_block_ids, int(src_device))
