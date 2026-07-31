@@ -70,8 +70,9 @@ worker 注册 GPU KV 时**按张量形状自动探测布局**，无需配置、�
 [project_structure.md](project_structure.md) 的「KV 布局自适配」。
 
 ### 一键演示 / 基准
-仓库根目录的自包含脚本 `demo.sh` 会内联启动 vLLM 的 MiniFlex / APC / 两者叠加三种配置，
-依次跑功能验证、长上下文加速、容量交叉、混合负载叠加，适合快速验证或录制：
+仓库根目录的自包含脚本 `demo.sh` 会内联启动 vLLM 的 MiniFlex / APC / 两者叠加 / SSD 配置，
+依次跑功能验证、长上下文加速、容量交叉、混合负载叠加，以及真实
+`CPU 淘汰 -> SSD 命中 -> CPU 回填 -> GPU 恢复` E2E，适合一键验证或录制：
 
 ```bash
 bash demo.sh            # 每幕停顿
@@ -79,6 +80,18 @@ PAUSE=0 bash demo.sh    # 连续跑
 ```
 
 机器相关项（`HF_HOME` / `MODEL` / `GPU_MEM` / `MINIFLEX_*`）可用环境变量覆盖。
+第五幕面向 RTX 5090 比赛机，默认使用 `/root/autodl-tmp/miniflex-ssd-e2e`、
+512 个 CPU blocks、2048 个 SSD blocks、约 7–8k token 的独立前缀，并开启 O_DIRECT。
+其他机器可以显式覆盖：
+
+```bash
+SSD_E2E_CACHE_DIR=/path/on/nvme/miniflex-cache \
+SSD_E2E_USE_DIRECT_IO=1 \
+PAUSE=0 bash demo.sh
+```
+
+真实 `CPU 淘汰 -> SSD 命中 -> CPU 回填 -> GPU 恢复` 的服务级验证方法见
+[ssd_e2e.md](ssd_e2e.md)。该测试使用精确 block 指标，不通过 TTFT 阈值猜测命中。
 
 ### 常见启动坑
 - **残留进程**：vLLM 的引擎进程名是 `VLLM::EngineCore`，`pkill -f "vllm serve"` 杀不到它，

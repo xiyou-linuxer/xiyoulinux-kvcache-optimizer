@@ -104,8 +104,8 @@ export LD_LIBRARY_PATH=/root/miniconda3/lib/python3.12/site-packages/nvidia/cu13
 TORCH_CUDA_ARCH_LIST="12.0" python setup.py build_ext --inplace   # 编译 _C
 ```
 
-一键演示（自包含脚本：内联启动 vLLM 的 miniflex/apc/both 三种配置 + 调用通用 `bench_*.py`，
-覆盖 ①功能 ②加速 ③容量交叉 ④叠加）：
+一键演示（自包含脚本：内联启动 vLLM 的 miniflex/apc/both/ssd 配置 + 调用通用 `bench_*.py`，
+覆盖 ①功能 ②加速 ③容量交叉 ④叠加 ⑤真实 SSD 命中与 CPU 晋升）：
 
 ```bash
 bash demo.sh            # 每幕停顿（便于录制 / 配字幕）
