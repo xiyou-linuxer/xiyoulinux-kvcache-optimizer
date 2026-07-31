@@ -28,6 +28,7 @@ SSD_E2E_ROUNDS="${SSD_E2E_ROUNDS:-3}"
 SSD_E2E_CACHE_DIR="${SSD_E2E_CACHE_DIR:-${MINIFLEX_SSD_CACHE_DIR:-/root/autodl-tmp/miniflex-ssd-e2e}}"
 SSD_E2E_USE_DIRECT_IO="${SSD_E2E_USE_DIRECT_IO:-${MINIFLEX_USE_DIRECT_IO:-1}}"
 SSD_E2E_OUT="${SSD_E2E_OUT:-/tmp/miniflex_ssd_e2e.json}"
+TTFT_RUNS="${TTFT_RUNS:-10}"
 H='\033[1;36m';G='\033[1;32m';Y='\033[1;33m';R='\033[0m'
 FRAME_INNER_WIDTH=66
 banner(){
@@ -123,7 +124,7 @@ pause
 banner "② 长上下文加速:冷(重算) vs 热(MiniFlex 命中)"
 PYTHONPATH=pysrc python bench_ttft.py --url "$URL" --model qwen3-8b --body-repeat 33 --runs 1 >/dev/null 2>&1
 for br in 33 65 130 250 500 750 1000;do echo -e "${G}  ── 上下文 ~$(( (br*30+500)/1000 ))k ──${R}"
-  PYTHONPATH=pysrc python bench_ttft.py --url "$URL" --model qwen3-8b --body-repeat "$br" --runs 3 2>&1|grep -E "冷\(|热\(|加速比";done
+  PYTHONPATH=pysrc python bench_ttft.py --url "$URL" --model qwen3-8b --body-repeat "$br" --runs "$TTFT_RUNS" 2>&1|grep -E "冷\(|热\(|加速比";done
 pause
 
 banner "③ 超显存容量:工作集递增,MiniFlex vs vLLM 原生 APC(GPU 容量 ~68k)"
