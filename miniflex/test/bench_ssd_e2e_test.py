@@ -8,6 +8,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import bench_ssd_e2e as bench
+from miniflex.common import metrics as miniflex_metrics
 
 
 def assert_raises(exc_type, fn):
@@ -53,10 +54,20 @@ def test_metric_delta_handles_missing_counters_and_rejects_reset():
   )
 
 
-def test_missing_metrics_file_is_an_empty_baseline():
+def test_metrics_baseline_materializes_without_overwriting():
   with tempfile.TemporaryDirectory() as directory:
-    missing = Path(directory) / "metrics.json"
-    assert bench.read_metrics(missing, timeout=0) == {}
+    metrics = Path(directory) / "metrics.json"
+    miniflex_metrics.reset()
+    try:
+      bench.ensure_metrics_baseline(metrics)
+      assert bench.read_metrics(metrics, timeout=0) == {}
+
+      miniflex_metrics.incr("counter", 7)
+      miniflex_metrics.dump_json_if_missing(metrics)
+      bench.ensure_metrics_baseline(metrics)
+      assert bench.read_metrics(metrics, timeout=0)["counter"] == 7
+    finally:
+      miniflex_metrics.reset()
 
 
 def test_cached_and_put_block_calculation():
@@ -229,7 +240,7 @@ TEST_CASES = [
   ("指标增量与 reset 检测", test_metric_delta_handles_missing_counters_and_rejects_reset),
   ("缓存 block 数计算", test_cached_and_put_block_calculation),
   ("warmup 不产生可缓存 block", test_warmup_must_not_create_cacheable_blocks),
-  ("缺失指标文件作为全零基线", test_missing_metrics_file_is_an_empty_baseline),
+  ("指标哨兵创建且不覆盖快照", test_metrics_baseline_materializes_without_overwriting),
   ("接受正确的 CPU/SSD 容量关系", test_capacity_accepts_single_fit_cpu_overflow_and_ssd_fit),
   ("拒绝不会触发 CPU 淘汰的工作集", test_capacity_rejects_non_evicting_working_set),
   ("拒绝不能完整淘汰目标的压力集", test_capacity_rejects_pressure_that_cannot_fully_evict_target),

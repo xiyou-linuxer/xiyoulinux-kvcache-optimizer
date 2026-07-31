@@ -212,12 +212,33 @@ def read_metrics(path: Path, timeout: float = 5.0) -> dict[str, Any]:
         return {}
 
     deadline = time.monotonic() + timeout
+    snapshot = _read_metrics_once(path)
+    if snapshot is not None:
+        return snapshot
+
     while time.monotonic() < deadline:
         snapshot = _read_metrics_once(path)
         if snapshot is not None:
             return snapshot
         time.sleep(0.05)
     return {}
+
+
+def ensure_metrics_baseline(path: Path) -> None:
+    """Create the runner sentinel before the adapter can reset first counters."""
+    if path.exists():
+        return
+
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with path.open("x", encoding="utf-8") as output:
+            output.write("{}\n")
+    except FileExistsError:
+        return
+    except OSError as exc:
+        raise VerificationError(
+            f"could not initialize metrics baseline {path}: {exc}"
+        ) from exc
 
 
 def wait_for_counter_delta(
@@ -488,9 +509,12 @@ def required_ssd_tier(require_full_ssd_hit: bool, round_index: int) -> str | Non
 
 
 def run(args: argparse.Namespace) -> dict[str, Any]:
-    # Keep model warmup below one KV block so it cannot alter cache metrics or
-    # consume cache capacity. A missing metrics file is a valid all-zero baseline;
-    # the first cold request below must materialize it and advance H2DISK.
+    ensure_metrics_baseline(args.metrics_file)
+
+    # The adapter resets counters if its first dump sees a missing file. The
+    # sentinel above must therefore exist before any request can schedule H2DISK.
+    # Keep model warmup below one KV block so it cannot consume cache capacity.
+    # The first cold request below must materialize and advance H2DISK metrics.
     warmup_prompt = "Hi"
     warmup_token_count = tokenize_prompt(
         args.url,
