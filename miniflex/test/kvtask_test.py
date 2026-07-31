@@ -1,5 +1,5 @@
 # 本测试文件由 Claude (Anthropic) 编写。
-# 测试内容：KVTaskEngine 的 GET/PUT 任务编排：异步完成上报、batch 合并、提前返回成功后图完成再释放任务、cancel。
+# 测试内容：KVTaskEngine 的 GET/PUT 任务编排：请求前非阻塞推进、异步完成上报、batch 合并、提前返回成功后图完成再释放任务、cancel。
 
 import tempfile
 import traceback
@@ -281,6 +281,82 @@ def test_put_async_releases_task_after_graph_completion_even_if_success_was_retu
       engine.shutdown()
 
 
+def test_get_match_polls_completed_disk2h_before_cache_planning():
+  with tempfile.TemporaryDirectory() as tmp_dir:
+    engine, handle = make_engine(tmp_dir, enable_ssd=True)
+    try:
+      fill_ssd_cache(engine, [71, 72, 73, 74])
+      first_task_id, _ = engine.get_async(
+        KVRequest(
+          request_type=KVRequestType.GET,
+          token_ids=tokens([71, 72, 73, 74]),
+          slot_mapping=slots([0, 1, 2, 3]),
+        )
+      )
+      first_graph = handle.submitted[0]
+      first_ops = sorted_ops(first_graph)
+      assert [op.transfer_type for op in first_ops] == [
+        TransferType.DISK2H,
+        TransferType.H2D,
+      ]
+
+      cpu_cache = engine._manager._global_cache_engine.cpu_cache_engine
+      cpu_request = seq([71, 72, 73, 74])
+      assert cpu_cache.match(cpu_request).num_ready_matched_blocks == 0
+
+      # The transfer has completed, but no wait()/try_wait() has consumed its
+      # completion yet. The next GET must apply it before matching the cache.
+      handle.push_completed(CompletedOp(first_graph.graph_id, first_ops[0].op_id))
+      second_task_id, return_mask = engine.get_match(
+        KVRequest(KVRequestType.GET, tokens([71, 72, 73, 74]))
+      )
+
+      assert return_mask.tolist() == [True, True, True, True]
+      assert cpu_cache.match(cpu_request).num_ready_matched_blocks == 2
+      second_ops = sorted_ops(engine._manager.tasks[second_task_id].graph)
+      assert [op.transfer_type for op in second_ops] == [TransferType.H2D]
+
+      engine.cancel_tasks([first_task_id, second_task_id])
+    finally:
+      engine.shutdown()
+
+
+def test_put_match_polls_graph_completion_and_releases_early_returned_task():
+  with tempfile.TemporaryDirectory() as tmp_dir:
+    engine, handle = make_engine(tmp_dir, enable_ssd=True)
+    try:
+      first_task_id, _ = engine.put_async(
+        KVRequest(
+          request_type=KVRequestType.PUT,
+          token_ids=tokens([81, 82, 83, 84]),
+          slot_mapping=slots([0, 1, 2, 3]),
+        )
+      )
+      first_graph = handle.submitted[0]
+      first_ops = sorted_ops(first_graph)
+
+      handle.push_completed(CompletedOp(first_graph.graph_id, first_ops[0].op_id))
+      response = engine.try_wait(first_task_id)[first_task_id]
+      assert_status(response, KVResponseStatus.SUCCESS)
+      assert engine._manager.tasks[first_task_id].request_returned
+
+      # H2DISK and graph completion are pending in the completion queue. The
+      # following PUT should reap the old task before planning the new one.
+      handle.push_completed(
+        CompletedOp(first_graph.graph_id, first_ops[1].op_id),
+        CompletedOp.completed_graph(first_graph.graph_id),
+      )
+      second_task_id, _ = engine.put_match(
+        KVRequest(KVRequestType.PUT, tokens([91, 92, 93, 94]))
+      )
+
+      assert first_task_id not in engine._manager.tasks
+      assert second_task_id in engine._manager.tasks
+      engine.cancel_tasks(second_task_id)
+    finally:
+      engine.shutdown()
+
+
 def test_launch_tasks_as_batch_merges_get_graphs_and_waits_by_batch_task():
   with tempfile.TemporaryDirectory() as tmp_dir:
     engine, handle = make_engine(tmp_dir, enable_ssd=False)
@@ -409,6 +485,8 @@ TEST_CASES = [
   ("PUT async 在 end op 后 try_wait 返回 success", test_put_async_try_wait_returns_success_after_end_op_before_graph_completion),
   ("GET async early success 后 graph 完成会自动清理", test_get_async_returns_success_after_h2d_end_op_before_graph_completion),
   ("PUT async early success 后 graph 完成会自动清理", test_put_async_releases_task_after_graph_completion_even_if_success_was_returned_early),
+  ("GET match 前推进 DISK2H 完成并命中 ready CPU Cache", test_get_match_polls_completed_disk2h_before_cache_planning),
+  ("PUT match 前推进 graph 完成并释放提前返回任务", test_put_match_polls_graph_completion_and_releases_early_returned_task),
   ("batch GET merge 后按 batch 任务 wait", test_launch_tasks_as_batch_merges_get_graphs_and_waits_by_batch_task),
   ("batch PUT early success 后 graph 完成会自动清理", test_launch_tasks_as_batch_merges_put_graphs_and_waits_after_batch_end_op),
   ("cancel_tasks 释放任务并让 wait 返回 NOTFOUND", test_cancel_tasks_releases_task_and_wait_reports_notfound),
