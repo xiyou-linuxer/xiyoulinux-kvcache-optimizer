@@ -484,3 +484,5 @@ class GlobalCacheEngine:
 
   def _op_callback(self, device_type: DeviceType, node, ready_length: int) -> None:
     self.cache_engines[device_type].set_ready(node, True, ready_length)
+    if device_type == DeviceType.SSD:
+      _metrics_incr("miniflex_put_h2disk_completed_blocks", ready_length)

@@ -18,7 +18,7 @@
 | 逻辑缓存 | `mempool_test.py`、`radix_tree_test.py`、`cache_engine_test.py`、`global_cache_engine_test.py` | `cache/` 物理池、前缀树、单层与跨层缓存引擎 |
 | 物理存储 | `storage_engine_test.py` | `storage/` CPU/SSD 初始化与 GPU 注册 |
 | 传输 | `scheduler_test.py`、`ring_buffer_test.py`、`GPUCPUTransferWorker_test.py`、`ssd_cpu_worker_test.py`、`worker_test.py`、`transfer_engine_test.py`、`transfer_manager_test.py`、`ssd_io_uring_test.cpp` | `transfer/` 调度、worker、引擎、独立进程管理、C++ IO |
-| 任务 / 集成 | `kvtask_test.py`、`vllm_v1_adapter_test.py` | `kvtask.py` 任务编排、vLLM connector 适配 |
+| 任务 / 集成 | `kvtask_test.py`、`vllm_v1_adapter_test.py`、`bench_ssd_e2e_test.py` | 任务编排、vLLM connector 适配、服务级 SSD 验证逻辑 |
 
 ---
 
@@ -60,7 +60,7 @@
 ### `global_cache_engine_test.py`（跨层 GET/PUT 规划）
 - 输入 helper 与校验；GET miss 返回空图。
 - GET 命中：CPU 命中构 `H2D`；SSD 命中构 `DISK2H→H2D` 并回填 CPU 缓存；CPU 前缀 + SSD 续接的分段读；忽略尾部不完整块；非零 block 区间的 CPU 命中 / SSD 回填；CPU pending 回退到临时 buffer；CPU 空间不足返回空图；拒绝非对齐/非连续 mask。
-- PUT：仅 CPU 构 `D2H` 并回填；CPU+SSD 构 `D2H→H2DISK`；跳过已存在的 CPU/SSD 前缀只写后缀；完全命中返回空图；空间不足返回空图并回收；插入失败回收（含 SSD 回调回收）；重叠 PUT 分裂保持 ready 前缀连续；用 mask 覆盖的完整前缀；忽略尾部不完整块；拒绝非零/非对齐 mask。
+- PUT：仅 CPU 构 `D2H` 并回填；CPU+SSD 构 `D2H→H2DISK`；H2DISK completed 指标只在 SSD ready callback 后增加；跳过已存在的 CPU/SSD 前缀只写后缀；完全命中返回空图；空间不足返回空图并回收；插入失败回收（含 SSD 回调回收）；重叠 PUT 分裂保持 ready 前缀连续；用 mask 覆盖的完整前缀；忽略尾部不完整块；拒绝非零/非对齐 mask。
 
 ## 三、物理存储（`storage/`）
 
@@ -99,6 +99,12 @@
 
 ### `kvtask_test.py`
 - GET 任务 match→launch→wait（launch 前用 fake slot_mapping）；PUT/GET 异步在 end-op 后、graph 完成前即返回成功；提前返回成功后 graph 完成仍正确释放任务；batch 合并 GET / PUT 图并按 batch 任务等待；`cancel_tasks` 释放任务且 wait 报 not-found。
+
+### `bench_ssd_e2e_test.py`
+- vLLM tokenize 与流式 SSE（含生成 token ID）解析。
+- prompt/PUT block 对齐边界、CPU 完整淘汰与 SSD 容量关系。
+- 拒绝部分命中、错误缓存层级、指标 reset 和不确定的多 token 生成配置。
+- TTFT p50/p95 统计；真实服务运行方式见 [ssd_e2e.md](ssd_e2e.md)。
 
 ### `vllm_v1_adapter_test.py`（connector 适配 + 端到端）
 - 单卡 prefill GET 生命周期上报 `finished_recving`；`request_finished` PUT 生命周期上报 `finished_sending`；batch GET 上报全部子请求完成。

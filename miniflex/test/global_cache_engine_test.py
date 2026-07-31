@@ -3,10 +3,11 @@
 
 import numpy as np
 
+import miniflex.cache.global_cache_engine as global_cache_engine_module
 from miniflex.cache.global_cache_engine import GlobalCacheEngine
 from miniflex.common.block import SequenceMeta
 from miniflex.common.config import CacheConfig, ModelConfig
-from miniflex.common.transfer import TransferType
+from miniflex.common.transfer import DeviceType, TransferType
 
 
 def tokens(ids):
@@ -398,6 +399,36 @@ def test_put_cpu_and_ssd_builds_d2h_then_h2disk():
   assert ssd_node._pin_count == 0
 
 
+def test_h2disk_completed_metric_fires_only_after_ssd_callback():
+  engine = new_engine()
+  metric_calls = []
+  original_metrics_incr = global_cache_engine_module._metrics_incr
+  global_cache_engine_module._metrics_incr = (
+    lambda name, delta=1: metric_calls.append((name, delta))
+  )
+  try:
+    graph, _, callback, op_callbacks, _ = engine.put(
+      24,
+      tokens([1, 2, 3, 4]),
+      mask([True, True, True, True]),
+      slots([0, 1, 2, 3]),
+    )
+    d2h, h2disk = sorted_ops(graph)
+
+    completed_name = "miniflex_put_h2disk_completed_blocks"
+    assert (completed_name, 2) not in metric_calls
+    op_callbacks[d2h.op_id]()
+    assert (completed_name, 2) not in metric_calls
+    op_callbacks[h2disk.op_id]()
+    assert metric_calls.count((completed_name, 2)) == 1
+    assert engine.cache_engines[DeviceType.SSD].match(
+      seq([1, 2, 3, 4])
+    ).num_ready_matched_blocks == 2
+    callback()
+  finally:
+    global_cache_engine_module._metrics_incr = original_metrics_incr
+
+
 def test_put_skips_existing_cpu_prefix_and_writes_suffix():
   engine = new_engine()
   cpu_prefix = seq([1, 2])
@@ -724,6 +755,7 @@ TEST_CASES = [
   ("GET 拒绝非连续或非 block 对齐 mask", test_get_rejects_unaligned_or_noncontiguous_mask),
   ("PUT CPU-only 生成 D2H 并写入 CPU cache", test_put_cpu_only_builds_d2h_and_fills_cpu_cache),
   ("PUT CPU+SSD 生成 D2H -> H2DISK", test_put_cpu_and_ssd_builds_d2h_then_h2disk),
+  ("H2DISK completed 指标只在 SSD callback 后增加", test_h2disk_completed_metric_fires_only_after_ssd_callback),
   ("PUT 跳过已有 CPU 前缀并写入后缀", test_put_skips_existing_cpu_prefix_and_writes_suffix),
   ("PUT 使用已有 SSD 前缀只写 SSD 后缀", test_put_uses_existing_ssd_prefix_for_h2disk_suffix),
   ("PUT 全 CPU 命中返回空图", test_put_full_cpu_hit_returns_empty_graph),
