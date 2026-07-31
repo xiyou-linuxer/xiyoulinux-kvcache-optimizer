@@ -386,6 +386,10 @@ class KVTaskEngine:
     
   def get_new_task_id(self) -> int:
     return self._manager._get_new_task_id()
+
+  def _poll_completed_tasks(self) -> None:
+    """Apply completed transfers before planning the next cache request."""
+    self._manager._update_tasks(timeout=0)
   
   def _get_impl(self,
                       task_id: int,
@@ -395,6 +399,7 @@ class KVTaskEngine:
                       token_mask: Optional[np.ndarray] = None,
                       namespace: Optional[List[str]] = None
                       ) -> Tuple[int, np.ndarray]:
+    self._poll_completed_tasks()
     self._manager.create_get_task(
       task_id=task_id,
       token_ids=token_ids,
@@ -465,6 +470,7 @@ class KVTaskEngine:
                 token_mask: Optional[np.ndarray] = None,
                 namespace: List[str] = None
                 ) -> Tuple[int, np.ndarray]:
+    self._poll_completed_tasks()
     self._manager.create_put_task(
       task_id=task_id,
       token_ids=token_ids,
