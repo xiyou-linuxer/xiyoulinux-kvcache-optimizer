@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import tempfile
 
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -50,6 +51,12 @@ def test_metric_delta_handles_missing_counters_and_rejects_reset():
     bench.VerificationError,
     lambda: bench.metric_delta({"counter": 5}, {"counter": 1}, "counter"),
   )
+
+
+def test_missing_metrics_file_is_an_empty_baseline():
+  with tempfile.TemporaryDirectory() as directory:
+    missing = Path(directory) / "metrics.json"
+    assert bench.read_metrics(missing, timeout=0) == {}
 
 
 def test_cached_and_put_block_calculation():
@@ -197,6 +204,13 @@ def test_verify_complete_hit_rejects_partial_or_wrong_tier():
   bench.verify_complete_hit(full_cpu, 2, 16, required_tier="cpu")
 
 
+def test_only_first_round_requires_a_pure_ssd_hit():
+  assert bench.required_ssd_tier(True, 0) == "ssd"
+  assert bench.required_ssd_tier(True, 1) is None
+  assert bench.required_ssd_tier(True, 2) is None
+  assert bench.required_ssd_tier(False, 0) is None
+
+
 def test_timing_summary_reports_median_and_p95():
   summary = bench.summarize_timings([
     bench.RequestTiming(ttft_ms=10, latency_ms=20),
@@ -215,6 +229,7 @@ TEST_CASES = [
   ("指标增量与 reset 检测", test_metric_delta_handles_missing_counters_and_rejects_reset),
   ("缓存 block 数计算", test_cached_and_put_block_calculation),
   ("warmup 不产生可缓存 block", test_warmup_must_not_create_cacheable_blocks),
+  ("缺失指标文件作为全零基线", test_missing_metrics_file_is_an_empty_baseline),
   ("接受正确的 CPU/SSD 容量关系", test_capacity_accepts_single_fit_cpu_overflow_and_ssd_fit),
   ("拒绝不会触发 CPU 淘汰的工作集", test_capacity_rejects_non_evicting_working_set),
   ("拒绝不能完整淘汰目标的压力集", test_capacity_rejects_pressure_that_cannot_fully_evict_target),
@@ -222,6 +237,7 @@ TEST_CASES = [
   ("拒绝单条前缀大于 CPU staging", test_capacity_rejects_prefix_larger_than_cpu_staging),
   ("拒绝超过 SSD 容量的工作集", test_capacity_rejects_working_set_larger_than_ssd),
   ("拒绝部分命中和错误层级", test_verify_complete_hit_rejects_partial_or_wrong_tier),
+  ("仅首轮要求纯 SSD 命中", test_only_first_round_requires_a_pure_ssd_hit),
   ("TTFT 统计", test_timing_summary_reports_median_and_p95),
 ]
 
