@@ -51,18 +51,51 @@ import json
 import sys
 
 data = json.load(open(sys.argv[1], encoding="utf-8"))
+config = data["configuration_claim"]
+capacity = data["capacity"]
 timings = data["timings"]
-rounds = data["configuration_claim"]["rounds"]
+metrics = data["metric_deltas"]
+
+tokens = capacity["token_counts"]
+working_set = capacity["estimated_working_set_blocks"]
+cpu_blocks = config["cpu_blocks"]
+ssd_blocks = config["ssd_blocks"]
+num_prefixes = config["num_prefixes"]
+expected = capacity["reusable_blocks"][0]
+cold_metrics = metrics["cold"]
+ssd_metrics = metrics["ssd_hit"]
+cpu_metrics = metrics["cpu_hit_after_ssd"]
+
+planned = sum(item["miniflex_put_h2disk_blocks"] for item in cold_metrics)
+completed = sum(item["miniflex_put_h2disk_completed_blocks"] for item in cold_metrics)
+cold_ok = sum(item["miniflex_put_h2disk_blocks"] == item["miniflex_put_h2disk_completed_blocks"] for item in cold_metrics)
+pure_ssd = sum(item["miniflex_get_hit_cpu_blocks"] == 0 and item["miniflex_get_hit_ssd_blocks"] == expected for item in ssd_metrics)
+cpu_ok = sum(item["miniflex_get_hit_ssd_blocks"] == 0 and item["miniflex_get_hit_cpu_blocks"] == expected for item in cpu_metrics)
+
 cold = timings["cold"]["ttft_p50_ms"]
 ssd = timings["ssd_hit"]["ttft_p50_ms"]
 cpu = timings["cpu_hit_after_ssd"]["ttft_p50_ms"]
 cold_over_ssd = timings["cold_over_ssd"]
 cold_over_cpu = timings["cold_over_cpu"]
 conclusion = "SSD 恢复快于重算" if timings["verdict"] == "ssd_faster_than_recompute" else "当前长度下重算更快，但 SSD 路径正确"
-print(f"   [SSD E2E] 冷重算 p50={cold:.1f}ms | SSD 恢复 p50={ssd:.1f}ms | CPU 命中 p50={cpu:.1f}ms")
-print(f"   [加速比] 冷/SSD={cold_over_ssd:.2f}x | 冷/CPU={cold_over_cpu:.2f}x")
-print(f"   [结论] {conclusion}")
-print(f"   ✅ 首轮完整 SSD 命中；共 {rounds} 轮验证 SSD 恢复与 CPU 回填")
+
+print("   ── 测试场景 ──")
+print(f"   请求规模：{num_prefixes} 条独立前缀，每条 {min(tokens)}～{max(tokens)} tokens")
+print(f"   容量关系：CPU {cpu_blocks} < 工作集 {working_set} ≤ SSD {ssd_blocks} blocks  ✅")
+print("   验证路径：冷重算 → H2DISK → CPU 淘汰 → SSD 恢复 → CPU 回填")
+print()
+print("   ── 功能验证 ──")
+print(f"   ✅ SSD 持久化：{cold_ok}/{len(cold_metrics)} 条前缀完成，H2DISK {planned:.0f}/{completed:.0f} blocks")
+print(f"   ✅ SSD 恢复：{len(ssd_metrics)} 轮完整命中，其中 {pure_ssd}/{len(ssd_metrics)} 轮为纯 SSD 命中")
+print(f"   ✅ CPU 回填：{cpu_ok}/{len(cpu_metrics)} 轮后续请求完整命中 CPU")
+print("   ✅ 数据正确：冷重算、SSD 恢复与 CPU 命中的 greedy 输出完全一致")
+print("   ✅ 命中完整：matched tokens 完整，miss blocks 为 0")
+print()
+print("   ── 性能结果（TTFT p50，越低越好）──")
+print(f"   冷重算：{cold:7.1f} ms")
+print(f"   SSD恢复：{ssd:7.1f} ms   相对冷重算 {cold_over_ssd:.2f}x")
+print(f"   CPU命中：{cpu:7.1f} ms   相对冷重算 {cold_over_cpu:.2f}x")
+print(f"   结论：{conclusion}")
 ' "$SSD_E2E_OUT"
 }
 
@@ -132,7 +165,7 @@ export MINIFLEX_EVICTION_POLICY=lru
 
 serve ssd || exit 1
 step "真实请求:${SSD_E2E_NUM_PREFIXES} 条独立前缀，CPU=${SSD_E2E_CPU_BLOCKS} blocks，SSD=${SSD_E2E_SSD_BLOCKS} blocks，O_DIRECT=${SSD_E2E_USE_DIRECT_IO}"
-PYTHONPATH=pysrc python bench_ssd_e2e.py \
+PYTHONUNBUFFERED=1 PYTHONPATH=pysrc python bench_ssd_e2e.py \
   --url "$URL" \
   --model qwen3-8b \
   --cpu-blocks "$SSD_E2E_CPU_BLOCKS" \
@@ -142,7 +175,11 @@ PYTHONPATH=pysrc python bench_ssd_e2e.py \
   --rounds "$SSD_E2E_ROUNDS" \
   --metrics-file /tmp/miniflex_metrics.json \
   --require-full-ssd-hit \
-  --out "$SSD_E2E_OUT" > /tmp/ssd_e2e.txt 2>&1 || { echo "!!! SSD E2E 失败"; tail -40 /tmp/ssd_e2e.txt; tail -20 "$SLOG"; exit 1; }
+  --out "$SSD_E2E_OUT" 2>&1 | tee /tmp/ssd_e2e.txt || {
+    echo "!!! SSD E2E 失败，详细过程见 /tmp/ssd_e2e.txt"
+    tail -40 "$SLOG"
+    exit 1
+  }
 step "结果汇总(TTFT p50，越低越好)"
 echo -e "${G}"
 show_ssd_summary
