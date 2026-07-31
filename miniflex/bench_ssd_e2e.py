@@ -545,13 +545,13 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     target = prompts[0]
     expected_target_blocks = capacity["reusable_blocks"][0]
 
-    print(
-        ">>> capacity: "
-        f"prompt_tokens={token_counts}, "
-        f"working_set≈{capacity['estimated_working_set_blocks']} blocks, "
-        f"CPU={args.cpu_blocks}, SSD={args.ssd_blocks}"
-    )
-    print(">>> cold fill: every request must plan H2DISK")
+    print("")
+    print(">>> [1/3] 容量关系检查通过")
+    print(f"   请求：{len(token_counts)} 条独立前缀，每条 {min(token_counts)}～{max(token_counts)} tokens")
+    print(f"   缓存：CPU {args.cpu_blocks} < 工作集 {capacity['estimated_working_set_blocks']} ≤ SSD {args.ssd_blocks} blocks")
+    print(f"   目标：{expected_target_blocks} 个可复用 blocks，block_size={args.block_size}")
+    print("")
+    print(">>> [2/3] 冷计算并持久化到 SSD")
     cold_timings: list[RequestTiming] = []
     cold_metrics: list[dict[str, float]] = []
     for index, prompt in enumerate(prompts):
@@ -575,9 +575,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         cold_timings.append(timing)
         cold_metrics.append(deltas)
         print(
-            f"  cold[{index}] TTFT={timing.ttft_ms:.1f}ms "
-            f"H2DISK={deltas[PUT_SSD_BLOCKS]:.0f}, "
-            f"completed={deltas[PUT_SSD_COMPLETED_BLOCKS]:.0f} blocks"
+            f"   前缀 {index + 1}/{len(prompts)}：冷重算 TTFT={timing.ttft_ms:.1f}ms | "
+            f"H2DISK {deltas[PUT_SSD_BLOCKS]:.0f}/{deltas[PUT_SSD_COMPLETED_BLOCKS]:.0f} blocks ✅"
         )
 
     target_output = cold_timings[0].output_text
@@ -593,6 +592,8 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     ssd_metrics: list[dict[str, float]] = []
     cpu_metrics: list[dict[str, float]] = []
 
+    print("")
+    print(">>> [3/3] CPU 淘汰、SSD 恢复与 CPU 回填")
     for round_index in range(args.rounds):
         # Each filler becomes most recently used and pushes the target out of the
         # deliberately small CPU pool. Their own hit tier is irrelevant here.
@@ -661,12 +662,9 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         ssd_metrics.append(ssd_delta)
         cpu_metrics.append(cpu_delta)
         print(
-            f"  round[{round_index}] "
-            f"SSD TTFT={ssd_timing.ttft_ms:.1f}ms "
-            f"(SSD={ssd_delta[SSD_HIT_BLOCKS]:.0f}, "
-            f"CPU={ssd_delta[CPU_HIT_BLOCKS]:.0f}) -> "
-            f"CPU TTFT={cpu_timing.ttft_ms:.1f}ms "
-            f"(CPU={cpu_delta[CPU_HIT_BLOCKS]:.0f})"
+            f"   第 {round_index + 1}/{args.rounds} 轮：SSD 恢复 {ssd_timing.ttft_ms:.1f}ms "
+            f"[SSD {ssd_delta[SSD_HIT_BLOCKS]:.0f}, CPU {ssd_delta[CPU_HIT_BLOCKS]:.0f}] → "
+            f"CPU 回填后命中 {cpu_timing.ttft_ms:.1f}ms [CPU {cpu_delta[CPU_HIT_BLOCKS]:.0f}] ✅"
         )
 
     cold_summary = summarize_timings(cold_timings)
@@ -685,20 +683,19 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
 
     print("")
     print("=" * 72)
+    print("✅ 验证通过：SSD 持久化、SSD 恢复、CPU 回填及生成结果均正确")
     print(
-        f"cold p50={cold_p50:.1f}ms, SSD p50={ssd_p50:.1f}ms, "
-        f"CPU p50={cpu_p50:.1f}ms"
+        f"   TTFT p50：冷重算 {cold_p50:.1f}ms | SSD 恢复 {ssd_p50:.1f}ms | "
+        f"CPU 命中 {cpu_p50:.1f}ms"
     )
     print(
-        f"cold/SSD={cold_over_ssd:.2f}x, "
-        f"cold/CPU={cold_over_cpu:.2f}x, verdict={performance}"
+        f"   加速比：冷重算/SSD {cold_over_ssd:.2f}x | "
+        f"冷重算/CPU {cold_over_cpu:.2f}x"
     )
     if performance == "recompute_faster_than_ssd":
-        print(
-            "NOTE: SSD path is correct but slower at this context length. "
-            "Repeat with longer prefixes to locate the crossover point."
-        )
-    print("PASS: observed SSD hit and the following CPU-cache promotion.")
+        print("   性能结论：当前上下文长度下重算更快，但 SSD 功能路径正确")
+    else:
+        print("   性能结论：SSD 恢复快于冷重算")
     print("=" * 72)
 
     return {
@@ -798,7 +795,7 @@ def main() -> None:
         json.dumps(result, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f">>> machine-readable result: {args.out}")
+    print(f">>> 机器可读结果：{args.out}")
 
 
 if __name__ == "__main__":
