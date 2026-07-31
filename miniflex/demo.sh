@@ -62,7 +62,7 @@ conclusion = "SSD 恢复快于重算" if timings["verdict"] == "ssd_faster_than_
 print(f"   [SSD E2E] 冷重算 p50={cold:.1f}ms | SSD 恢复 p50={ssd:.1f}ms | CPU 命中 p50={cpu:.1f}ms")
 print(f"   [加速比] 冷/SSD={cold_over_ssd:.2f}x | 冷/CPU={cold_over_cpu:.2f}x")
 print(f"   [结论] {conclusion}")
-print(f"   ✅ {rounds}/{rounds} 轮完整 SSD 命中，并在回填后完整 CPU 命中")
+print(f"   ✅ 首轮完整 SSD 命中；共 {rounds} 轮验证 SSD 恢复与 CPU 回填")
 ' "$SSD_E2E_OUT"
 }
 
