@@ -36,19 +36,19 @@
 
 ## 2. 长上下文加速（冷 vs 热：MiniFlex 命中 vs 全量重算）
 
-冷 = 全新 prompt 全量重算 prefill；热 = 预热到确认命中后从 CPU 加载。TTFT 中位数：
+冷 = 全新 prompt 全量重算 prefill；热 = 预热到确认命中后从 CPU 加载。每组正式采样 10 次，TTFT 中位数如下：
 
 | 上下文 | 加速比 | 省下的重算 |
 |---|---|---|
-| ~1k  | 1.63× | 39% |
-| ~2k  | 2.02× | 50% |
-| ~4k  | 2.76× | 64% |
-| ~8k  | 4.06× | 75% |
-| ~15k | 6.81× | 85% |
-| ~23k | 7.71× | 87% |
-| ~30k | 9.32× | 89% |
+| ~1k  | 1.72× | 41.9% |
+| ~2k  | 2.29× | 56.3% |
+| ~4k  | 3.23× | 69.0% |
+| ~8k  | 5.24× | 80.9% |
+| ~15k | 7.31× | 86.3% |
+| ~23k | 8.79× | 88.6% |
+| ~30k | 10.07× | 90.1% |
 
-> 锚点：~30k 上下文 **冷 3806 ms → 热 408 ms**。
+> 锚点：~30k 上下文 **冷 3857.8 ms → 热 383.3 ms**。
 > 加速随上下文变长单调放大——重算量随上下文线性涨，而 KV 搬运是带宽瓶颈、增长更慢。
 
 ## 3. 容量优势 vs vLLM 原生 APC（核心结论）
@@ -57,14 +57,14 @@
 
 | 工作集 | APC（median / miss） | MiniFlex（median / miss） |
 |---|---|---|
-| ~45k（装得进 GPU） | **95 ms** / 0% | 199 ms / 0% |
-| ~75k（略超容量） | 684 ms / **100%** | **191 ms** / 0% |
-| ~105k（远超容量） | 700 ms / **100%** | **190 ms** / 0% |
+| ~45k（装得进 GPU） | **88 ms** / 0% | 145 ms / 0% |
+| ~75k（略超容量） | 682 ms / **100%** | **153 ms** / 0% |
+| ~105k（远超容量） | 708 ms / **100%** | **155 ms** / 0% |
 
 > 两段式结论，交叉点 ≈ GPU KV 容量（~68k）：
 > - **装得进 GPU**：APC 更快（命中在显存、零拷贝；MiniFlex 命中走 PCIe）。
-> - **越过 GPU 容量**：APC 全驱逐 → 每次重算（~700 ms、100% miss）；MiniFlex 摊到 CPU →
->   **全命中、稳定 ~190 ms**。此时 MiniFlex 快 **3.6×** 且 miss 率 0%。
+> - **越过 GPU 容量**：APC 全驱逐 → 每次重算（约 700 ms、100% miss）；MiniFlex 摊到 CPU →
+>   **全命中、稳定约 150 ms**。75k/105k 工作集下分别快 **4.46×/4.57×**，且 miss 率为 0%。
 > MiniFlex 把 TTFT 与工作集解耦：APC 随溢出崩盘，MiniFlex 基本持平。
 
 ## 4. APC + MiniFlex 叠加（混合负载：热数据 + 超容量长尾）
@@ -73,24 +73,24 @@
 
 | 配置 | hot | tail | overall |
 |---|---|---|---|
-| APC | **60 ms** | 707 ms | 515 ms |
-| MiniFlex | 103 ms | **177 ms** | **153 ms** |
-| **APC + MiniFlex** | 67 ms | 188 ms | 165 ms |
+| APC | **59 ms** | 713 ms | 515 ms |
+| MiniFlex | 93 ms | **150 ms** | **130 ms** |
+| **APC + MiniFlex** | 60 ms | 154 ms | 143 ms |
 
-> - APC：热数据最快（60 ms），但长尾溢出 → 重算（707 ms），拖垮 overall。
+> - APC：热数据最快（59 ms），但长尾溢出 → 重算（713 ms），拖垮 overall。
 > - MiniFlex：长尾 / overall 最优，热数据略慢于 APC。
-> - **两者同开**：热数据拿到接近 APC 的速度（67 ms），长尾拿到 MiniFlex 的容量（188 ms）——
+> - **两者同开**：热数据拿到接近 APC 的速度（60 ms），长尾拿到 MiniFlex 的容量（154 ms）——
 >   **两个维度都没有短板**，是面向真实混合负载的稳妥组合（APC 吃 GPU 热层、MiniFlex 兜溢出层）。
 
-## 5. 行为说明：异步 commit "慢一拍"
+## 5. 行为说明：请求前推进异步完成事件
 
-PUT 的最终 commit 只在引擎"有请求在 step"时推进。因此**空闲后立刻重复同一请求**，
-其 GET 可能早于上一个 PUT 的 commit 而 miss；**连续流量下会自愈**（中间请求会把引擎 step
-起来、把之前的 PUT 落地）。这是异步设计的固有取舍，不是 bug。低频场景若要稳定命中，
-可用 `MINIFLEX_SYNC_GET=1`（牺牲性能，见 usage.md）。基准脚本用"预热 + pump"消除这一影响。
+KVTaskEngine 会在每次 GET/PUT 匹配与构图前执行一次非阻塞 poll。若后台传输已经完成，
+完成事件会在本次 Cache 匹配前将节点设置为 ready，并及时执行回调与任务释放，从而降低
+空闲或低频场景下的完成观察延迟。若数据传输本身仍未完成，本次 poll 不会等待。
+基准脚本仍使用"预热 + pump"，避免把异步传输尚未完成的时间窗口计入稳定热命中结果。
 
-稳定性：长上下文加速（②）、容量溢出（③，含 ~105k 工作集）、混合并发（④）三轮 sweep
-**全程无请求挂死 / 无超时**——"只剩等待远程 KV、无其他可调度 token"的边界场景被正确处理。
+稳定性：本轮完整演示覆盖长上下文加速（②）、容量溢出（③，含 ~105k 工作集）、
+混合并发（④）和真实 SSD E2E（⑤），**全程无请求挂死 / 无超时**。
 
 ## 6. 复现方法
 
@@ -115,7 +115,7 @@ PAUSE=0 bash demo.sh    # 连续跑
 单项基准（分别对 baseline / apc / miniflex / both 服务各跑一次）：
 
 ```bash
-PYTHONPATH=pysrc python bench_ttft.py     --url http://localhost:8000 --model qwen3-8b --body-repeat 1000 --runs 3   # 冷/热
+PYTHONPATH=pysrc python bench_ttft.py     --url http://localhost:8000 --model qwen3-8b --body-repeat 1000 --runs 10  # 冷/热
 PYTHONPATH=pysrc python bench_overflow.py --url http://localhost:8000 --tag <apc|miniflex> --num-prefixes <6|10|14>  # 容量交叉
 PYTHONPATH=pysrc python bench_mixed.py    --url http://localhost:8000 --tag <apc|miniflex|both>                      # 混合负载
 ```
@@ -124,4 +124,4 @@ PYTHONPATH=pysrc python bench_mixed.py    --url http://localhost:8000 --tag <apc
 
 ---
 
-*评测日期：2026-06 · vLLM 0.23.0 + MiniFlex（LAYERBLOCK）· RTX 5090 32G · Qwen3-8B*
+*评测日期：2026-08-01 · vLLM 0.23.0 + MiniFlex（LAYERBLOCK）· RTX 5090 32G · Qwen3-8B*

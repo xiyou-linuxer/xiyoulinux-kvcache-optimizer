@@ -109,11 +109,11 @@ MiniFlex 的核心价值不只是追求容量内最快，其在追求 **越过 G
 
 在当前实验结果中，随着上下文长度增长，MiniFlex 命中后的回填路径可以显著减少 prefill 重算：
 
-- `~1k` 上下文：约 `1.63×` 加速；
-- `~8k` 上下文：约 `4.06×` 加速；
-- `~30k` 上下文：约 `9.32×` 加速。
+- `~1k` 上下文：约 `1.72×` 加速；
+- `~8k` 上下文：约 `5.24×` 加速；
+- `~30k` 上下文：约 `10.07×` 加速。
 
-代表性结果：`~30k` 上下文下，冷启动约 `3806 ms`，命中回填后约 `408 ms`。
+代表性结果：`~30k` 上下文下，冷启动约 `3857.8 ms`，命中回填后约 `383.3 ms`。
 
 ### 4.2 超容量场景优势
 
@@ -121,9 +121,9 @@ MiniFlex 的核心价值不只是追求容量内最快，其在追求 **越过 G
 
 | 工作集 | APC | MiniFlex |
 | --- | --- | --- |
-| `~45k` | `95 ms / 0% miss` | `199 ms / 0% miss` |
-| `~75k` | `684 ms / 100% miss` | `191 ms / 0% miss` |
-| `~105k` | `700 ms / 100% miss` | `190 ms / 0% miss` |
+| `~45k` | `88 ms / 0% miss` | `145 ms / 0% miss` |
+| `~75k` | `682 ms / 100% miss` | `153 ms / 0% miss` |
+| `~105k` | `708 ms / 100% miss` | `155 ms / 0% miss` |
 
 这说明 MiniFlex 的核心价值不在于容量内峰值最快，而在于 **越过显存边界后退化更平稳**。
 
@@ -237,7 +237,7 @@ curl -s http://localhost:8000/v1/completions \
 
 ### 6.1 一键演示
 
-项目提供自包含演示脚本，可自动完成功能验证、长上下文测试、容量交叉测试和混合负载测试：
+项目提供自包含演示脚本，可自动完成功能验证、长上下文测试、容量交叉测试、混合负载测试和真实 SSD E2E 验证：
 
 ```bash
 cd miniflex
@@ -257,7 +257,7 @@ PAUSE=0 bash demo.sh
 
 ```bash
 cd miniflex
-PYTHONPATH=pysrc python bench_ttft.py --url http://localhost:8000 --model qwen3-8b --body-repeat 1000 --runs 3
+PYTHONPATH=pysrc python bench_ttft.py --url http://localhost:8000 --model qwen3-8b --body-repeat 1000 --runs 10
 ```
 
 超容量工作集：

@@ -79,6 +79,13 @@ bash demo.sh            # 每幕停顿
 PAUSE=0 bash demo.sh    # 连续跑
 ```
 
+第二幕长上下文基准默认对每个上下文执行 10 次冷请求和 10 次热请求，可通过
+`TTFT_RUNS` 覆盖正式采样次数：
+
+```bash
+TTFT_RUNS=15 PAUSE=0 bash demo.sh
+```
+
 机器相关项（`HF_HOME` / `MODEL` / `GPU_MEM` / `MINIFLEX_*`）可用环境变量覆盖。
 第五幕面向 RTX 5090 比赛机，默认使用 `/root/autodl-tmp/miniflex-ssd-e2e`、
 512 个 CPU blocks、2048 个 SSD blocks、约 7–8k token 的独立前缀，并开启 O_DIRECT。
