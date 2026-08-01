@@ -140,3 +140,22 @@ python test/bench_ssd_e2e_test.py
 
 这组数据用于证明真实 SSD 生命周期和测试方法可行，不代表 Qwen3-8B/RTX 5090 的
 最终比赛成绩。正式报告应在目标比赛机器上重新执行，并保留脚本输出的 JSON 原始数据。
+
+
+## RTX 5090 比赛机验证记录
+
+2026-08-01 在 Qwen3-8B、vLLM 0.23.0、RTX 5090 32 GiB 环境完成完整演示验证：
+
+- 缓存：CPU 512 blocks、SSD 2048 blocks、O_DIRECT；
+- 工作集：4 条约 7.6k token 的独立 prompt，共 1906 blocks；
+- 持久化：4/4 条前缀完成，H2DISK 1906/1906 blocks；
+- 恢复：3/3 轮完整 SSD hit，随后 3/3 轮完整 CPU hit；
+- 正确性：matched tokens 完整、miss blocks 为 0，三条路径的 greedy 输出完全一致。
+
+| 路径 | TTFT p50 | 相对冷重算 |
+|---|---:|---:|
+| 冷重算 | 708.9 ms | 1.00× |
+| SSD hit | 615.9 ms | 1.15× |
+| SSD 回填后的 CPU hit | 162.4 ms | 4.37× |
+
+机器可读原始结果由 `demo.sh` 保存到 `/tmp/miniflex_ssd_e2e.json`。

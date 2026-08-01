@@ -98,7 +98,9 @@
 ## 五、任务层与 vLLM 集成
 
 ### `kvtask_test.py`
-- GET 任务 match→launch→wait（launch 前用 fake slot_mapping）；PUT/GET 异步在 end-op 后、graph 完成前即返回成功；提前返回成功后 graph 完成仍正确释放任务；batch 合并 GET / PUT 图并按 batch 任务等待；`cancel_tasks` 释放任务且 wait 报 not-found。
+- GET 任务 match→launch→wait（launch 前用 fake slot_mapping）；PUT/GET 异步在 end-op 后、graph 完成前即返回成功；提前返回成功后 graph 完成仍正确释放任务。
+- GET 匹配前非阻塞推进 DISK2H 完成事件，使 ready CPU Cache 参与本次构图；PUT 匹配前推进 graph-complete，并释放已经提前返回的旧任务。
+- batch 合并 GET / PUT 图并按 batch 任务等待；`cancel_tasks` 释放任务且 wait 报 not-found。
 
 ### `bench_ssd_e2e_test.py`
 - vLLM tokenize 与流式 SSE（含生成 token ID）解析。
